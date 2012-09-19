@@ -1,0 +1,17 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+	
+	<!-- Additional source path -->
+	<source path='pojo/base'/>
+	<source path='pojo/gwt'/>
+	<source path='pojo/java5/legacy'/>
+	<source path='annotations'/>
+	<source path='gwt/client'/>
+	
+	<!-- Proxy generator -->
+	<!-- generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+		<when-type-assignable class="java.io.Serializable" />
+	</generate-with-->
+</module>

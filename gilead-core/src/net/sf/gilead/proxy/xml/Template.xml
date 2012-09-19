@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additionalCode suffix="" implementedInterfaces="">
+	<attributes>
+    	<attribute name="" visibility= "" type="" defaultValue="">
+    		<javadoc>
+    		</javadoc>
+    	</attribute>
+    </attributes>
+    <methods>
+    	<method visibility="" returnType="" name="">
+    		<javadoc>
+    		</javadoc>
+    		<parameters>
+    			<parameter name="" type="" />
+    		</parameters>
+    		<code>
+    		</code>
+    	</method>
+    </methods>
+</additionalCode>

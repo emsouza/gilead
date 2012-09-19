@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additionalCode suffix="_h4gwt14" implementedInterface="net.sf.gilead.pojo.base.ILightEntity">
+	<!--
+		ATTRIBUTES 
+	 -->
+    <attributes>
+    	<attribute name="_proxyInformations" visibility= "protected" 
+    			   type="java.util.Map" defaultValue="new java.util.HashMap()">
+    		<javadoc>
+    			<![CDATA[
+    				@gwt.typeArgs <java.lang.String, java.lang.String>
+    			]]>
+    		</javadoc>
+    	</attribute>
+    	<attribute name="_initializationMap" visibility="protected" 
+    			   type="java.util.Map" 
+    			   defaultValue="new java.util.HashMap()">
+    		<javadoc>
+	    		<![CDATA[
+	    			@gwt.typeArgs <java.lang.String, java.lang.Boolean>
+	    		]]>
+    		</javadoc>
+    	</attribute>
+    </attributes>
+    
+    <!--
+    	METHODS 
+     -->
+    <methods>
+    	<!-- addProxyInformation -->
+    	<method visibility="public" returnType="void" name="addProxyInformation">
+    		<parameters>
+    			<parameter type="String" name="property" />
+    			<parameter type="Object" name="proxyInformation" />
+    		</parameters>
+    		<code>
+    			{ _proxyInformations.put(property, proxyInformation); }
+    		</code>
+    	</method>
+    	
+    	<!--  removeProxyInformation -->
+    	<method visibility="public" returnType="void" name="removeProxyInformation" javadoc="">
+    		<parameters>
+    			<parameter type="String" name="property" />
+    		</parameters>
+    		<code>
+    			{ _proxyInformations.remove(property); }
+    		</code>
+    	</method>
+    	
+    	<!-- getProxyInformation -->
+    	<method visibility="public" returnType="Object" name="getProxyInformation">
+    		<parameters>
+    			<parameter type="String" name="property" />
+    		</parameters>
+    		<code>
+    			{ return _proxyInformations.get(property); }
+    		</code>
+    	</method>
+    	
+    	<!-- getDebugString -->
+    	<method visibility="public" returnType="String" name="getDebugString" >
+    		<code>
+    		{ return _proxyInformations.toString(); }
+			</code>
+    	</method>
+    	
+    	<!-- isInitialized -->
+    	<method visibility="public" returnType="boolean" name="isInitialized">
+    		<parameters>
+    			<parameter type="String" name="property" />
+    		</parameters>
+    		<code>
+    			{
+					Boolean initialized = (Boolean) _initializationMap.get(property);
+					if (initialized == null)
+					{
+						return true;
+					}
+					return initialized.booleanValue();
+				}
+    		</code>
+    	</method>
+    	
+    	<!-- setInitialized -->
+    	<method visibility="public" returnType="void" name="setInitialized">
+    		<parameters>
+    			<parameter type="String" name="property" />
+    			<parameter type="boolean" name="initialized" />
+    		</parameters>
+    		<code>
+    			{ _initializationMap.put(property, Boolean.valueOf(initialized)); }
+    		</code>
+    	</method>
+    	
+    	<!-- getValue -->
+    	<method visibility="public" returnType="Object" name="getUnderlyingValue">
+    		<code>
+				{ return this; }
+			</code>
+		</method>
+    </methods>
+</additionalCode>
