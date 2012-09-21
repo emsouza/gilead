@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -179,8 +180,8 @@ public class HibernateUtil implements IPersistenceUtil {
 		setSessionFactory(sessionFactory);
 		this.session = session;
 		_session = new ThreadLocal<HibernateSession>();
-		_persistenceMap = new HashMap<Class<?>, Boolean>();
-		_unehancementMap = new HashMap<Class<?>, Class<?>>();
+		_persistenceMap = Collections.synchronizedMap(new HashMap<Class<?>, Boolean>());
+		_unehancementMap = Collections.synchronizedMap(new HashMap<Class<?>, Class<?>>());
 
 		// Filling persistence map with primitive types
 		_persistenceMap.put(Byte.class, false);
