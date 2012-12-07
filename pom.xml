@@ -18,8 +18,8 @@
 	</modules>
 	
 	<properties>
-		<gwt.version>2.4.0</gwt.version>
-		<hibernateVersion>4.0.1.Final</hibernateVersion>
+		<gwt.version>2.5.0</gwt.version>
+		<hibernateVersion>4.1.7.Final</hibernateVersion>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	</properties>
 

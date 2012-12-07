@@ -1,86 +1,83 @@
 /*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
- * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- * 
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code.  If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
- * 
- * Contributor(s):
- * 
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+ * which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
+ *     Specification available from http://jcp.org/en/jsr/detail?id=317
  */
+
+// $Id: Basic.java 20957 2011-06-13 09:58:51Z stliu $
+
 package javax.persistence;
 
-import static java.lang.annotation.ElementType.FIELD;
+import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static javax.persistence.FetchType.EAGER;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 /**
- * The <code>Basic</code> annotation is the simplest type of mapping to a
- * database column. The <code>Basic</code> annotation can be applied to a
- * persistent property or instance variable of any of the following types: Java
- * primitive types, wrappers of the primitive types, {@link String},
- * {@link java.math.BigInteger java.math.BigInteger},
- * {@link java.math.BigDecimal java.math.BigDecimal}, {@link java.util.Date
- * java.util.Date}, {@link java.util.Calendar java.util.Calendar},
- * {@link java.sql.Date java.sql.Date}, {@link java.sql.Time java.sql.Time},
- * {@link java.sql.Timestamp java.sql.Timestamp}, <code>byte[], Byte[], 
- * char[], Character[]</code>, enums, and any other type that implements
- * {@link java.io.Serializable Serializable}.
- * 
- * <p>
- * The use of the <code>Basic</code> annotation is optional for persistent
- * fields and properties of these types.
- * 
+ * The simplest type of mapping to a database column. The
+ * <code>Basic</code> annotation can be applied to a persistent
+ * property or instance variable of any of the following types: Java
+ * primitive types, wrappers of the primitive types, <code>String</code>,
+ * <code>java.math.BigInteger</code>,
+ * <code>java.math.BigDecimal</code>,
+ * <code>java.util.Date</code>,
+ * <code>java.util.Calendar</code>,
+ * <code>java.sql.Date</code>,
+ * <code>java.sql.Time</code>,
+ * <code>java.sql.Timestamp</code>, <code>byte[]</code>, <code>Byte[]</code>,
+ * <code>char[]</code>, <code>Character[]</code>, enums, and any other type that
+ * implements <code>java.io.Serializable</code>.
+ *
+ * <p> The use of the <code>Basic</code> annotation is optional for
+ * persistent fields and properties of these types.  If the
+ * <code>Basic</code> annotation is not specified for such a field or
+ * property, the default values of the <code>Basic</code> annotation
+ * will apply.
+ *
+ * <pre>
+ *    Example 1:
+ *
+ *    &#064;Basic
+ *    protected String name;
+ *
+ *    Example 2:
+ *
+ *    &#064;Basic(fetch=LAZY)
+ *    protected String getName() { return name; }
+ *
+ * </pre>
  * @since Java Persistence 1.0
  */
-@Target({ METHOD, FIELD })
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
 public @interface Basic {
 
-	/**
-	 * (Optional) Defines whether the value of the field or property should be
-	 * lazily loaded or must be eagerly fetched. The <code>EAGER</code> strategy
-	 * is a requirement on the persistence provider runtime that the value must
-	 * be eagerly fetched. The <code>LAZY</code> strategy is a hint to the
-	 * persistence provider runtime. If not specified, defaults to
-	 * <code>EAGER</code>.
-	 */
-	FetchType fetch() default EAGER;
+    /**
+     * (Optional) Defines whether the value of the field or property should
+     * be lazily loaded or must be eagerly fetched. The <code>EAGER</code>
+     * strategy is a requirement on the persistence provider runtime
+     * that the value must be eagerly fetched.  The <code>LAZY</code>
+     * strategy is a hint to the persistence provider runtime.
+     * If not specified, defaults to <code>EAGER</code>.
+     */
+    FetchType fetch() default EAGER;
 
-	/**
-	 * (Optional) Defines whether the value of the field or property may be
-	 * null. This is a hint and is disregarded for primitive types; it may be
-	 * used in schema generation. If not specified, defaults to
-	 * <code>true</code>.
-	 */
-	boolean optional() default true;
+    /**
+     * (Optional) Defines whether the value of the field or property may be null.
+     * This is a hint and is disregarded for primitive types; it may
+     * be used in schema generation.
+     * If not specified, defaults to <code>true</code>.
+     */
+    boolean optional() default true;
 }

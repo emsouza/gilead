@@ -1,65 +1,45 @@
 /*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
- * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- * 
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
- * Sun designates this particular file as subject to the "Classpath" exception
- * as provided by Sun in the GPL Version 2 section of the License file that
- * accompanied this code.  If applicable, add the following below the License
- * Header, with the fields enclosed by brackets [] replaced by your own
- * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
- * 
- * Contributor(s):
- * 
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
+ * which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
+ *     Specification available from http://jcp.org/en/jsr/detail?id=317
  */
+
+// $Id: NamedQuery.java 20957 2011-06-13 09:58:51Z stliu $
+
 package javax.persistence;
 
+import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
+import static javax.persistence.LockModeType.NONE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 /**
- * Is used to specify a named query in the Java Persistence query language,
- * which is a static query expressed in metadata. Query names are scoped to the
- * persistence unit.
- * 
- * <p>
- * The following is an example of the definition of a named query in the Java
- * Persistence query language:
- * 
+ * Specifies a static, named query in the Java Persistence query language.
+ * Query names are scoped to the persistence unit.
+ * The <code>NamedQuery</code> annotation can be applied to an entity or mapped superclass.
+ *
+ * <p> The following is an example of the definition of a named query
+ * in the Java Persistence query language:
+ *
  * <pre>
  *    &#064;NamedQuery(
  *            name="findAllCustomersWithName",
  *            query="SELECT c FROM Customer c WHERE c.name LIKE :custName"
  *    )
  * </pre>
- * 
- * <p>
- * The following is an example of the use of a named query:
- * 
+ *
+ * <p> The following is an example of the use of a named query:
+ *
  * <pre>
  *    &#064;PersistenceContext
  *    public EntityManager em;
@@ -68,22 +48,34 @@ import java.lang.annotation.Target;
  *            .setParameter("custName", "Smith")
  *            .getResultList();
  * </pre>
- * 
+ *
  * @since Java Persistence 1.0
  */
-@Target({ TYPE })
+@Target({TYPE})
 @Retention(RUNTIME)
 public @interface NamedQuery {
 
-	/**
-	 * Refers to the query when using the {@link EntityManager} methods that
-	 * create query objects.
-	 */
-	String name();
+    /**
+     * (Required) The name used to refer to the query with the {@link EntityManager}
+     * methods that create query objects.
+     */
+    String name();
 
-	/** The query string in the Java Persistence query language */
-	String query();
+    /** (Required)
+     * The query string in the Java Persistence query language.
+     */
+    String query();
 
-	/** Vendor-specific query hints */
-	QueryHint[] hints() default {};
+    /**
+     * (Optional) The lock mode type to use in query execution.  If a <code>lockMode</code>
+     * other than <code>LockModeType.NONE</code> is specified, the query must be executed in
+     * a transaction.
+     * @since Java Persistence 2.0
+     */
+    LockModeType lockMode() default NONE;
+
+    /** (Optional) Query properties and hints.  May include
+     * vendor-specific query hints.
+     */
+    QueryHint[] hints() default {};
 }
