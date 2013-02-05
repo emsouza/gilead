@@ -134,9 +134,9 @@
 	</dependencyManagement>
 
 	<scm>
-		<connection>scm:git:git://github.com/emsouza/gilead.git</connection>
-		<url>scm:git:git://github.com/emsouza/gilead.git</url>
-		<developerConnection>scm:git:git://github.com/emsouza/gilead.git</developerConnection>
+		<connection>scm:git:https://github.com/emsouza/gilead.git</connection>
+		<url>scm:git:https://github.com/emsouza/gilead.git</url>
+		<developerConnection>scm:git:https://github.com/emsouza/gilead.git</developerConnection>
 	</scm>
 
 	<build>
