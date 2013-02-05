@@ -19,7 +19,7 @@
 
 	<properties>
 		<gwt.version>2.5.0</gwt.version>
-		<hibernateVersion>4.1.7.Final</hibernateVersion>
+		<hibernateVersion>4.1.9.Final</hibernateVersion>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	</properties>
 
@@ -103,7 +103,7 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.4.2</version>
+				<version>1.4.3</version>
 			</dependency>
 			<dependency>
 				<groupId>dom4j</groupId>
