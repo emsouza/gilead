@@ -21,6 +21,12 @@
 			<groupId>net.sf.beanlib</groupId>
 			<artifactId>beanlib</artifactId>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>xstream</groupId>
+					<artifactId>xstream</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.beanlib</groupId>
@@ -28,7 +34,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>javassist</groupId>
+			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<scope>provided</scope>
 		</dependency>
