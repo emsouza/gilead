@@ -17,6 +17,8 @@
 package net.sf.gilead.core.beanlib.merge;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.hibernate3.Hibernate3JavaBeanReplicator;
@@ -29,197 +31,191 @@ import net.sf.gilead.core.store.IProxyStore;
 import net.sf.gilead.exception.NotPersistentObjectException;
 import net.sf.gilead.exception.TransientObjectException;
 
-import org.apache.log4j.Logger;
-
 /**
  * Bean replicator with different from and to classes for merge operation
  * 
  * @author bruno.marchesson
  */
 public class MergeClassBeanReplicator extends Hibernate3JavaBeanReplicator {
-	// ---
-	// Attributes
-	// ---
+    // ---
+    // Attributes
+    // ---
 
-	/**
-	 * Logger channel
-	 */
-	private static Logger _log = Logger.getLogger(MergeClassBeanReplicator.class);
+    /**
+     * Logger channel
+     */
+    private static Logger _log = Logger.getLogger(MergeClassBeanReplicator.class.getSimpleName());
 
-	/**
-	 * The class mapper (can be null)
-	 */
-	private IClassMapper _classMapper;
+    /**
+     * The class mapper (can be null)
+     */
+    private IClassMapper _classMapper;
 
-	/**
-	 * The persistent util class
-	 */
-	private IPersistenceUtil _persistenceUtil;
+    /**
+     * The persistent util class
+     */
+    private IPersistenceUtil _persistenceUtil;
 
-	/**
-	 * The current proxy store
-	 */
-	private IProxyStore _proxyStore;
+    /**
+     * The current proxy store
+     */
+    private IProxyStore _proxyStore;
 
-	// ----
-	// Factory
-	// ----
-	public static final Factory factory = new Factory();
+    // ----
+    // Factory
+    // ----
+    public static final Factory factory = new Factory();
 
-	/**
-	 * Factory for {@link MergeClassBeanReplicator}
-	 * 
-	 * @author bruno.marchesson
-	 */
-	public static class Factory implements BeanReplicatorSpi.Factory {
-		private Factory() {}
+    /**
+     * Factory for {@link MergeClassBeanReplicator}
+     * 
+     * @author bruno.marchesson
+     */
+    public static class Factory implements BeanReplicatorSpi.Factory {
+        private Factory() {}
 
-		@Override
-		public MergeClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-			return new MergeClassBeanReplicator(beanTransformer);
-		}
-	}
+        @Override
+        public MergeClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+            return new MergeClassBeanReplicator(beanTransformer);
+        }
+    }
 
-	public static MergeClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-		return factory.newBeanReplicatable(beanTransformer);
-	}
+    public static MergeClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newBeanReplicatable(beanTransformer);
+    }
 
-	// ----
-	// Constructor
-	// ----
-	protected MergeClassBeanReplicator(BeanTransformerSpi beanTransformer) {
-		super(beanTransformer);
-	}
+    // ----
+    // Constructor
+    // ----
+    protected MergeClassBeanReplicator(BeanTransformerSpi beanTransformer) {
+        super(beanTransformer);
+    }
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the Class Mapper
-	 */
-	public IClassMapper getClassMapper() {
-		return _classMapper;
-	}
+    // ----
+    // Properties
+    // ----
+    /**
+     * @return the Class Mapper
+     */
+    public IClassMapper getClassMapper() {
+        return _classMapper;
+    }
 
-	/**
-	 * @param mapper the classMapper to set
-	 */
-	public void setClassMapper(IClassMapper mapper) {
-		_classMapper = mapper;
-	}
+    /**
+     * @param mapper the classMapper to set
+     */
+    public void setClassMapper(IClassMapper mapper) {
+        _classMapper = mapper;
+    }
 
-	/**
-	 * @return the _persistenceUtil
-	 */
-	public IPersistenceUtil getPersistenceUtil() {
-		return _persistenceUtil;
-	}
+    /**
+     * @return the _persistenceUtil
+     */
+    public IPersistenceUtil getPersistenceUtil() {
+        return _persistenceUtil;
+    }
 
-	/**
-	 * @param util the persistence Util to set
-	 */
-	public void setPersistenceUtil(IPersistenceUtil util) {
-		_persistenceUtil = util;
-	}
+    /**
+     * @param util the persistence Util to set
+     */
+    public void setPersistenceUtil(IPersistenceUtil util) {
+        _persistenceUtil = util;
+    }
 
-	/**
-	 * @return the proxy store
-	 */
-	public IProxyStore getProxyStore() {
-		return _proxyStore;
-	}
+    /**
+     * @return the proxy store
+     */
+    public IProxyStore getProxyStore() {
+        return _proxyStore;
+    }
 
-	/**
-	 * @param store the proxy Store to set
-	 */
-	public void setProxyStore(IProxyStore store) {
-		_proxyStore = store;
-	}
+    /**
+     * @param store the proxy Store to set
+     */
+    public void setProxyStore(IProxyStore store) {
+        _proxyStore = store;
+    }
 
-	// ----
-	// Override
-	// ----
-	@Override
-	public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
-		// Reset bean local
-		//
-		BeanlibThreadLocal.setProxyInformations(null);
+    // ----
+    // Override
+    // ----
+    @Override
+    public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
+        // Reset bean local
+        //
+        BeanlibThreadLocal.setProxyInformations(null);
 
-		// Force persistence map computation (useful for subclass)
-		//
-		_persistenceUtil.isPersistentPojo(from);
+        // Force persistence map computation (useful for subclass)
+        //
+        _persistenceUtil.isPersistentPojo(from);
 
-		// Add current bean to stack
-		//
-		BeanlibThreadLocal.getFromBeanStack().push(from);
-		T result = super.replicateBean(from, toClass);
-		BeanlibThreadLocal.getFromBeanStack().pop();
-		BeanlibThreadLocal.getToBeanStack().pop();
+        // Add current bean to stack
+        //
+        BeanlibThreadLocal.getFromBeanStack().push(from);
+        T result = super.replicateBean(from, toClass);
+        BeanlibThreadLocal.getFromBeanStack().pop();
+        BeanlibThreadLocal.getToBeanStack().pop();
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
-			SecurityException, NoSuchMethodException {
-		// Clone mapper indirection
-		//
-		if (_classMapper != null) {
-			Class sourceClass = _classMapper.getSourceClass(UnEnhancer.unenhanceClass(from.getClass()));
-			if (sourceClass != null) {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Creating mapped class " + sourceClass);
-				}
-				toClass = sourceClass;
-			} else {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Creating merged class " + toClass);
-				}
-			}
-		}
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
+            SecurityException, NoSuchMethodException {
+        // Clone mapper indirection
+        //
+        if (_classMapper != null) {
+            Class sourceClass = _classMapper.getSourceClass(UnEnhancer.unenhanceClass(from.getClass()));
+            if (sourceClass != null) {
+                _log.log(Level.FINE, "Creating mapped class " + sourceClass);
+                toClass = sourceClass;
+            } else {
+                _log.log(Level.FINE, "Creating merged class " + toClass);
+            }
+        }
 
-		// Get real target class
-		//
-		if (toClass.isInterface()) {
-			// Keep the from class
-			//
-			toClass = (Class<T>) from.getClass();
-		}
+        // Get real target class
+        //
+        if (toClass.isInterface()) {
+            // Keep the from class
+            //
+            toClass = (Class<T>) from.getClass();
+        }
 
-		T result = null;
+        T result = null;
 
-		// Proxy informations
-		//
-		if ((AnnotationsManager.hasGileadAnnotations(from.getClass())) || (AnnotationsManager.hasGileadAnnotations(toClass))) {
-			// Load entity
-			try {
-				Serializable id = _persistenceUtil.getId(from, toClass);
-				toClass = chooseClass(from.getClass(), toClass);
-				result = (T) _persistenceUtil.load(id, toClass);
-			} catch (NotPersistentObjectException e) {
-				_log.warn("Not an hibernate class (" + toClass + ") : annotated values will not be restored.");
-				return (T) from;
-			} catch (TransientObjectException e) {
-				_log.warn("Transient value of class " + toClass + " : annotated values will not be restored.");
-				return (T) from;
-			}
-		}
+        // Proxy informations
+        //
+        if ((AnnotationsManager.hasGileadAnnotations(from.getClass())) || (AnnotationsManager.hasGileadAnnotations(toClass))) {
+            // Load entity
+            try {
+                Serializable id = _persistenceUtil.getId(from, toClass);
+                toClass = chooseClass(from.getClass(), toClass);
+                result = (T) _persistenceUtil.load(id, toClass);
+            } catch (NotPersistentObjectException e) {
+                _log.log(Level.WARNING, "Not an hibernate class (" + toClass + ") : annotated values will not be restored.");
+                return (T) from;
+            } catch (TransientObjectException e) {
+                _log.log(Level.WARNING, "Transient value of class " + toClass + " : annotated values will not be restored.");
+                return (T) from;
+            }
+        }
 
-		if (result == null) {
-			result = super.createToInstance(from, toClass);
+        if (result == null) {
+            result = super.createToInstance(from, toClass);
 
-			// Dynamic proxy workaround : for inheritance purpose
-			// beanlib returns an instance of the proxy class
-			// since it inherits from the source class...
-			//
-			if ((_classMapper != null) && (_classMapper.getSourceClass(result.getClass()) != null)) {
-				result = newInstanceAsPrivileged(toClass);
-			}
-		}
+            // Dynamic proxy workaround : for inheritance purpose
+            // beanlib returns an instance of the proxy class
+            // since it inherits from the source class...
+            //
+            if ((_classMapper != null) && (_classMapper.getSourceClass(result.getClass()) != null)) {
+                result = newInstanceAsPrivileged(toClass);
+            }
+        }
 
-		// Add the bean to stack
-		BeanlibThreadLocal.getToBeanStack().push(result);
-		return result;
-	}
+        // Add the bean to stack
+        BeanlibThreadLocal.getToBeanStack().push(result);
+        return result;
+    }
 }

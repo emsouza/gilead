@@ -4,8 +4,8 @@
 package net.sf.gilead.core.serialization;
 
 import java.io.Serializable;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -16,86 +16,82 @@ import com.thoughtworks.xstream.XStream;
  * @author bruno.marchesson
  */
 public class XStreamProxySerialization implements IProxySerialization {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Logger channel.
-	 */
-	private static Logger _log = Logger.getLogger(XStreamProxySerialization.class);
+    // ----
+    // Attributes
+    // ----
+    /**
+     * Logger channel.
+     */
+    private static Logger _log = Logger.getLogger(XStreamProxySerialization.class.getSimpleName());
 
-	/**
-	 * The XStream facade
-	 */
-	private XStream _xstream;
+    /**
+     * The XStream facade
+     */
+    private XStream _xstream;
 
-	// -------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Constructor.
-	 */
-	public XStreamProxySerialization() {
-		_xstream = new XStream();
-		_xstream.registerConverter(new SerializableIdConverter(_xstream));
-		// _xstream.registerConverter(new
-		// JavaBeanConverter(_xstream.getMapper()));
-	}
+    // -------------------------------------------------------------------------
+    //
+    // Constructor
+    //
+    // -------------------------------------------------------------------------
+    /**
+     * Constructor.
+     */
+    public XStreamProxySerialization() {
+        _xstream = new XStream();
+        _xstream.registerConverter(new SerializableIdConverter(_xstream));
+        // _xstream.registerConverter(new
+        // JavaBeanConverter(_xstream.getMapper()));
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Public interface
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Convert Serializable to bytes.
-	 */
-	@Override
-	public Object serialize(Serializable serializable) {
-		if (_log.isDebugEnabled()) {
-			_log.debug("Serialization of " + serializable);
-		}
-		// Precondition checking
-		//
-		if (serializable == null) {
-			return null;
-		}
+    // -------------------------------------------------------------------------
+    //
+    // Public interface
+    //
+    // -------------------------------------------------------------------------
+    /**
+     * Convert Serializable to bytes.
+     */
+    @Override
+    public Object serialize(Serializable serializable) {
+        _log.log(Level.FINE, "Serialization of " + serializable);
+        // Precondition checking
+        //
+        if (serializable == null) {
+            return null;
+        }
 
-		// Serialize to bytes and encapsulate into string
-		//
-		return _xstream.toXML(serializable);
-	}
+        // Serialize to bytes and encapsulate into string
+        //
+        return _xstream.toXML(serializable);
+    }
 
-	/**
-	 * Regenerate Serializable from String.
-	 */
-	@Override
-	public Serializable unserialize(Object object) {
-		// Precondition checking
-		//
-		if (object == null) {
-			return null;
-		}
+    /**
+     * Regenerate Serializable from String.
+     */
+    @Override
+    public Serializable unserialize(Object object) {
+        // Precondition checking
+        //
+        if (object == null) {
+            return null;
+        }
 
-		if (object instanceof String == false) {
-			throw new RuntimeException("Cannot unserialize object : " + object + " (was expecting a String)");
-		}
+        if (object instanceof String == false) {
+            throw new RuntimeException("Cannot unserialize object : " + object + " (was expecting a String)");
+        }
 
-		String string = (String) object;
-		if (_log.isDebugEnabled()) {
-			_log.debug("Unserialization of " + string);
-		}
+        String string = (String) object;
+        _log.log(Level.FINE, "Unserialization of " + string);
 
-		// String checking
-		//
-		if (string.length() == 0) {
-			return null;
-		}
+        // String checking
+        //
+        if (string.length() == 0) {
+            return null;
+        }
 
-		// Convert back to bytes and Serializable
-		//
-		return (Serializable) _xstream.fromXML(string);
-	}
+        // Convert back to bytes and Serializable
+        //
+        return (Serializable) _xstream.fromXML(string);
+    }
 }

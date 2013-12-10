@@ -16,6 +16,9 @@
 
 package net.sf.gilead.core.beanlib.clone;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.sf.beanlib.hibernate3.Hibernate3JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
@@ -24,132 +27,125 @@ import net.sf.gilead.core.beanlib.IClassMapper;
 import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
 import net.sf.gilead.core.beanlib.merge.MergeClassBeanReplicator;
 
-import org.apache.log4j.Logger;
-
 /**
  * Bean replicator with different from and to classes for clone operation
  * 
  * @author bruno.marchesson
  */
 public class CloneClassBeanReplicator extends Hibernate3JavaBeanReplicator {
-	// ---
-	// Attributes
-	// ---
-	/**
-	 * Logger channel
-	 */
-	private static Logger _log = Logger.getLogger(CloneClassBeanReplicator.class);
+    // ---
+    // Attributes
+    // ---
+    /**
+     * Logger channel
+     */
+    private static Logger _log = Logger.getLogger(CloneClassBeanReplicator.class.getSimpleName());
 
-	/**
-	 * The class mapper (can be null)
-	 */
-	private IClassMapper _classMapper;
+    /**
+     * The class mapper (can be null)
+     */
+    private IClassMapper _classMapper;
 
-	/**
-	 * Persistence util class
-	 */
-	private IPersistenceUtil _persistenceUtil;
+    /**
+     * Persistence util class
+     */
+    private IPersistenceUtil _persistenceUtil;
 
-	// ----
-	// Factory
-	// ----
-	public static final Factory factory = new Factory();
+    // ----
+    // Factory
+    // ----
+    public static final Factory factory = new Factory();
 
-	/**
-	 * Factory for {@link MergeClassBeanReplicator}
-	 * 
-	 * @author bruno.marchesson
-	 */
-	public static class Factory implements BeanReplicatorSpi.Factory {
-		private Factory() {}
+    /**
+     * Factory for {@link MergeClassBeanReplicator}
+     * 
+     * @author bruno.marchesson
+     */
+    public static class Factory implements BeanReplicatorSpi.Factory {
+        private Factory() {}
 
-		@Override
-		public CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-			return new CloneClassBeanReplicator(beanTransformer);
-		}
-	}
+        @Override
+        public CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+            return new CloneClassBeanReplicator(beanTransformer);
+        }
+    }
 
-	public static CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-		return factory.newBeanReplicatable(beanTransformer);
-	}
+    public static CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newBeanReplicatable(beanTransformer);
+    }
 
-	// ----
-	// Constructor
-	// ----
-	protected CloneClassBeanReplicator(BeanTransformerSpi beanTransformer) {
-		super(beanTransformer);
-	}
+    // ----
+    // Constructor
+    // ----
+    protected CloneClassBeanReplicator(BeanTransformerSpi beanTransformer) {
+        super(beanTransformer);
+    }
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the Class Mapper
-	 */
-	public IClassMapper getClassMapper() {
-		return _classMapper;
-	}
+    // ----
+    // Properties
+    // ----
+    /**
+     * @return the Class Mapper
+     */
+    public IClassMapper getClassMapper() {
+        return _classMapper;
+    }
 
-	/**
-	 * @param mapper the classMapper to set
-	 */
-	public void setClassMapper(IClassMapper mapper) {
-		_classMapper = mapper;
-	}
+    /**
+     * @param mapper the classMapper to set
+     */
+    public void setClassMapper(IClassMapper mapper) {
+        _classMapper = mapper;
+    }
 
-	/**
-	 * @return the persistence Util implementation to use
-	 */
-	public IPersistenceUtil getPersistenceUtil() {
-		return _persistenceUtil;
-	}
+    /**
+     * @return the persistence Util implementation to use
+     */
+    public IPersistenceUtil getPersistenceUtil() {
+        return _persistenceUtil;
+    }
 
-	/**
-	 * @param util the persistenceUtil to set
-	 */
-	public void setPersistenceUtil(IPersistenceUtil util) {
-		_persistenceUtil = util;
-	}
+    /**
+     * @param util the persistenceUtil to set
+     */
+    public void setPersistenceUtil(IPersistenceUtil util) {
+        _persistenceUtil = util;
+    }
 
-	// ----
-	// Override
-	// ----
-	@Override
-	public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
-		// Force persistence map computation (useful for subclass)
-		_persistenceUtil.isPersistentPojo(from);
+    // ----
+    // Override
+    // ----
+    @Override
+    public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
+        // Force persistence map computation (useful for subclass)
+        _persistenceUtil.isPersistentPojo(from);
 
-		BeanlibThreadLocal.getFromBeanStack().push(from);
-		T result = super.replicateBean(from, toClass);
-		BeanlibThreadLocal.getFromBeanStack().pop();
-		return result;
-	}
+        BeanlibThreadLocal.getFromBeanStack().push(from);
+        T result = super.replicateBean(from, toClass);
+        BeanlibThreadLocal.getFromBeanStack().pop();
+        return result;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
-			SecurityException, NoSuchMethodException {
-		// Class mapper indirection
-		//
-		if (_classMapper != null) {
-			// Get target class
-			//
-			Class<T> targetClass = (Class<T>) _classMapper.getTargetClass(from.getClass());
+    @Override
+    @SuppressWarnings("unchecked")
+    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
+            SecurityException, NoSuchMethodException {
+        // Class mapper indirection
+        //
+        if (_classMapper != null) {
+            // Get target class
+            //
+            Class<T> targetClass = (Class<T>) _classMapper.getTargetClass(from.getClass());
 
-			// Keep target class only if not null
-			//
-			if (targetClass != null) {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Class mapper : from " + from.getClass() + " to " + targetClass);
-				}
-				toClass = targetClass;
-			} else {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Class mapper : no target class for " + from.getClass());
-				}
-			}
-
-		}
-		return super.createToInstance(from, toClass);
-	}
+            // Keep target class only if not null
+            //
+            if (targetClass != null) {
+                _log.log(Level.FINE, "Class mapper : from " + from.getClass() + " to " + targetClass);
+                toClass = targetClass;
+            } else {
+                _log.log(Level.FINE, "Class mapper : no target class for " + from.getClass());
+            }
+        }
+        return super.createToInstance(from, toClass);
+    }
 }

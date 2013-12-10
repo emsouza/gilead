@@ -90,11 +90,6 @@
 				<version>2.6</version>
 			</dependency>
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.16</version>
-			</dependency>
-			<dependency>
 				<groupId>org.javassist</groupId>
 				<artifactId>javassist</artifactId>
 				<version>3.15.0-GA</version>
@@ -102,7 +97,7 @@
 			<dependency>
 				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.4.3</version>
+				<version>1.4.4</version>
 			</dependency>
 			<dependency>
 				<groupId>dom4j</groupId>
