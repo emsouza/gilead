@@ -11,6 +11,7 @@
   <name>Java Bean Library</name>
   <url>http://beanlib.sourceforge.net/</url>
   <description>Java Bean Utilities Library</description>
+  
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -18,10 +19,12 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  
   <scm>
     <connection>scm:svn:https://beanlib.svn.sourceforge.net/svnroot/beanlib</connection>
     <url>http://beanlib.svn.sourceforge.net/viewvc/beanlib/</url>
   </scm>
+  
   <dependencies>
     <dependency>
       <groupId>commons-lang</groupId>
