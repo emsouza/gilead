@@ -1,7 +1,7 @@
 Gilead
 ======
 
-* Gilead fork for Hibernate 4 and JBoss AS 7
+* Gilead fork for Hibernate 4.3 and WildFly 8
 
 
 Gilead permits you to use your Persistent POJO (and especially the partially loaded ones) outside the JVM (GWT) without pain. No lazy initialisation or serialization exception. Just POJO and Domain Driven Design.
