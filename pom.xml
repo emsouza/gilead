@@ -15,8 +15,6 @@
 		<module>gilead-core</module>
 		<module>gilead4gwt</module>
 		<module>gilead-hibernate</module>
-		<module>beanlib</module>
-		<module>beanlib-hibernate</module>
 	</modules>
 
 	<properties>
