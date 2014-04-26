@@ -57,7 +57,7 @@ import org.hibernate.type.Type;
 /**
  * Persistent helper for Hibernate implementation Centralizes the SessionFactory and add some needed methods. Not really
  * a singleton, since there can be as many HibernateUtil instance as different sessionFactories
- * 
+ *
  * @author BMARCHESSON
  */
 public class HibernateUtil implements IPersistenceUtil {
@@ -506,7 +506,7 @@ public class HibernateUtil implements IPersistenceUtil {
         // Store ids
         //
         if (isInitialized(collection) == true) {
-            result.put(ID_LIST, createIdList((Collection) collection));
+            result.put(ID_LIST, createIdList((Collection<?>) collection));
         }
 
         return result;
@@ -552,7 +552,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Create a persistent collection
-     * 
+     *
      * @param proxyInformations serialized proxy informations
      * @param underlyingCollection the filled underlying collection
      * @return
@@ -634,7 +634,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Create a persistent collection
-     * 
+     *
      * @param proxyInformations serialized proxy informations
      * @param underlyingCollection the filled underlying collection
      * @return
@@ -1008,7 +1008,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Mark class as persistent or not
-     * 
+     *
      * @param clazz
      * @param persistent
      */
@@ -1035,7 +1035,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Compute persistent for Hibernate type
-     * 
+     *
      * @param type
      */
     private void computePersistentForType(Type type) {
@@ -1096,7 +1096,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Create a list of serializable ID for the argument collection
-     * 
+     *
      * @param collection
      * @return
      */
@@ -1135,7 +1135,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Serialize a persistent entity to a SerializableId
-     * 
+     *
      * @param item
      * @return the generated SerializableId
      */
@@ -1149,7 +1149,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Serialize a not persistent entity to a SerializableId
-     * 
+     *
      * @param item
      * @return the generated SerializableId
      */
@@ -1175,7 +1175,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Check if the id equals the unsaved value or not
-     * 
+     *
      * @param entity
      * @return
      */
@@ -1203,7 +1203,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Return the underlying persistent class
-     * 
+     *
      * @param pojo
      * @return
      */
@@ -1222,7 +1222,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * (Re)create the original collection
-     * 
+     *
      * @param proxyInformations
      * @param underlyingCollection
      */
@@ -1270,7 +1270,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * (Re)create the original map
-     * 
+     *
      * @param proxyInformations
      * @param underlyingCollection
      */
@@ -1310,7 +1310,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Test if the two argument collection are the same or not
-     * 
+     *
      * @param coll1
      * @param coll2
      * @return
@@ -1360,7 +1360,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Test if the two argument collection are the same or not
-     * 
+     *
      * @param coll1
      * @param coll2
      * @return
@@ -1405,7 +1405,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Create an entity from its serializable id. The entity is taken from the argument map in priority.
-     * 
+     *
      * @param sid
      * @return
      */
@@ -1487,7 +1487,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Create a collection map
-     * 
+     *
      * @param <T>
      * @param collection
      * @return
@@ -1553,7 +1553,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Get Hibernate class metadata
-     * 
+     *
      * @param clazz
      * @return
      */
@@ -1611,7 +1611,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /**
      * Does the proxy info denotes a initialized entity ?
-     * 
+     *
      * @param proxyInfo
      * @return
      */
@@ -1632,7 +1632,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
 /**
  * Structure for Hibernate session management
- * 
+ *
  * @author bruno.marchesson
  */
 class HibernateSession {

@@ -18,8 +18,9 @@
 	</modules>
 
 	<properties>
+		<beanlib.version>6.0.0-SNAPSHOT</beanlib.version>
 		<gwt.version>2.5.0</gwt.version>
-		<hibernateVersion>4.3.1.Final</hibernateVersion>
+		<hibernate.version>4.3.1.Final</hibernate.version>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	</properties>
 
@@ -53,12 +54,12 @@
 			<dependency>
 				<groupId>net.sf.beanlib</groupId>
 				<artifactId>beanlib</artifactId>
-				<version>5.0.2beta</version>
+				<version>${beanlib.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.beanlib</groupId>
 				<artifactId>beanlib-hibernate</artifactId>
-				<version>5.0.2beta</version>
+				<version>${beanlib.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wildfly</groupId>
@@ -68,12 +69,12 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>${hibernateVersion}</version>
+				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernateVersion}</version>
+				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax</groupId>

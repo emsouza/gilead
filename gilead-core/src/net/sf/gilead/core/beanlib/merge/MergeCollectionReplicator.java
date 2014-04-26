@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sf.beanlib.hibernate3.Hibernate3CollectionReplicator;
+import net.sf.beanlib.hibernate4.Hibernate4CollectionReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 import net.sf.gilead.core.IPersistenceUtil;
@@ -19,7 +19,7 @@ import net.sf.gilead.util.CollectionHelper;
  * 
  * @author bruno.marchesson
  */
-public class MergeCollectionReplicator extends Hibernate3CollectionReplicator {
+public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
 
 	// ----
 	// Factory
@@ -35,12 +35,12 @@ public class MergeCollectionReplicator extends Hibernate3CollectionReplicator {
 		private Factory() {}
 
 		@Override
-		public Hibernate3CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
+		public Hibernate4CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
 			return new MergeCollectionReplicator(beanTransformer);
 		}
 	}
 
-	public static Hibernate3CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
+	public static Hibernate4CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
 		return factory.newCollectionReplicatable(beanTransformer);
 	}
 
@@ -120,7 +120,7 @@ public class MergeCollectionReplicator extends Hibernate3CollectionReplicator {
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.sf.beanlib.hibernate3.Hibernate3CollectionReplicator#createToCollection (java.util.Collection)
+	 * @see net.sf.beanlib.hibernate4.Hibernate4CollectionReplicator#createToCollection (java.util.Collection)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")

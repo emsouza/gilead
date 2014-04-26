@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.beanlib.hibernate3.Hibernate3MapReplicator;
+import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 import net.sf.gilead.core.IPersistenceUtil;
@@ -18,7 +18,7 @@ import net.sf.gilead.core.IPersistenceUtil;
  * 
  * @author bruno.marchesson
  */
-public class MergeMapReplicator extends Hibernate3MapReplicator {
+public class MergeMapReplicator extends Hibernate4MapReplicator {
 
     // ----
     // Factory
@@ -34,12 +34,12 @@ public class MergeMapReplicator extends Hibernate3MapReplicator {
         private Factory() {}
 
         @Override
-        public Hibernate3MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
+        public Hibernate4MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
             return new MergeMapReplicator(beanTransformer);
         }
     }
 
-    public static Hibernate3MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
+    public static Hibernate4MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
         return factory.newMapReplicatable(beanTransformer);
     }
 

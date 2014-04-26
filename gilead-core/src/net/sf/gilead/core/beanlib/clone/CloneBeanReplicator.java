@@ -17,9 +17,9 @@
 package net.sf.gilead.core.beanlib.clone;
 
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
-import net.sf.beanlib.hibernate3.Hibernate3BeanTransformer;
-import net.sf.beanlib.hibernate3.Hibernate3BlobReplicator;
-import net.sf.beanlib.hibernate3.Hibernate3MapReplicator;
+import net.sf.beanlib.hibernate4.Hibernate4BeanTransformer;
+import net.sf.beanlib.hibernate4.Hibernate4BlobReplicator;
+import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.gilead.core.IPersistenceUtil;
@@ -40,8 +40,8 @@ public class CloneBeanReplicator extends HibernateBeanReplicator {
 		super(newBeanTransformer(classMapper, persistenceUtil, proxyStore));
 	}
 
-	private static Hibernate3BeanTransformer newBeanTransformer(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
-		Hibernate3BeanTransformer transformer = new Hibernate3BeanTransformer();
+	private static Hibernate4BeanTransformer newBeanTransformer(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+		Hibernate4BeanTransformer transformer = new Hibernate4BeanTransformer();
 
 		// Custom collection replicator
 		transformer.initCollectionReplicatableFactory(CloneCollectionReplicator.factory);
@@ -49,8 +49,8 @@ public class CloneBeanReplicator extends HibernateBeanReplicator {
 		// Set associated PersistenceUtil
 		((CloneCollectionReplicator) transformer.getCollectionReplicatable()).setPersistenceUtil(persistenceUtil);
 
-		transformer.initMapReplicatableFactory(Hibernate3MapReplicator.getFactory());
-		transformer.initBlobReplicatableFactory(Hibernate3BlobReplicator.getFactory());
+		transformer.initMapReplicatableFactory(Hibernate4MapReplicator.getFactory());
+		transformer.initBlobReplicatableFactory(Hibernate4BlobReplicator.getFactory());
 
 		// Custom bean replicatable
 		transformer.initBeanReplicatableFactory(CloneClassBeanReplicator.factory);

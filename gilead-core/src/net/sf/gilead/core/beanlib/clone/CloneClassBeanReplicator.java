@@ -19,7 +19,7 @@ package net.sf.gilead.core.beanlib.clone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.beanlib.hibernate3.Hibernate3JavaBeanReplicator;
+import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.gilead.core.IPersistenceUtil;
@@ -32,7 +32,7 @@ import net.sf.gilead.core.beanlib.merge.MergeClassBeanReplicator;
  * 
  * @author bruno.marchesson
  */
-public class CloneClassBeanReplicator extends Hibernate3JavaBeanReplicator {
+public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     // ---
     // Attributes
     // ---

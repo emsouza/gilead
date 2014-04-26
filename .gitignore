@@ -1,7 +1,28 @@
-target/
+*.class
 
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# eclipse
+bin/
+tmp/
+.classpath
+.project
 .settings/
 
-.classpath
+# External tool builders
+.externalToolBuilders/
 
-.project
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# maven
+target/

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.sf.beanlib.hibernate3.Hibernate3CollectionReplicator;
+import net.sf.beanlib.hibernate4.Hibernate4CollectionReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 import net.sf.gilead.core.IPersistenceUtil;
@@ -17,7 +17,7 @@ import net.sf.gilead.util.CollectionHelper;
 /**
  * @author bruno.marchesson
  */
-public class CloneCollectionReplicator extends Hibernate3CollectionReplicator {
+public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
 
 	// ----
 	// Factory
