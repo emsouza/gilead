@@ -1,0 +1,44 @@
+<!DOCTYPE hibernate-configuration SYSTEM
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+    
+        <!-- Settings for a local HSQL (testing) database. -->
+        <property name="dialect"> org.hibernate.dialect.H2Dialect</property>
+        <property name="connection.driver_class">org.h2.Driver</property>
+        <property name="connection.url">jdbc:h2:mem:h2_java5</property>
+        <property name="connection.username">sa</property>
+        <property name="connection.password"></property>
+
+        <!-- Disable second-level cache. -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+        <property name="cache.use_query_cache">false</property>
+        <property name="cache.use_minimal_puts">false</property>
+        <property name="max_fetch_depth">3</property>
+        <property name="jdbc.batch_size">0</property>
+    
+    	<!-- No auto-commit -->
+    	<property name="connection.autocommit">false</property>
+    	
+        <!-- Print SQL to stdout. -->
+        <property name="show_sql">true</property>
+        
+        <!-- Drop and then re-create schema on SessionFactory build, for testing. -->
+        <property name="hbm2ddl.auto">create-drop</property>
+    
+        <!-- Bind the getCurrentSession() method to the thread. -->
+        <property name="current_session_context_class">thread</property>
+        
+        <!-- Hibernate Annotations (and package-info.java) -->
+        <mapping class="net.sf.gilead.test.domain.java5.Message"/>
+        <mapping class="net.sf.gilead.test.domain.java5.User"/>
+        <mapping class="net.sf.gilead.test.domain.java5.Employee"/>
+		<mapping class="net.sf.gilead.test.domain.java5.Group"/>
+		<mapping class="net.sf.gilead.test.domain.misc.Utente"/>
+		<mapping class="net.sf.gilead.test.domain.misc.Preference"/>
+		<mapping class="net.sf.gilead.test.domain.misc.Client"/>
+		<mapping class="net.sf.gilead.test.domain.misc.Project"/>
+		<mapping class="net.sf.gilead.test.domain.misc.BaseDictionary"/>
+		<mapping class="net.sf.gilead.test.domain.misc.SomeDictionary"/>
+    </session-factory>
+</hibernate-configuration>

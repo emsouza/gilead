@@ -12,7 +12,7 @@ import org.jboss.as.jpa.container.TransactionScopedEntityManager;
 public class HibernateJBossUtil extends HibernateUtil {
     /**
      * Set entity manager factory from JBoss
-     * 
+     *
      * @param entityManagerFactory
      */
     public void setEntityManagerFactory(Object entityManagerFactory) {
@@ -37,28 +37,19 @@ public class HibernateJBossUtil extends HibernateUtil {
     // Constructors
     //
     // -------------------------------------------------------------------------
-    /**
-     * Empty constructor.
-     */
-    public HibernateJBossUtil() {
-        super();
+    public HibernateJBossUtil(SessionFactory sessionFactory) {
+        super(sessionFactory, null);
     }
 
-    /**
-     * Session factory constructor
-     */
-    public HibernateJBossUtil(SessionFactory sessionFactory) {
+    public HibernateJBossUtil(EntityManagerFactory entityManagerFactory) {
         super();
-        setSessionFactory(sessionFactory);
+        setEntityManagerFactory(entityManagerFactory);
     }
 
     public HibernateJBossUtil(SessionFactory sessionFactory, Session session) {
         super(sessionFactory, session);
     }
 
-    /**
-     * Entity manager constructor
-     */
     public HibernateJBossUtil(EntityManagerFactory entityManagerFactory, Session session) {
         super(session);
         setEntityManagerFactory(entityManagerFactory);

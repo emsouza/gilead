@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.gilead</groupId>
@@ -15,6 +14,7 @@
 		<module>gilead-core</module>
 		<module>gilead4gwt</module>
 		<module>gilead-hibernate</module>
+		<module>gilead-test</module>
 	</modules>
 
 	<properties>
@@ -50,6 +50,11 @@
 				<groupId>cglib</groupId>
 				<artifactId>cglib-nodep</artifactId>
 				<version>2.1_3</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.17</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.beanlib</groupId>
@@ -121,6 +126,11 @@
 				<artifactId>servlet-api</artifactId>
 				<version>2.4</version>
 			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.4.177</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -180,6 +190,12 @@
 				<directory>src</directory>
 			</resource>
 		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>test-resources</directory>
+			</testResource>
+		</testResources>
 	</build>
 </project>
  

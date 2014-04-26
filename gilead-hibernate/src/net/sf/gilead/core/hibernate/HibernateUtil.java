@@ -33,6 +33,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionException;
 import org.hibernate.SessionFactory;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.internal.PersistentBag;
@@ -400,14 +401,12 @@ public class HibernateUtil implements IPersistenceUtil {
         Session session = this.session;
         boolean created = false;
         try {
-            if (session.isConnected() == false) {
+            if (session == null || !session.isConnected()) {
                 session = _sessionFactory.openSession();
                 created = true;
             }
         } catch (HibernateException ex) {
-            _log.log(Level.FINE, "No current session, opening a new one", ex);
-            session = _sessionFactory.openSession();
-            created = true;
+            throw new SessionException("Could not open a session", ex);
         }
 
         // Store the session in ThreadLocal
@@ -417,7 +416,7 @@ public class HibernateUtil implements IPersistenceUtil {
 
     /*
      * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#closeSession(java.lang. Object)
+     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#closeSession(java.lang.Object)
      */
     @Override
     public void closeCurrentSession() {

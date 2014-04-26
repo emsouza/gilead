@@ -8,6 +8,8 @@ import javax.persistence.EntityManagerFactory;
 import net.sf.gilead.core.hibernate.HibernateUtil;
 import net.sf.gilead.util.IntrospectionHelper;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 
 /**
@@ -16,10 +18,11 @@ import org.hibernate.jpa.HibernateEntityManagerFactory;
 public class HibernateJpaUtil extends HibernateUtil {
     /**
      * Sets the JPA entity manager factory
-     * 
+     *
      * @param entityManagerFactory
      */
     public void setEntityManagerFactory(Object entityManagerFactory) {
+
         if (entityManagerFactory instanceof HibernateEntityManagerFactory == false) {
             // Probably an injected session factory
             //
@@ -39,19 +42,21 @@ public class HibernateJpaUtil extends HibernateUtil {
     // Constructors
     //
     // -------------------------------------------------------------------------
-    /**
-     * Empty constructor.
-     */
-    public HibernateJpaUtil() {
-        super();
+    public HibernateJpaUtil(SessionFactory sessionFactory) {
+        super(sessionFactory, null);
     }
 
-    /**
-     * Complete constructor.
-     */
     public HibernateJpaUtil(EntityManagerFactory entityManagerFactory) {
         super();
         setEntityManagerFactory(entityManagerFactory);
     }
 
+    public HibernateJpaUtil(SessionFactory sessionFactory, Session session) {
+        super(sessionFactory, session);
+    }
+
+    public HibernateJpaUtil(EntityManagerFactory entityManagerFactory, Session session) {
+        super(session);
+        setEntityManagerFactory(entityManagerFactory);
+    }
 }
