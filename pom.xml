@@ -18,7 +18,7 @@
 	</modules>
 
 	<properties>
-		<beanlib.version>6.0.0-SNAPSHOT</beanlib.version>
+		<beanlib.version>6.0.0</beanlib.version>
 		<gwt.version>2.5.0</gwt.version>
 		<hibernate.version>4.3.1.Final</hibernate.version>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
