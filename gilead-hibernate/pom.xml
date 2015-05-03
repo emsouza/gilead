@@ -14,27 +14,33 @@
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>gilead-core</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.beanlib</groupId>
 			<artifactId>beanlib-hibernate</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.wildfly</groupId>
 			<artifactId>wildfly-jpa</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>sun.jdk</groupId>
+					<artifactId>jconsole</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>

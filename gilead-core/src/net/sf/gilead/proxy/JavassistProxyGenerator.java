@@ -33,11 +33,11 @@ import net.sf.gilead.proxy.xml.Attribute;
 import net.sf.gilead.proxy.xml.Constructor;
 import net.sf.gilead.proxy.xml.Method;
 
-import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 
 /**
  * Javassist proxy generator (for server side)
- * 
+ *
  * @author bruno.marchesson
  */
 public class JavassistProxyGenerator implements IServerProxyGenerator {
@@ -105,7 +105,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
     // -------------------------------------------------------------------------
     /**
      * Generates ILightEntity classes and methods
-     * 
+     *
      * @throws CannotCompileException
      */
     private void generateProxy(CtClass proxyClass, AdditionalCode additionalCode) throws CannotCompileException {
@@ -136,7 +136,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
 
     /**
      * Generate an additional attribute
-     * 
+     *
      * @param proxyClass
      * @param attribute
      * @throws CannotCompileException
@@ -148,7 +148,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
 
     /**
      * Generate additional method to the instrumented class
-     * 
+     *
      * @param proxyClass
      * @param method
      * @throws CannotCompileException
@@ -168,7 +168,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
 
     /**
      * Generate additional constructor to the instrumented class
-     * 
+     *
      * @param proxyClass
      * @param method
      * @throws CannotCompileException
