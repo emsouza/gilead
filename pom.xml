@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.gilead</groupId>
 	<artifactId>gilead</artifactId>
 	<packaging>pom</packaging>
-	<version>2.1.1-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<name>gilead</name>
 	<url>http://gilead.sourceforge.net/</url>
 	<description>Generic Light Entity Adapter</description>
@@ -18,10 +19,10 @@
 	</modules>
 
 	<properties>
-		<beanlib.version>6.0.0</beanlib.version>
-		<gwt.version>2.7.0</gwt.version>
-		<hibernate.version>4.3.1.Final</hibernate.version>
-		<wildfly.version>8.2.0.Final</wildfly.version>
+		<beanlib.version>7.0.0</beanlib.version>
+		<gwt.version>2.8.0</gwt.version>
+		<hibernate.version>5.0.10.Final</hibernate.version>
+		<wildfly.version>10.1.0.Final</wildfly.version>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	</properties>
 

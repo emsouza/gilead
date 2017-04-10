@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
 /**
@@ -120,13 +119,8 @@ public class HibernateContext {
     public static SessionFactory getSessionFactory() {
         if (_sessionFactory == null) {
             try {
-                if ((_context == Context.java5) || (_context == Context.annotated)) {
-                    // Create the SessionFactory from hibernate.cfg.xml
-                    _sessionFactory = new AnnotationConfiguration().configure(getContextFile()).buildSessionFactory();
-                } else {
-                    // Create the SessionFactory from hibernate.cfg.xml
-                    _sessionFactory = new Configuration().configure(getContextFile()).buildSessionFactory();
-                }
+                // Create the SessionFactory from hibernate.cfg.xml
+                _sessionFactory = new Configuration().configure(getContextFile()).buildSessionFactory();
             } catch (Throwable ex) {
                 // Make sure you log the exception, as it might be swallowed
                 _log.log(Level.SEVERE, "Initial SessionFactory creation failed.", ex);
