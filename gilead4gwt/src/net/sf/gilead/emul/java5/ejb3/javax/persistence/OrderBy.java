@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: OrderBy.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -27,24 +25,24 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Specifies the ordering of the elements of a collection valued
  * association or element collection at the point when the association
  * or collection is retrieved.
- *
- * <p> The syntax of the <code>value</code> ordering element is an
+ * 
+ * <p> The syntax of the <code>value</code> ordering element is an 
  * <code>orderby_list</code>, as follows:
- *
+ * 
  * <pre>
  *    orderby_list::= orderby_item [,orderby_item]*
  *    orderby_item::= [property_or_field_name] [ASC | DESC]
  * </pre>
- *
- * <p> If <code>ASC</code> or <code>DESC</code> is not specified,
+ * 
+ * <p> If <code>ASC</code> or <code>DESC</code> is not specified, 
  * <code>ASC</code> (ascending order) is assumed.
  *
  * <p> If the ordering element is not specified for an entity association,
  * ordering by the primary key of the associated entity is assumed.
  *
- * <p> The property or field name must correspond to that of a
+ * <p> The property or field name must correspond to that of a 
  * persistent property or field of the associated class or embedded class
- * within it.  The properties or fields used in the ordering must correspond to
+ * within it.  The properties or fields used in the ordering must correspond to 
  * columns for which comparison operators are supported.
  *
  * <p> The dot (".") notation is used to refer to an attribute within an
@@ -57,16 +55,16 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * the property or field name is not used. When specifying an ordering
  * over an element collection of embeddable type, the dot notation
  * must be used to specify the attribute or attributes that determine
- * the ordering.
+ * the ordering.  
  *
  * <p> The <code>OrderBy</code> annotation is not used when an order
  * column is specified.
  *
- *
+ * 
  * <pre>
  *    Example 1:
- *
- *    &#064;Entity
+ *    
+ *    &#064;Entity 
  *    public class Course {
  *       ...
  *       &#064;ManyToMany
@@ -74,10 +72,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       public List&#060;Student&#062; getStudents() {...};
  *       ...
  *    }
- *
+ *    
  *    Example 2:
  *
- *    &#064;Entity
+ *    &#064;Entity 
  *    public class Student {
  *       ...
  *       &#064;ManyToMany(mappedBy="students")
@@ -86,9 +84,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       ...
  *    }
  *
- *    Example 3:
+ *    Example 3: 
  *
- *    &#064;Entity
+ *    &#064;Entity 
  *    public class Person {
  *         ...
  *       &#064;ElementCollection
@@ -96,8 +94,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       public Set&#060;Address&#062; getResidences() {...};
  *       ...
  *    }
- *
- *    &#064;Embeddable
+ *  
+ *    &#064;Embeddable 
  *    public class Address {
  *       protected String street;
  *       protected String city;
@@ -105,7 +103,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       &#064;Embedded protected Zipcode zipcode;
  *    }
  *
- *    &#064;Embeddable
+ *    &#064;Embeddable 
  *    public class Zipcode {
  *       protected String zip;
  *       protected String plusFour;
@@ -116,7 +114,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 
 public @interface OrderBy {

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: JoinTable.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -22,10 +20,11 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static javax.persistence.ConstraintMode.PROVIDER_DEFAULT;
 
 /**
- * Used in the mapping of associations. It is specified on the
- * owning side of an association.
+ * Specifies the mapping of associations. It is applied to the
+ * owning side of an association.  
  *
  * <p> A join table is typically used in the mapping of many-to-many
  * and unidirectional one-to-many associations. It may also be used to
@@ -38,10 +37,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *containing entity rather than the embeddable class is considered the
  *owner of the relationship.
  *
- * <p> If the <code>JoinTable</code> annotation is missing, the
- * default values of the annotation elements apply.
- * The name of the join table is assumed to be the table names of the
- * associated primary tables concatenated together (owning side
+ * <p> If the <code>JoinTable</code> annotation is missing, the 
+ * default values of the annotation elements apply.  
+ * The name of the join table is assumed to be the table names of the 
+ * associated primary tables concatenated together (owning side 
  * first) using an underscore.
  *
  * <pre>
@@ -56,32 +55,32 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *            &#064;JoinColumn(name="PHONE_ID", referencedColumnName="ID")
  *    )
  * </pre>
- *
+ * 
  * @see JoinColumn
  * @see JoinColumns
  *
  * @since Java Persistence 1.0
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 
 public @interface JoinTable {
 
     /**
-     * (Optional) The name of the join table.
-     *
+     * (Optional) The name of the join table. 
+     * 
      * <p> Defaults to the concatenated names of
-     * the two associated primary entity tables,
+     * the two associated primary entity tables, 
      * separated by an underscore.
      */
     String name() default "";
 
-    /** (Optional) The catalog of the table.
+    /** (Optional) The catalog of the table. 
      * <p> Defaults to the default catalog.
      */
     String catalog() default "";
 
-    /** (Optional) The schema of the table.
+    /** (Optional) The schema of the table. 
      * <p> Defaults to the default schema for user.
      */
     String schema() default "";
@@ -97,7 +96,7 @@ public @interface JoinTable {
      */
     JoinColumn[] joinColumns() default {};
 
-    /**
+    /** 
      * (Optional) The foreign key columns
      * of the join table which reference the
      * primary table of the entity that does
@@ -109,10 +108,48 @@ public @interface JoinTable {
     JoinColumn[] inverseJoinColumns() default {};
 
     /**
+     *  (Optional) Used to specify or control the generation of a
+     *   foreign key constraint for the columns corresponding to the
+     *   <code>joinColumns</code> element when table generation is in
+     *   effect.  If both this element and the <code>foreignKey</code>
+     *   element of any of the <code>joinColumns</code> elements are
+     *   specified, the behavior is undefined.  If no foreign key
+     *   annotation element is specified in either location, the
+     *   persistence provider's default foreign key strategy will
+     *   apply.
+     *
+     *  @since Java Persistence 2.1
+     */
+    ForeignKey foreignKey() default @ForeignKey(PROVIDER_DEFAULT);
+
+    /**
+     *  (Optional) Used to specify or control the generation of a
+     *  foreign key constraint for the columns corresponding to the
+     *  <code>inverseJoinColumns</code> element when table generation
+     *  is in effect.  If both this element and the
+     *  <code>foreignKey</code> element of any of the
+     *  <code>inverseJoinColumns</code> elements are specified, the
+     *  behavior is undefined.  If no foreign key annotation element
+     *  is specified in either location, the persistence provider's
+     *  default foreign key strategy will apply.
+     *
+     *  @since Java Persistence 2.1
+     */
+    ForeignKey inverseForeignKey() default @ForeignKey(PROVIDER_DEFAULT);
+
+    /**
      * (Optional) Unique constraints that are
      * to be placed on the table. These are
      * only used if table generation is in effect.
      * <p> Defaults to no additional constraints.
      */
     UniqueConstraint[] uniqueConstraints() default {};
+
+    /**
+     * (Optional) Indexes for the table.  These are only used if
+     * table generation is in effect. 
+     *
+     * @since Java Persistence 2.1 
+     */
+    Index[] indexes() default {};
 }

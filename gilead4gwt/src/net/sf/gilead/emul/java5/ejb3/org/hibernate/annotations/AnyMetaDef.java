@@ -1,27 +1,12 @@
 /*
  * Hibernate, Relational Persistence for Idiomatic Java
  *
- * Copyright (c) 2010, Red Hat Inc. or third-party contributors as
- * indicated by the @author tags or express copyright attribution
- * statements applied by the authors.  All third-party contributions are
- * distributed under license by Red Hat Inc.
- *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, write to:
- * Free Software Foundation, Inc.
- * 51 Franklin Street, Fifth Floor
- * Boston, MA  02110-1301  USA
+ * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+ * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
 package org.hibernate.annotations;
+
+import java.lang.annotation.Retention;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -29,37 +14,36 @@ import static java.lang.annotation.ElementType.PACKAGE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Retention;
-
 /**
- * Defines @Any and @manyToAny metadata
- * 
+ * Used to provide metadata about an {@link Any} or {@link ManyToAny} mapping.
+ *
+ * @see AnyMetaDefs
+ *
  * @author Emmanuel Bernard
+ * @author Steve Ebersole
  */
-@java.lang.annotation.Target({ PACKAGE, TYPE, METHOD, FIELD })
-@Retention(RUNTIME)
+@java.lang.annotation.Target( { PACKAGE, TYPE, METHOD, FIELD } )
+@Retention( RUNTIME )
 public @interface AnyMetaDef {
 	/**
-	 * If defined, assign a global meta definition name to be used in an @Any or @ManyToAny
-	 * annotation If not defined, the metadata applies to the current property
-	 * or field
+	 * If defined, assign a global meta definition name to be used in an @Any or @ManyToAny annotation.  If
+	 * not defined, the metadata applies to the current property or field.
 	 */
 	String name() default "";
 
 	/**
-	 * meta discriminator Hibernate type
+	 * Names the discriminator Hibernate Type for this Any/ManyToAny mapping.  The default is to use
+	 * {@link org.hibernate.type.StringType}
 	 */
 	String metaType();
 
 	/**
-	 * Hibernate type of the id column
-	 * 
-	 * @return Hibernate type of the id column
+	 * Names the identifier Hibernate Type for the entity associated through this Any/ManyToAny mapping.
 	 */
 	String idType();
 
 	/**
-	 * Matching discriminator values with their respective entity
+	 * Maps discriminator values to the matching corresponding entity types.
 	 */
 	MetaValue[] metaValues();
 }

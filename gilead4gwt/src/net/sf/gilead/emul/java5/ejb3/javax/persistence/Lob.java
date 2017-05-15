@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: Lob.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -34,8 +32,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * element collection value is of basic type. A <code>Lob</code> may
  * be either a binary or character type.
  *
- * <p> The <code>Lob</code> type is inferred from the type of the
- * persistent field or property, and except for string and
+ * <p> The <code>Lob</code> type is inferred from the type of the 
+ * persistent field or property, and except for string and 
  * character-based types defaults to Blob.
  * <pre>
  *
@@ -58,7 +56,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 public @interface Lob {
 }

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,32 +9,30 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: CascadeType.java 20957 2011-06-13 09:58:51Z stliu $
-
-package javax.persistence;
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
+ package javax.persistence;
 
 /**
- * Defines the set of cascadable operations that are propagated
+ * Defines the set of cascadable operations that are propagated 
  * to the associated entity.
- * The value <code>cascade=ALL</code> is equivalent to
+ * The value <code>cascade=ALL</code> is equivalent to 
  * <code>cascade={PERSIST, MERGE, REMOVE, REFRESH, DETACH}</code>.
  *
  * @since Java Persistence 1.0
  */
-public enum CascadeType {
+public enum CascadeType { 
 
     /** Cascade all operations */
-    ALL,
+    ALL, 
 
     /** Cascade persist operation */
-    PERSIST,
+    PERSIST, 
 
     /** Cascade merge operation */
-    MERGE,
+    MERGE, 
 
     /** Cascade remove operation */
     REMOVE,
@@ -46,7 +44,7 @@ public enum CascadeType {
      * Cascade detach operation
      *
      * @since Java Persistence 2.0
-     *
-     */
+     * 
+     */   
     DETACH
 }

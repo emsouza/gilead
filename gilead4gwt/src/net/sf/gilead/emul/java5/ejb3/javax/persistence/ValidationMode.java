@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,21 +9,20 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: ValidationMode.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 /**
  * The validation mode to be used by the provider for the persistence
  * unit.
- *
+ * 
  * @since Java Persistence 2.0
  */
 public enum ValidationMode {
+   
     /**
      * If a Bean Validation provider is present in the environment,
      * the persistence provider must perform the automatic validation
@@ -44,4 +43,4 @@ public enum ValidationMode {
      * The persistence provider must not perform lifecycle event validation.
      */
     NONE
-}
+    }

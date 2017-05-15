@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: Version.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -29,18 +27,18 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * integrity when performing the merge operation and for optimistic
  * concurrency control.
  *
- * <p> Only a single <code>Version</code> property or field
- * should be used per class; applications that use more than one
- * <code>Version</code> property or field will not be portable.
- *
- * <p> The <code>Version</code> property should be mapped to
- * the primary table for the entity class; applications that
- * map the <code>Version</code> property to a table other than
+ * <p> Only a single <code>Version</code> property or field 
+ * should be used per class; applications that use more than one 
+ * <code>Version</code> property or field will not be portable. 
+ * 
+ * <p> The <code>Version</code> property should be mapped to 
+ * the primary table for the entity class; applications that 
+ * map the <code>Version</code> property to a table other than 
  * the primary table will not be portable.
- *
- * <p> The following types are supported for version properties:
- * <code>int</code>, <code>Integer</code>, <code>short</code>,
- * <code>Short</code>, <code>long</code>, <code>Long</code>,
+ * 
+ * <p> The following types are supported for version properties: 
+ * <code>int</code>, <code>Integer</code>, <code>short</code>, 
+ * <code>Short</code>, <code>long</code>, <code>Long</code>, 
  * <code>java.sql.Timestamp</code>.
  *
  * <pre>
@@ -53,7 +51,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target({ METHOD, FIELD })
+@Target({METHOD, FIELD})
 @Retention(RUNTIME)
-public @interface Version {
-}
+public @interface Version {}

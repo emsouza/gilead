@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: FlushModeType.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 /**
@@ -31,13 +29,14 @@ package javax.persistence;
  * entities in the persistence context which could potentially affect
  * the result of the query are visible to the processing of the
  * query. The persistence provider implementation may achieve this by
- * flushing those entities to the database or by some other means.
+ * flushing those entities to the database or by some other means. 
  * <p> If <code>FlushModeType.COMMIT</code> is set, the effect of
  * updates made to entities in the persistence context upon queries is
  * unspecified.
  *
- * <p> If there is no transaction active, the persistence provider
- * must not flush to the database.
+ * <p> If there is no transaction active or the persistence context is not
+ * joined to the current transaction, the persistence provider must not flush 
+ * to the database.
  *
  * @since Java Persistence 1.0
  */

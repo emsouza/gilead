@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,26 +9,25 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: OneToMany.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
+import javax.persistence.CascadeType;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static javax.persistence.FetchType.LAZY;
 
 /**
- * Defines a many-valued association with one-to-many multiplicity.
+ * Specifies a many-valued association with one-to-many multiplicity.
  * 
- * <p> If the collection is defined using generics to specify the
- * element type, the associated target entity type need not be
+ * <p> If the collection is defined using generics to specify the 
+ * element type, the associated target entity type need not be 
  * specified; otherwise the target entity class must be specified.
  * If the relationship is bidirectional, the
  * <code> mappedBy</code> element must be used to specify the relationship field or
@@ -40,7 +39,7 @@ import static javax.persistence.FetchType.LAZY;
  * <code> mappedBy</code> element must be used to specify the relationship field or
  * property of the entity that is the owner of the relationship.
  *
- * When the collection is a <code>java.util.Map</code>, the <code>cascade</code>
+ * When the collection is a <code>java.util.Map</code>, the <code>cascade</code> 
  * element and the <code>orphanRemoval</code> element apply to the map value.
  *
  * <pre>
@@ -81,12 +80,12 @@ import static javax.persistence.FetchType.LAZY;
  *    &#064;OneToMany(orphanRemoval=true)
  *    &#064;JoinColumn(name="CUST_ID") // join column is in table for Order
  *    public Set&#060;Order&#062; getOrders() {return orders;}
- *
+ *    
  * </pre>
  *
  * @since Java Persistence 1.0
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 
 public @interface OneToMany {
@@ -102,8 +101,8 @@ public @interface OneToMany {
      */
     Class targetEntity() default void.class;
 
-    /**
-     * (Optional) The operations that must be cascaded to
+    /** 
+     * (Optional) The operations that must be cascaded to 
      * the target of the association.
      * <p> Defaults to no operations being cascaded.
      *
@@ -121,8 +120,8 @@ public @interface OneToMany {
      */
     FetchType fetch() default LAZY;
 
-    /**
-     * The field that owns the relationship. Required unless
+    /** 
+     * The field that owns the relationship. Required unless 
      * the relationship is unidirectional.
      */
     String mappedBy() default "";

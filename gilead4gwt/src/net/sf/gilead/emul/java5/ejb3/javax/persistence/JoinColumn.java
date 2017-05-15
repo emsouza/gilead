@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: JoinColumn.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -22,6 +20,7 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static javax.persistence.ConstraintMode.PROVIDER_DEFAULT;
 
 /**
  * Specifies a column for joining an entity association or element
@@ -38,7 +37,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  *
  *   Example: unidirectional one-to-many association using a foreign key mapping
- *
+ * 
  *   // In Customer class
  *   &#064;OneToMany
  *   &#064;JoinColumn(name="CUST_ID") // join column is in table for Order
@@ -50,6 +49,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @see OneToOne
  * @see JoinTable
  * @see CollectionTable
+ * @see ForeignKey
  *
  * @since Java Persistence 1.0
  */
@@ -57,59 +57,59 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface JoinColumn {
 
-    /**
+    /** 
      * (Optional) The name of the foreign key column.
      * The table in which it is found depends upon the
-     * context.
+     * context. 
      * <ul>
      * <li>If the join is for a OneToOne or ManyToOne
-     *  mapping using a foreign key mapping strategy,
+     *  mapping using a foreign key mapping strategy, 
      * the foreign key column is in the table of the
-     * source entity or embeddable.
+     * source entity or embeddable. 
      * <li> If the join is for a unidirectional OneToMany mapping
      * using a foreign key mapping strategy, the foreign key is in the
-     * table of the target entity.
+     * table of the target entity.  
      * <li> If the join is for a ManyToMany mapping or for a OneToOne
      * or bidirectional ManyToOne/OneToMany mapping using a join
-     * table, the foreign key is in a join table.
-     * <li> If the join is for an element collection, the foreign
+     * table, the foreign key is in a join table.  
+     * <li> If the join is for an element collection, the foreign 
      * key is in a collection table.
      *</ul>
      *
      * <p> Default (only applies if a single join column is used):
-     * The concatenation of the following: the name of the
-     * referencing relationship property or field of the referencing
-     * entity or embeddable class; "_"; the name of the referenced
-     * primary key column.
-     * If there is no such referencing relationship property or
+     * The concatenation of the following: the name of the 
+     * referencing relationship property or field of the referencing 
+     * entity or embeddable class; "_"; the name of the referenced 
+     * primary key column. 
+     * If there is no such referencing relationship property or 
      * field in the entity, or if the join is for an element collection,
-     * the join column name is formed as the
-     * concatenation of the following: the name of the entity; "_";
+     * the join column name is formed as the 
+     * concatenation of the following: the name of the entity; "_"; 
      * the name of the referenced primary key column.
      */
     String name() default "";
 
     /**
      * (Optional) The name of the column referenced by this foreign
-     * key column.
+     * key column. 
      * <ul>
      * <li> When used with entity relationship mappings other
      * than the cases described here, the referenced column is in the
-     * table of the target entity.
+     * table of the target entity. 
      * <li> When used with a unidirectional OneToMany foreign key
      * mapping, the referenced column is in the table of the source
-     * entity.
+     * entity.  
      * <li> When used inside a <code>JoinTable</code> annotation,
      * the referenced key column is in the entity table of the owning
      * entity, or inverse entity if the join is part of the inverse
-     * join definition.
+     * join definition.  
      * <li> When used in a <code>CollectionTable</code> mapping, the
      * referenced column is in the table of the entity containing the
      * collection.
      * </ul>
      *
-     * <p> Default (only applies if single join column is being
-     * used): The same name as the primary key column of the
+     * <p> Default (only applies if single join column is being 
+     * used): The same name as the primary key column of the 
      * referenced table.
      */
     String referencedColumnName() default "";
@@ -154,19 +154,29 @@ public @interface JoinColumn {
      * is assumed to be in the primary table of the
      * applicable entity.
      *
-     * <p> Default:
+     * <p> Default: 
      * <ul>
      * <li> If the join is for a OneToOne or ManyToOne mapping
      * using a foreign key mapping strategy, the name of the table of
-     * the source entity or embeddable.
-     * <li> If the join is for a unidirectional OneToMany mapping
+     * the source entity or embeddable. 
+     * <li> If the join is for a unidirectional OneToMany mapping 
      * using a foreign key mapping strategy, the name of the table of
-     * the target entity.
+     * the target entity. 
      * <li> If the join is for a ManyToMany mapping or
      * for a OneToOne or bidirectional ManyToOne/OneToMany mapping
-     * using a join table, the name of the join table.
+     * using a join table, the name of the join table. 
      * <li> If the join is for an element collection, the name of the collection table.
      * </ul>
      */
     String table() default "";
+
+    /**
+     *  (Optional) Used to specify or control the generation of a
+     *  foreign key constraint when table generation is in effect.  If
+     *  this element is not specified, the persistence provider's
+     *  default foreign key strategy will apply.
+     *
+     *  @since Java Persistence 2.1
+     */
+    ForeignKey foreignKey() default @ForeignKey(PROVIDER_DEFAULT);
 }

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: DiscriminatorColumn.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -24,17 +22,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static javax.persistence.DiscriminatorType.STRING;
 
 /**
- * Specifies the discriminator column for the
- * <code>SINGLE_TABLE</code> and
+ * Specifies the discriminator column for the 
+ * <code>SINGLE_TABLE</code> and 
  * <code>JOINED</code> {@link Inheritance} mapping strategies.
- *
- * <p> The strategy and the discriminator column are only
+ * 
+ * <p> The strategy and the discriminator column are only 
  * specified in the root of an entity class hierarchy or
  * subhierarchy in which a different inheritance strategy is applied
- *
- * <p> If the <code>DiscriminatorColumn</code> annotation is missing,
- * and a discriminator column is required, the name of the
- * discriminator column defaults to <code>"DTYPE"</code> and the discriminator
+ * 
+ * <p> If the <code>DiscriminatorColumn</code> annotation is missing, 
+ * and a discriminator column is required, the name of the 
+ * discriminator column defaults to <code>"DTYPE"</code> and the discriminator 
  * type to {@link DiscriminatorType#STRING DiscriminatorType.STRING}.
  *
  * <pre>
@@ -54,7 +52,7 @@ import static javax.persistence.DiscriminatorType.STRING;
  *
  * @since Java Persistence 1.0
  */
-@Target({TYPE})
+@Target({TYPE}) 
 @Retention(RUNTIME)
 
 public @interface DiscriminatorColumn {
@@ -71,15 +69,15 @@ public @interface DiscriminatorColumn {
     DiscriminatorType discriminatorType() default STRING;
 
     /**
-     * (Optional) The SQL fragment that is used when generating the DDL
+     * (Optional) The SQL fragment that is used when generating the DDL 
      * for the discriminator column.
-     * <p> Defaults to the provider-generated SQL to create a column
+     * <p> Defaults to the provider-generated SQL to create a column 
      * of the specified discriminator type.
      */
     String columnDefinition() default "";
 
-    /**
-     * (Optional) The column length for String-based discriminator types.
+    /** 
+     * (Optional) The column length for String-based discriminator types. 
      * Ignored for other discriminator types.
      */
     int length() default 31;

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: ElementCollection.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -25,11 +23,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static javax.persistence.FetchType.LAZY;
 
 /**
- * Defines a collection of instances of a basic type or embeddable
- * class.
+ * Specifies a collection of instances of a basic type or embeddable
+ * class. 
  * Must be specified if the collection is to be mapped by
  * means of a collection table.
- *
+ * 
  * <pre>
  *    Example:
  *
@@ -37,10 +35,10 @@ import static javax.persistence.FetchType.LAZY;
  *       &#064;Id protected String ssn;
  *       protected String name;
  *       ...
- *       &#064;ElementCollection
+ *       &#064;ElementCollection  
  *       protected Set&#060;String&#062; nickNames = new HashSet();
  *         ...
- *    }
+ *    } 
  *  </pre>
  *
  * @since Java Persistence 2.0
@@ -58,7 +56,7 @@ public @interface ElementCollection {
      * generics.
      */
     Class targetClass() default void.class;
-
+    
     /**
      *  (Optional) Whether the collection should be lazily loaded or must be
      *  eagerly fetched.  The EAGER strategy is a requirement on

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: FieldResult.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -22,8 +20,8 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Is used to map the columns specified in the SELECT list
- * of the query to the properties or fields of the entity class.
+ * Used in conjunction with the {@link EntityResult} annotation to map columns specified 
+ * in the SELECT list of a SQL query to the properties or fields of an entity class.
  *
  * <pre>
  *
@@ -45,19 +43,21 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       })
  * </pre>
  *
+ * @see EntityResult
+ * @see SqlResultSetMapping
  * @since Java Persistence 1.0
  */
-@Target({})
+@Target({}) 
 @Retention(RUNTIME)
 
-public @interface FieldResult {
+public @interface FieldResult { 
 
     /** Name of the persistent field or property of the class. */
     String name();
 
-    /**
-     * Name of the column in the SELECT clause - i.e., column
-     * aliases, if applicable.
+    /** 
+     * Name of the column in the SELECT clause - i.e., column 
+     * aliases, if applicable. 
      */
     String column();
 }

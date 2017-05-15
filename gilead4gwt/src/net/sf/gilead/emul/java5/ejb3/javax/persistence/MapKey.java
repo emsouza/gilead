@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: MapKey.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -24,13 +22,13 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Specifies the map key for associations of type
+ * Specifies the map key for associations of type 
  * {@link java.util.Map java.util.Map} when the map key is itself the primary
  * key or a persistent field or property of the entity that is
  * the value of the map.
- *
- * <p> If a persistent field or property other than the primary
- * key is used as a map key then it is expected to have a
+ * 
+ * <p> If a persistent field or property other than the primary 
+ * key is used as a map key then it is expected to have a 
  * uniqueness constraint associated with it.
  *
  * <p> The {@link MapKeyClass} annotation is not used when
@@ -83,18 +81,18 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 public @interface MapKey {
 
     /**
-     * (Optional) The name of the persistent field or property of the
-     * associated entity that is used as the map key.
-     * <p> Default: If the
-     * <code>name</code> element is not specified, the primary key of the
-     * associated entity is used as the map key. If the
-     * primary key is a composite primary key and is mapped
-     * as <code>IdClass</code>, an instance of the primary key
+     * (Optional) The name of the persistent field or property of the 
+     * associated entity that is used as the map key. 
+     * <p> Default: If the 
+     * <code>name</code> element is not specified, the primary key of the 
+     * associated entity is used as the map key. If the 
+     * primary key is a composite primary key and is mapped 
+     * as <code>IdClass</code>, an instance of the primary key 
      * class is used as the key.
      */
     String name() default "";

@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: EntityNotFoundException.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 /**
@@ -22,11 +20,12 @@ package javax.persistence;
  * {@link EntityManager#getReference EntityManager.getReference}
  * is accessed but the entity does not exist. Thrown when
  * {@link EntityManager#refresh EntityManager.refresh} is called and the
- * object no longer exists in the database.
+ * object no longer exists in the database. 
  * Thrown when {@link EntityManager#lock EntityManager.lock} is used with
  * pessimistic locking is used and the entity no longer exists in the database.
- * <p> The current transaction, if one is active, will be marked for rollback.
- *
+ * <p> The current transaction, if one is active and the persistence context
+ * has been joined to it, will be marked for rollback.
+ * 
  * @see EntityManager#getReference(Class,Object)
  * @see EntityManager#refresh(Object)
  * @see EntityManager#refresh(Object, LockModeType)
@@ -34,7 +33,7 @@ package javax.persistence;
  * @see EntityManager#refresh(Object, LockModeType, java.util.Map)
  * @see EntityManager#lock(Object, LockModeType)
  * @see EntityManager#lock(Object, LockModeType, java.util.Map)
- *
+ * 
  * @since Java Persistence 1.0
  */
 public class EntityNotFoundException extends PersistenceException {
@@ -50,7 +49,7 @@ public class EntityNotFoundException extends PersistenceException {
 	/**
 	 * Constructs a new <code>EntityNotFoundException</code> exception with the
 	 * specified detail message.
-	 *
+	 * 
 	 * @param message
 	 *            the detail message.
 	 */

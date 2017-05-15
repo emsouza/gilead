@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: AttributeOverrides.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -33,9 +31,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  *    &#064;Embedded
  *    &#064;AttributeOverrides({
- *            &#064;AttributeOverride(name="startDate",
+ *            &#064;AttributeOverride(name="startDate", 
  *                               column=&#064;Column("EMP_START")),
- *            &#064;AttributeOverride(name="endDate",
+ *            &#064;AttributeOverride(name="endDate", 
  *                               column=&#064;Column("EMP_END"))
  *    })
  *    public EmploymentPeriod getEmploymentPeriod() { ... }
@@ -45,9 +43,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @see AttributeOverride
  *
- * @since Java Persistence 1.0
+ * @since Java Persistence 1.0 
  */
-@Target({TYPE, METHOD, FIELD})
+@Target({TYPE, METHOD, FIELD}) 
 @Retention(RUNTIME)
 
 public @interface AttributeOverrides {

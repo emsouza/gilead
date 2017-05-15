@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: NamedQuery.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -23,12 +21,12 @@ import static javax.persistence.LockModeType.NONE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
+/** 
  * Specifies a static, named query in the Java Persistence query language.
  * Query names are scoped to the persistence unit.
  * The <code>NamedQuery</code> annotation can be applied to an entity or mapped superclass.
  *
- * <p> The following is an example of the definition of a named query
+ * <p> The following is an example of the definition of a named query 
  * in the Java Persistence query language:
  *
  * <pre>
@@ -51,31 +49,31 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target({TYPE})
+@Target({TYPE}) 
 @Retention(RUNTIME)
 public @interface NamedQuery {
 
-    /**
-     * (Required) The name used to refer to the query with the {@link EntityManager}
-     * methods that create query objects.
+    /** 
+     * (Required) The name used to refer to the query with the {@link EntityManager} 
+     * methods that create query objects. 
      */
     String name();
 
-    /** (Required)
-     * The query string in the Java Persistence query language.
+    /** (Required) 
+     * The query string in the Java Persistence query language. 
      */
     String query();
 
-    /**
+    /** 
      * (Optional) The lock mode type to use in query execution.  If a <code>lockMode</code>
      * other than <code>LockModeType.NONE</code> is specified, the query must be executed in
-     * a transaction.
+     * a transaction and the persistence context joined to the transaction.
      * @since Java Persistence 2.0
      */
     LockModeType lockMode() default NONE;
-
+    
     /** (Optional) Query properties and hints.  May include
-     * vendor-specific query hints.
+     * vendor-specific query hints. 
      */
     QueryHint[] hints() default {};
 }

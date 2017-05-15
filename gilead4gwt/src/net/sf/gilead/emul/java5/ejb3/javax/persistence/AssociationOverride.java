@@ -1,20 +1,18 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
- * which accompanies this distribution.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved. 
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0 
+ * which accompanies this distribution. 
  * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at
+ * and the Eclipse Distribution License is available at 
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *
+ * 
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
+ *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1 - 2013)
  *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: AssociationOverride.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -23,6 +21,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static javax.persistence.ConstraintMode.PROVIDER_DEFAULT;
 
 /**
  * Used to override a mapping for an entity relationship.
@@ -51,7 +50,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * within an embedded attribute.  The value of each identifier used
  * with the dot notation is the name of the respective embedded field
  * or property.
- *
+ * 
  * <p> When <code>AssociationOverride</code> is applied to override
  * the mappings of an embeddable class used as a map value,
  * "<code>value.</code>" must be used to prefix the name of the
@@ -75,9 +74,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *        protected Address address;
  *        ...
  *    }
- *
- *    &#064;Entity
- *        &#064;AssociationOverride(name="address",
+ *    
+ *    &#064;Entity 
+ *        &#064;AssociationOverride(name="address", 
  *                             joinColumns=&#064;JoinColumn(name="ADDR_ID"))
  *        // address field mapping overridden to ADDR_ID foreign key
  *    public class PartTimeEmployee extends Employee {
@@ -102,13 +101,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *        &#064;Embedded ContactInfo contactInfo;
  *       ...
  *    }
- *
+ * 
  *    &#064;Embeddable
  *    public class ContactInfo {
  *        &#064;ManyToOne Address address; // Unidirectional
  *        &#064;ManyToMany(targetEntity=PhoneNumber.class) List phoneNumbers;
  *    }
- *
+ * 
  *    &#064;Entity
  *    public class PhoneNumber {
  *        &#064;Id int number;
@@ -122,9 +121,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @see MappedSuperclass
  * @see AttributeOverride
  *
- * @since Java Persistence 1.0
+ * @since Java Persistence 1.0 
  */
-@Target({TYPE, METHOD, FIELD})
+@Target({TYPE, METHOD, FIELD}) 
 @Retention(RUNTIME)
 
 public @interface AssociationOverride {
@@ -147,8 +146,23 @@ public @interface AssociationOverride {
     JoinColumn[] joinColumns() default {};
 
     /**
+     *  (Optional) Used to specify or control the generation of a
+     *   foreign key constraint for the columns corresponding to the
+     *   <code>joinColumns</code> element when table generation is in
+     *   effect.  If both this element and the <code>foreignKey</code>
+     *   element of any of the <code>joinColumns</code> elements are
+     *   specified, the behavior is undefined.  If no foreign key
+     *   annotation element is specified in either location, the
+     *   persistence provider's default foreign key strategy will
+     *   apply.
+     *
+     *  @since Java Persistence 2.1
+     */
+    ForeignKey foreignKey() default @ForeignKey(PROVIDER_DEFAULT);
+
+    /**
      * The join table that maps the relationship.
-     * The <code>joinTable</code> element must be specified if a join table
+     * The <code>joinTable</code> element must be specified if a join table 
      * is used in the overriding of the mapping of the
      * relationship.  The <code>joinTable</code> element must not be specified
      * if a foreign key mapping is used in the overriding of

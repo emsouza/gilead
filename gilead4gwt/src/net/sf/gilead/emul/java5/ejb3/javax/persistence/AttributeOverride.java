@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: AttributeOverride.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -73,7 +71,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *        public Float getHourlyWage() { ... }
  *        public void setHourlyWage(Float wage) { ... }
  *    }
- *
+ * 
  *
  *    Example 2:
  *
@@ -108,11 +106,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *    &#064;Entity public class PropertyRecord {
  *        &#064;EmbeddedId PropertyOwner owner;
  *        &#064;AttributeOverrides({
- *            &#064;AttributeOverride(name="key.street",
+ *            &#064;AttributeOverride(name="key.street", 
  *                               column=&#064;Column(name="STREET_NAME")),
- *            &#064;AttributeOverride(name="value.size",
+ *            &#064;AttributeOverride(name="value.size", 
  *                               column=&#064;Column(name="SQUARE_FEET")),
- *            &#064;AttributeOverride(name="value.tax",
+ *            &#064;AttributeOverride(name="value.tax", 
  *                               column=&#064;Column(name="ASSESSMENT"))
  *        })
  *       &#064;ElementCollection
@@ -134,21 +132,21 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target({TYPE, METHOD, FIELD})
+@Target({TYPE, METHOD, FIELD}) 
 @Retention(RUNTIME)
 
 public @interface AttributeOverride {
 
     /**
-     * (Required) The name of the property whose mapping is being
-     * overridden if property-based access is being used, or the
+     * (Required) The name of the property whose mapping is being 
+     * overridden if property-based access is being used, or the 
      * name of the field if field-based access is used.
      */
     String name();
 
     /**
-     * (Required) The column that is being mapped to the persistent
-     * attribute. The mapping type will remain the same as is
+     * (Required) The column that is being mapped to the persistent 
+     * attribute. The mapping type will remain the same as is 
      * defined in the embeddable class or mapped superclass.
      */
     Column column();

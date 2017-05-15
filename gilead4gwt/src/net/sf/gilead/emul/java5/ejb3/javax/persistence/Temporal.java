@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: Temporal.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -24,30 +22,29 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * This annotation must be specified for persistent fields
- * or properties of type <code>java.util.Date</code> and
- * <code>java.util.Calendar</code>. It may only be specified for fields
+ * This annotation must be specified for persistent fields 
+ * or properties of type <code>java.util.Date</code> and 
+ * <code>java.util.Calendar</code>. It may only be specified for fields 
  * or properties of these types.
- * <p/>
- * The <code>Temporal</code> annotation may be used in
+ * 
+ * <p> The <code>Temporal</code> annotation may be used in 
  * conjunction with the {@link Basic} annotation, the {@link Id}
  * annotation, or the {@link ElementCollection} annotation (when
  * the element collection value is of such a temporal type.
  *
  * <pre>
  *     Example:
- *
+ * 
  *     &#064;Temporal(DATE)
  *     protected java.util.Date endDate;
  * </pre>
  *
  * @since Java Persistence 1.0
  */
-@Target({ METHOD, FIELD })
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 public @interface Temporal {
-	/**
-	 * The type used in mapping <code>java.util.Date</code> or <code>java.util.Calendar</code>.
-	 */
-	TemporalType value();
+
+    /** The type used in mapping <code>java.util.Date</code> or <code>java.util.Calendar</code>. */
+    TemporalType value();
 }

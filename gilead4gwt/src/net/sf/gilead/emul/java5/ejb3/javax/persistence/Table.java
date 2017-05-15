@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: Table.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -26,8 +24,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Specifies the primary table for the annotated entity. Additional
  * tables may be specified using {@link SecondaryTable} or {@link
  * SecondaryTables} annotation.
- * <p/>
- * If no <code>Table</code> annotation is specified for an entity
+ *
+ * <p> If no <code>Table</code> annotation is specified for an entity 
  * class, the default values apply.
  *
  * <pre>
@@ -40,38 +38,43 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
-@Target(TYPE)
+@Target(TYPE) 
 @Retention(RUNTIME)
 public @interface Table {
-	/**
-	 * (Optional) The name of the table.
-	 * <p/>
-	 * Defaults to the entity name.
-	 */
-	String name() default "";
 
-	/**
-	 * (Optional) The catalog of the table.
-	 * <p/>
-	 * Defaults to the default catalog.
-	 */
-	String catalog() default "";
+    /**
+     * (Optional) The name of the table.
+     * <p> Defaults to the entity name.
+     */
+    String name() default "";
 
-	/**
-	 * (Optional) The schema of the table.
-	 * <p/>
-	 * Defaults to the default schema for user.
-	 */
-	String schema() default "";
+    /** (Optional) The catalog of the table.
+     * <p> Defaults to the default catalog.
+     */
+    String catalog() default "";
 
-	/**
-	 * (Optional) Unique constraints that are to be placed on
-	 * the table. These are only used if table generation is in
-	 * effect. These constraints apply in addition to any constraints
-	 * specified by the <code>Column</code> and <code>JoinColumn</code>
-	 * annotations and constraints entailed by primary key mappings.
-	 * <p/>
-	 * Defaults to no additional constraints.
-	 */
-	UniqueConstraint[] uniqueConstraints() default { };
+    /** (Optional) The schema of the table.
+     * <p> Defaults to the default schema for user.
+     */
+    String schema() default "";
+
+    /**
+     * (Optional) Unique constraints that are to be placed on 
+     * the table. These are only used if table generation is in 
+     * effect. These constraints apply in addition to any constraints 
+     * specified by the <code>Column</code> and <code>JoinColumn</code> 
+     * annotations and constraints entailed by primary key mappings.
+     * <p> Defaults to no additional constraints.
+     */
+    UniqueConstraint[] uniqueConstraints() default {};
+
+    /**
+     * (Optional) Indexes for the table.  These are only used if
+     * table generation is in effect.  Note that it is not necessary
+     * to specify an index for a primary key, as the primary key
+     * index will be created automatically.
+     *
+     * @since Java Persistence 2.1 
+     */
+    Index[] indexes() default {};
 }

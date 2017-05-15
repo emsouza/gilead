@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,26 +9,23 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: OptimisticLockException.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
-
 
 /**
  * Thrown by the persistence provider when an optimistic locking conflict
  * occurs. This exception may be thrown as part of an API call, a flush or at
  * commit time. The current transaction, if one is active, will be marked for
  * rollback.
- *
+ * 
  * @see EntityManager#find(Class, Object, LockModeType)
  * @see EntityManager#find(Class, Object, LockModeType, java.util.Map)
  * @see EntityManager#lock(Object, LockModeType)
  * @see EntityManager#lock(Object, LockModeType, java.util.Map)
- *
+ * 
  * @since Java Persistence 1.0
  */
 public class OptimisticLockException extends PersistenceException {
@@ -49,7 +46,7 @@ public class OptimisticLockException extends PersistenceException {
 	/**
 	 * Constructs a new <code>OptimisticLockException</code> exception with the
 	 * specified detail message.
-	 *
+	 * 
 	 * @param message
 	 *            the detail message.
 	 */
@@ -60,7 +57,7 @@ public class OptimisticLockException extends PersistenceException {
 	/**
 	 * Constructs a new <code>OptimisticLockException</code> exception with the
 	 * specified detail message and cause.
-	 *
+	 * 
 	 * @param message
 	 *            the detail message.
 	 * @param cause
@@ -73,7 +70,7 @@ public class OptimisticLockException extends PersistenceException {
 	/**
 	 * Constructs a new <code>OptimisticLockException</code> exception with the
 	 * specified cause.
-	 *
+	 * 
 	 * @param cause
 	 *            the cause.
 	 */
@@ -84,7 +81,7 @@ public class OptimisticLockException extends PersistenceException {
 	/**
 	 * Constructs a new <code>OptimisticLockException</code> exception with the
 	 * specified entity.
-	 *
+	 * 
 	 * @param entity
 	 *            the entity.
 	 */
@@ -95,7 +92,7 @@ public class OptimisticLockException extends PersistenceException {
 	/**
 	 * Constructs a new <code>OptimisticLockException</code> exception with the
 	 * specified detail message, cause, and entity.
-	 *
+	 * 
 	 * @param message
 	 *            the detail message.
 	 * @param cause
@@ -110,7 +107,7 @@ public class OptimisticLockException extends PersistenceException {
 
 	/**
 	 * Returns the entity that caused this exception.
-	 *
+	 * 
 	 * @return the entity.
 	 */
 	public Object getEntity() {

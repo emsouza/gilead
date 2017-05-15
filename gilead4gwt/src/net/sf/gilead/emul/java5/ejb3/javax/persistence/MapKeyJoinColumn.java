@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: MapKeyJoinColumn.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -22,6 +20,7 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static javax.persistence.ConstraintMode.PROVIDER_DEFAULT;
 
 /**
  * Specifies a mapping to an entity that is a map key. The map key
@@ -86,6 +85,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     }
  * </pre>
  *
+ * @see ForeignKey
+ *
  * @since Java Persistence 2.0
  */
 @Target( { METHOD, FIELD })
@@ -94,16 +95,16 @@ public @interface MapKeyJoinColumn {
 	/**
 	 * (Optional) The name of the foreign key column for the map
 	 * key. The table in which it is found depends upon the
-	 * context.
-         * <ul>
+	 * context.  
+         * <ul> 
          * <li> If the join is for a map key for an
 	 * element collection, the foreign key column is in the
-	 * collection table for the map value.
+	 * collection table for the map value.  
          * <li> If the join is  for a map key for a ManyToMany entity
-         * relationship or for a  OneToMany entity relationship
-         * using a join table, the foreign key column is in a join table.
-         * <li> If the join is for a  OneToMany entity relationship using
-         * a foreign key mapping strategy, the foreign key column for the
+         * relationship or for a  OneToMany entity relationship 
+         * using a join table, the foreign key column is in a join table. 
+         * <li> If the join is for a  OneToMany entity relationship using 
+         * a foreign key mapping strategy, the foreign key column for the 
          * map key is in the table of the entity that is the value of the map.
          * </ul>
          *
@@ -157,27 +158,37 @@ public @interface MapKeyJoinColumn {
 	String columnDefinition() default "";
 
 	/**
-	 * (Optional) The name of the table that contains the foreign key column.
+	 * (Optional) The name of the table that contains the foreign key column. 
          * <ul>
          * <li> If the join is for a map key for an element collection, the foreign key
-	 * column is in the collection table for the map value.
-         * <li> If the join is for a map key for a ManyToMany entity relationship
-         * or for a OneToMany entity relationship using a join table,
+	 * column is in the collection table for the map value. 
+         * <li> If the join is for a map key for a ManyToMany entity relationship 
+         * or for a OneToMany entity relationship using a join table, 
          * the foreign key column is in a join table.
 	 * <li> If the join is for a OneToMany entity relationship using a foreign
 	 * key mapping strategy, the foreign key column for the map key is in the
 	 * table of the entity that is the value of the map.
          * </ul>
-         * <p> Default:
+         * <p> Default: 
          * <ul>
          * <li> If the map is for an element collection, the
          * name of the collection table for the map value.
-         * <li> If the map is for a OneToMany or ManyToMany entity relationship
-         * using a join table, the name of the join table for the map.
+         * <li> If the map is for a OneToMany or ManyToMany entity relationship 
+         * using a join table, the name of the join table for the map. 
          * <li> If the map is for a OneToMany entity relationship using a
          * foreign key mapping strategy, the name of the primary table
          * of the entity that is the value of the map.
          * </ul>
 	 */
 	String table() default "";
+
+        /**
+         *  (Optional) Used to specify or control the generation of a
+         *  foreign key constraint when table generation is in effect.  If
+         *  this element is not specified, the persistence provider's
+         *  default foreign key strategy will apply.
+         *
+         *  @since Java Persistence 2.1
+         */
+        ForeignKey foreignKey() default @ForeignKey(PROVIDER_DEFAULT);
 }

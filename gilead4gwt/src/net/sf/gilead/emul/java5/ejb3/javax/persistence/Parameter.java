@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,13 +9,12 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
+
 /**
  * Type for query parameter objects.
  * @param <T> the type of the parameter
@@ -36,7 +35,7 @@ public interface Parameter<T> {
 
     /**
      * Return the parameter position, or null if the parameter
-     * is not a positional parameter.
+     * is not a positional parameter. 
      * @return position of parameter
      */
     Integer getPosition();
@@ -45,14 +44,15 @@ public interface Parameter<T> {
      * Return the Java type of the parameter. Values bound to the
      * parameter must be assignable to this type.
      * This method is required to be supported for criteria queries
-     * only.   Applications that use this method for Java
-     * Persistence query language queries and native queries will
+     * only.   Applications that use this method for Java 
+     * Persistence query language queries and native queries will 
      * not be portable.
      * @return the Java type of the parameter
      * @throws IllegalStateException if invoked on a parameter
-     *         obtained from a Java persistence query language
-     *         query or native query when the implementation does
+     *         obtained from a Java persistence query language 
+     *         query or native query when the implementation does 
      *         not support this use
      */
      Class<T> getParameterType();
 }
+

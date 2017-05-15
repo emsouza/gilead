@@ -1,33 +1,39 @@
 /*
  * Hibernate, Relational Persistence for Idiomatic Java
  *
- * Copyright (c) 2010, Red Hat Inc. or third-party contributors as
- * indicated by the @author tags or express copyright attribution
- * statements applied by the authors.  All third-party contributions are
- * distributed under license by Red Hat Inc.
- *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, write to:
- * Free Software Foundation, Inc.
- * 51 Franklin Street, Fifth Floor
- * Boston, MA  02110-1301  USA
+ * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+ * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
 package org.hibernate.annotations;
 
+import org.hibernate.tuple.GenerationTiming;
+
 /**
- * When should the generation occurs
- * 
+ * At what time(s) will the generation occur?
+ *
  * @author Emmanuel Bernard
  */
 public enum GenerationTime {
-	NEVER, INSERT, ALWAYS
+	/**
+	 * Indicates the value is never generated.
+	 */
+	NEVER( GenerationTiming.NEVER ),
+	/**
+	 * Indicates the value is generated on insert.
+	 */
+	INSERT( GenerationTiming.INSERT ),
+	/**
+	 * Indicates the value is generated on insert and on update.
+	 */
+	ALWAYS( GenerationTiming.ALWAYS );
+
+	private final GenerationTiming equivalent;
+
+	private GenerationTime(GenerationTiming equivalent) {
+		this.equivalent = equivalent;
+	}
+
+	public GenerationTiming getEquivalent() {
+		return equivalent;
+	}
 }

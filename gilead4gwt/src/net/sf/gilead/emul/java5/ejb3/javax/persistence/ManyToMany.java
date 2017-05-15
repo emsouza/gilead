@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,23 +9,22 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: ManyToMany.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
+import javax.persistence.CascadeType;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static javax.persistence.FetchType.LAZY;
 
 /**
- * Defines a many-valued association with many-to-many multiplicity.
+ * Specifies a many-valued association with many-to-many multiplicity. 
  *
  * <p> Every many-to-many association has two sides, the owning side
  * and the non-owning, or inverse, side.  The join table is specified
@@ -101,7 +100,7 @@ import static javax.persistence.FetchType.LAZY;
  *
  * @since Java Persistence 1.0
  */
-@Target({METHOD, FIELD})
+@Target({METHOD, FIELD}) 
 @Retention(RUNTIME)
 public @interface ManyToMany {
 
@@ -116,9 +115,9 @@ public @interface ManyToMany {
      */
     Class targetEntity() default void.class;
 
-    /**
+    /** 
      * (Optional) The operations that must be cascaded to the target
-     * of the association.
+     * of the association.  
      *
      * <p> When the target collection is a {@link java.util.Map
      * java.util.Map}, the <code>cascade</code> element applies to the
@@ -136,8 +135,8 @@ public @interface ManyToMany {
      */
     FetchType fetch() default LAZY;
 
-    /**
-     * The field that owns the relationship. Required unless
+    /** 
+     * The field that owns the relationship. Required unless 
      * the relationship is unidirectional.
      */
     String mappedBy() default "";

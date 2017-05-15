@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: CollectionTable.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -22,12 +20,13 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static javax.persistence.ConstraintMode.PROVIDER_DEFAULT;
 
 /**
  * Specifies the table that is used for the mapping of
  * collections of basic or embeddable types.  Applied
  * to the collection-valued field or property.
- *
+ * 
  * <p>By default, the columns of the collection table that correspond
  * to the embeddable class or basic type are derived from the
  * attributes of the embeddable class or from the basic type according
@@ -40,7 +39,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <li> To override the default properties of the column used for a
  * basic type, the <code>Column</code> annotation is used on the
  * collection-valued attribute in addition to the
- * <code>ElementCollection</code> annotation.
+ * <code>ElementCollection</code> annotation. 
  *
  * <li> To override these defaults for an embeddable class, the
  * <code>AttributeOverride</code> and/or
@@ -49,7 +48,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * embeddable class contains references to other entities, the default
  * values for the columns corresponding to those references may be
  * overridden by means of the <code>AssociationOverride</code> and/or
- * <code>AssociationOverrides</code> annotations.
+ * <code>AssociationOverrides</code> annotations.  
  * </ul>
  *
  * <p> If the <code>CollectionTable</code> annotation is missing, the
@@ -63,7 +62,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       protected String street;
  *       protected String city;
  *       protected String state;
- *       ...
+ *       ... 
  *     }
  *
  *    &#064;Entity public class Person {
@@ -81,11 +80,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *       &#064;ElementCollection
  *       &#064;CollectionTable(name="HOMES") // use default join column name
  *       &#064;AttributeOverrides({
- *          &#064;AttributeOverride(name="street",
+ *          &#064;AttributeOverride(name="street", 
  *                             column=&#064;Column(name="HOME_STREET")),
- *          &#064;AttributeOverride(name="city",
+ *          &#064;AttributeOverride(name="city", 
  *                             column=&#064;Column(name="HOME_CITY")),
- *          &#064;AttributeOverride(name="state",
+ *          &#064;AttributeOverride(name="state", 
  *                             column=&#064;Column(name="HOME_STATE"))
  *        })
  *       protected Set&#060;Address&#062; vacationHomes = new HashSet();
@@ -105,7 +104,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface CollectionTable {
 
-    /**
+    /** 
      *  (Optional) The name of the collection table.  If not specified,
      *  it defaults to the concatenation of the name of the containing
      *  entity and the name of the collection attribute, separated by
@@ -142,8 +141,31 @@ public @interface CollectionTable {
      JoinColumn[] joinColumns() default {};
 
     /**
+     *  (Optional) Used to specify or control the generation of a
+     *   foreign key constraint for the columns corresponding to the
+     *   <code>joinColumns</code> element when table generation is in
+     *   effect.  If both this element and the <code>foreignKey</code>
+     *   element of any of the <code>joinColumns</code> elements are
+     *   specified, the behavior is undefined.  If no foreign key
+     *   annotation element is specified in either location, the
+     *   persistence provider's default foreign key strategy will
+     *   apply.
+     *
+     *  @since Java Persistence 2.1
+     */
+    ForeignKey foreignKey() default @ForeignKey(PROVIDER_DEFAULT);
+
+    /**
      * (Optional) Unique constraints that are to be placed on the
      * table.  These are only used if table generation is in effect.
      */
     UniqueConstraint[] uniqueConstraints() default {};
+
+    /**
+     * (Optional) Indexes for the table.  These are only used if
+     * table generation is in effect. 
+     *
+     * @since Java Persistence 2.1 
+     */
+    Index[] indexes() default {};
 }

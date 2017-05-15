@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: LockModeType.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 /**
@@ -23,14 +21,14 @@ package javax.persistence;
  * (<code>lock</code>, <code>find</code>, or <code>refresh</code>) or
  * to the {@link Query#setLockMode Query.setLockMode()} or
  * {@link TypedQuery#setLockMode TypedQuery.setLockMode()} method.
- *
+ * 
  * <p> Lock modes can be used to specify either optimistic or pessimistic locks.
  *
  * <p> Optimistic locks are specified using {@link
  * LockModeType#OPTIMISTIC LockModeType.OPTIMISTIC} and {@link
  * LockModeType#OPTIMISTIC_FORCE_INCREMENT
  * LockModeType.OPTIMISTIC_FORCE_INCREMENT}.  The lock mode type
- * values {@link LockModeType#READ LockModeType.READ} and
+ * values {@link LockModeType#READ LockModeType.READ} and 
  * {@link LockModeType#WRITE LockModeType.WRITE} are
  * synonyms of <code>OPTIMISTIC</code> and
  * <code>OPTIMISTIC_FORCE_INCREMENT</code> respectively.  The latter
@@ -38,31 +36,31 @@ package javax.persistence;
  *
  * <p> The semantics of requesting locks of type
  * <code>LockModeType.OPTIMISTIC</code> and
- * <code>LockModeType.OPTIMISTIC_FORCE_INCREMENT<code> are the
+ * <code>LockModeType.OPTIMISTIC_FORCE_INCREMENT</code> are the
  * following.
  *
- * <p> If transaction T1 calls for a lock of type
- * <code>LockModeType.OPTIMISTIC</code> on a versioned object,
- * the entity manager must ensure that neither of the following
+ * <p> If transaction T1 calls for a lock of type 
+ * <code>LockModeType.OPTIMISTIC</code> on a versioned object, 
+ * the entity manager must ensure that neither of the following 
  * phenomena can occur:
  * <ul>
- *   <li> P1 (Dirty read): Transaction T1 modifies a row.
- * Another transaction T2 then reads that row and obtains
- * the modified value, before T1 has committed or rolled back.
- * Transaction T2 eventually commits successfully; it does not
- * matter whether T1 commits or rolls back and whether it does
+ *   <li> P1 (Dirty read): Transaction T1 modifies a row. 
+ * Another transaction T2 then reads that row and obtains 
+ * the modified value, before T1 has committed or rolled back. 
+ * Transaction T2 eventually commits successfully; it does not 
+ * matter whether T1 commits or rolls back and whether it does 
  * so before or after T2 commits.
  *   <li>
- *   </li> P2 (Non-repeatable read): Transaction T1 reads a row.
- * Another transaction T2 then modifies or deletes that row,
- * before T1 has committed. Both transactions eventually commit
+ *   </li> P2 (Non-repeatable read): Transaction T1 reads a row. 
+ * Another transaction T2 then modifies or deletes that row, 
+ * before T1 has committed. Both transactions eventually commit 
  * successfully.
  *   </li>
  * </ul>
  *
  * <p> Lock modes must always prevent the phenomena P1 and P2.
  *
- * <p> In addition, calling a lock of type
+ * <p> In addition, calling a lock of type 
  * <code>LockModeType.OPTIMISTIC_FORCE_INCREMENT</code> on a versioned object,
  * will also force an update (increment) to the entity's version
  * column.
@@ -81,14 +79,14 @@ package javax.persistence;
  *
  * <p> The semantics of requesting locks of type
  * <code>LockModeType.PESSIMISTIC_READ</code>, <code>LockModeType.PESSIMISTIC_WRITE</code>, and
- * <code>LockModeType.PESSIMISTIC_FORCE_INCREMENT</code> are the following.
+ * <code>LockModeType.PESSIMISTIC_FORCE_INCREMENT</code> are the following.  
  *
  * <p> If transaction T1 calls for a lock of type
  * <code>LockModeType.PESSIMISTIC_READ</code> or
  * <code>LockModeType.PESSIMISTIC_WRITE</code> on an object, the entity
  * manager must ensure that neither of the following phenomena can
- * occur:
- * <ul>
+ * occur: 
+ * <ul> 
  * <li> P1 (Dirty read): Transaction T1 modifies a
  * row. Another transaction T2 then reads that row and obtains the
  * modified value, before T1 has committed or rolled back.
@@ -108,9 +106,9 @@ package javax.persistence;
  * <code>LockModeType.PESSIMISTIC_WRITE</code> can be used when querying data and
  * there is a high likelihood of deadlock or update failure among
  * concurrent updating transactions.
- *
+ * 
  * <p> The persistence implementation must support use of locks of type
- * <code>LockModeType.PESSIMISTIC_READ</code>
+ * <code>LockModeType.PESSIMISTIC_READ</code> 
  * <code>LockModeType.PESSIMISTIC_WRITE</code> on a non-versioned entity as well as
  * on a versioned entity.
  *
@@ -118,7 +116,7 @@ package javax.persistence;
  * failure results in transaction-level rollback, the provider must
  * throw the {@link PessimisticLockException} and ensure that the JTA
  * transaction or <code>EntityTransaction</code> has been marked for rollback.
- *
+ * 
  * <p> When the lock cannot be obtained, and the database locking
  * failure results in only statement-level rollback, the provider must
  * throw the {@link LockTimeoutException} (and must not mark the transaction

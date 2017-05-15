@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence;
 
 import java.lang.annotation.Target;
@@ -26,10 +24,10 @@ import static javax.persistence.EnumType.ORDINAL;
 
 /**
  * Specifies the enum type for a map key whose basic type is an enumerated type.
- *
- * The <code>MapKeyEnumerated</code> annotation can be applied to an
- * element collection or relationship of type <code>java.util.Map</code>, in
- * conjunction with the <code>ElementCollection</code>, <code>OneToMany</code>, or
+ * 
+ * The <code>MapKeyEnumerated</code> annotation can be applied to an 
+ * element collection or relationship of type <code>java.util.Map</code>, in 
+ * conjunction with the <code>ElementCollection</code>, <code>OneToMany</code>, or 
  * <code>ManyToMany</code> annotation.
  * If the enumerated type is not specified or the <code>MapKeyEnumerated</code>
  * annotation is not used, the enumerated type is assumed to be
@@ -45,7 +43,7 @@ import static javax.persistence.EnumType.ORDINAL;
  *   &#064;Entity public class Employee {
  *       &#064;ManyToMany
  *       public Projects&#060;ProjectStatus, Project&#062; getProjects() {...}
- *
+ *       
  *       &#064;OneToMany
  *       &#064;MapKeyEnumerated(STRING)
  *       public Map&#060;SalaryRate, Employee&#062; getEmployees() {...}
@@ -61,7 +59,7 @@ import static javax.persistence.EnumType.ORDINAL;
  */
 @Target({METHOD, FIELD}) @Retention(RUNTIME)
 public @interface MapKeyEnumerated {
-
+    
     /** (Optional) The type used in mapping a map key enum type. */
     EnumType value() default ORDINAL;
 }

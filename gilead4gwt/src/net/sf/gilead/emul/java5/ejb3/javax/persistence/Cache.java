@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: Cache.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/
 package javax.persistence;
 
 /**
@@ -28,7 +26,7 @@ public interface Cache {
 
     /**
      * Whether the cache contains data for the given entity.
-     * @param cls  entity class
+     * @param cls  entity class 
      * @param primaryKey  primary key
      * @return boolean indicating whether the entity is in the cache
      */
@@ -52,4 +50,19 @@ public interface Cache {
      * Clear the cache.
      */
     public void evictAll();
+
+    /**
+     * Return an object of the specified type to allow access to the
+     * provider-specific API.  If the provider's Cache
+     * implementation does not support the specified class, the
+     * PersistenceException is thrown.
+     * @param cls  the class of the object to be returned.  This is
+     * normally either the underlying Cache implementation
+     * class or an interface that it implements.
+     * @return an instance of the specified class
+     * @throws PersistenceException if the provider does not
+     * support the call
+     * @since Java Persistence 2.1
+     */
+    public <T> T unwrap(Class<T> cls);
 }

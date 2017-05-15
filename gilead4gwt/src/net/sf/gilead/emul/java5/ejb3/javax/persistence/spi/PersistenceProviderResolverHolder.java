@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2008, 2009 Sun Microsystems. All rights reserved.
+/*******************************************************************************
+ * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,218 +9,401 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Linda DeMichiel - Java Persistence 2.0 - Version 2.0 (October 1, 2009)
- *     Specification available from http://jcp.org/en/jsr/detail?id=317
- */
-
-// $Id: PersistenceProviderResolverHolder.java 20957 2011-06-13 09:58:51Z stliu $
-
+ *     Linda DeMichiel - Java Persistence 2.1
+ *     Linda DeMichiel - Java Persistence 2.0
+ *
+ ******************************************************************************/ 
 package javax.persistence.spi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.persistence.PersistenceException;
 
 /**
- * Holds the global PersistenceProviderResolver instance.
- * If no PersistenceProviderResolver is set by the environment,
- * the default PersistenceProviderResolver is used.
- *
+ * Holds the global {@link javax.persistence.spi.PersistenceProviderResolver}
+ * instance. If no <code>PersistenceProviderResolver</code> is set by the
+ * environment, the default </code>PersistenceProviderResolver is used.
+ * 
  * Implementations must be thread-safe.
+ * 
+ * @since Java Persistence 2.0
  */
 public class PersistenceProviderResolverHolder {
-	private static final PersistenceProviderResolver DEFAULT_RESOLVER = new PersistenceProviderResolverPerClassLoader();
 
-	private static volatile PersistenceProviderResolver RESOLVER;
+    private static PersistenceProviderResolver singleton = new DefaultPersistenceProviderResolver();
 
-	/**
-	 * Returns the current persistence provider resolver
-	 *
-	 * @return persistence provider resolver in use
-	 */
-	public static PersistenceProviderResolver getPersistenceProviderResolver() {
-		return RESOLVER == null ? DEFAULT_RESOLVER : RESOLVER;
-	}
+    /**
+     * Returns the current persistence provider resolver.
+     * 
+     * @return the current persistence provider resolver
+     */
+    public static PersistenceProviderResolver getPersistenceProviderResolver() {
+        return singleton;
+    }
 
-	/**
-	 * Defines the persistence provider resolver used.
-	 *
-	 * @param resolver PersistenceProviderResolver to be used.
-	 */
-	public static void setPersistenceProviderResolver(PersistenceProviderResolver resolver) {
-		RESOLVER = resolver;
-	}
+    /**
+     * Defines the persistence provider resolver used.
+     * 
+     * @param resolver persistence provider resolver to be used.
+     */
+    public static void setPersistenceProviderResolver(PersistenceProviderResolver resolver) {
+        if (resolver == null) {
+            singleton = new DefaultPersistenceProviderResolver();
+        } else {
+            singleton = resolver;
+        }
+    }
 
-	/**
-	 * Cache PersistenceProviderResolver per classloader and use the current classloader as a
-	 * key.
-	 * Use CachingPersistenceProviderResolver for each PersistenceProviderResolver instance.
-	 *
-	 * @author Emmanuel Bernard
-	 */
-	private static class PersistenceProviderResolverPerClassLoader implements PersistenceProviderResolver {
+    /**
+     * Default provider resolver class to use when none is explicitly set.
+     * 
+     * Uses the META-INF/services approach as described in the Java Persistence
+     * specification. A getResources() call is made on the current context
+     * classloader to find the service provider files on the classpath. Any
+     * service files found are then read to obtain the classes that implement
+     * the persistence provider interface.
+     */
+    private static class DefaultPersistenceProviderResolver implements PersistenceProviderResolver {
 
-		//FIXME use a ConcurrentHashMap with weak entry
-		private final WeakHashMap<ClassLoader, PersistenceProviderResolver> resolvers =
-				new WeakHashMap<ClassLoader, PersistenceProviderResolver>();
-		private volatile short barrier = 1;
+        /**
+         * Cached list of available providers cached by CacheKey to ensure
+         * there is not potential for provider visibility issues. 
+         */
+        private volatile HashMap<CacheKey, PersistenceProviderReference> providers = new HashMap<CacheKey, PersistenceProviderReference>();
+        
+        /**
+         * Queue for reference objects referring to class loaders or persistence providers.
+         */
+        private static final ReferenceQueue referenceQueue = new ReferenceQueue();
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public List<PersistenceProvider> getPersistenceProviders() {
-			ClassLoader cl = getContextualClassLoader();
-			if ( barrier == 1 ) {} //read barrier syncs state with other threads
-			PersistenceProviderResolver currentResolver = resolvers.get( cl );
-			if ( currentResolver == null ) {
-				currentResolver = new CachingPersistenceProviderResolver( cl );
-				resolvers.put( cl, currentResolver );
-				barrier = 1;
-			}
-			return currentResolver.getPersistenceProviders();
-		}
+        public List<PersistenceProvider> getPersistenceProviders() {
+            // Before we do the real loading work, see whether we need to
+            // do some cleanup: If references to class loaders or
+            // persistence providers have been nulled out, remove all related
+            // information from the cache.
+            processQueue();
+            
+            ClassLoader loader = getContextClassLoader();
+            CacheKey cacheKey = new CacheKey(loader);
+            PersistenceProviderReference providersReferent = this.providers.get(cacheKey);
+            List<PersistenceProvider> loadedProviders = null;
+            
+            if (providersReferent != null) {
+                loadedProviders = providersReferent.get();
+            }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void clearCachedProviders() {
-			// todo : should we clear all providers from all resolvers here?
-			ClassLoader cl = getContextualClassLoader();
-			if ( barrier == 1 ) {} //read barrier syncs state with other threads
-			PersistenceProviderResolver currentResolver = resolvers.get( cl );
-			if ( currentResolver != null ) {
-				currentResolver.clearCachedProviders();
-			}
-		}
+            if (loadedProviders == null) {
+                Collection<ProviderName> providerNames = getProviderNames(loader);
+                loadedProviders = new ArrayList<PersistenceProvider>();
 
-		private static ClassLoader getContextualClassLoader() {
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			if ( cl == null ) {
-				cl = PersistenceProviderResolverPerClassLoader.class.getClassLoader();
-			}
-			return cl;
-		}
+                for (ProviderName providerName : providerNames) {
+                    try {
+                        PersistenceProvider provider = (PersistenceProvider) loader.loadClass(providerName.getName()).newInstance();
+                        loadedProviders.add(provider);
+                    } catch (ClassNotFoundException cnfe) {
+                        log(Level.FINEST, cnfe + ": " + providerName);
+                    } catch (InstantiationException ie) {
+                        log(Level.FINEST, ie + ": " + providerName);
+                    } catch (IllegalAccessException iae) {
+                        log(Level.FINEST, iae + ": " + providerName);
+                    } catch (ClassCastException cce) {
+                        log(Level.FINEST, cce + ": " + providerName);
+                    }
+                }
 
-		/**
-		 * Resolve the list of Persistence providers for a given classloader and cache the results.
-		 *
-		 * Avoids to keep any reference from this class to the classloader being
-		 * passed to the constructor.
-		 *
-		 * @author Emmanuel Bernard
-		 */
-		private static class CachingPersistenceProviderResolver implements PersistenceProviderResolver {
-			//this assumes that the class loader keeps the list of classes loaded
-			private final List<WeakReference<Class<? extends PersistenceProvider>>> resolverClasses
-					= new ArrayList<WeakReference<Class<? extends PersistenceProvider>>>();
+                // If none are found we'll log the provider names for diagnostic
+                // purposes.
+                if (loadedProviders.isEmpty() && !providerNames.isEmpty()) {
+                    log(Level.WARNING, "No valid providers found using:");
+                    for (ProviderName name : providerNames) {
+                        log(Level.WARNING, name.toString());
+                    }
+                }
+                
+                providersReferent = new PersistenceProviderReference(loadedProviders, referenceQueue, cacheKey);
 
-			public CachingPersistenceProviderResolver(ClassLoader cl) {
-				loadResolverClasses( cl );
-			}
+                this.providers.put(cacheKey, providersReferent);
+            }
 
-			private void loadResolverClasses(ClassLoader cl) {
-				synchronized ( resolverClasses ) {
-					try {
-						Enumeration<URL> resources = cl.getResources( "META-INF/services/" + PersistenceProvider.class.getName() );
-						Set<String> names = new HashSet<String>();
-						while ( resources.hasMoreElements() ) {
-							URL url = resources.nextElement();
-							InputStream is = url.openStream();
-							try {
-								names.addAll( providerNamesFromReader( new BufferedReader( new InputStreamReader( is ) ) ) );
-							}
-							finally {
-								is.close();
-							}
-						}
-						for ( String s : names ) {
-							@SuppressWarnings( "unchecked" )
-							Class<? extends PersistenceProvider> providerClass = (Class<? extends PersistenceProvider>) cl.loadClass( s );
-							WeakReference<Class<? extends PersistenceProvider>> reference
-									= new WeakReference<Class<? extends PersistenceProvider>>(providerClass);
-							//keep Hibernate atop
-							if ( s.endsWith( "HibernatePersistence" ) && resolverClasses.size() > 0 ) {
-								WeakReference<Class<? extends PersistenceProvider>> movedReference = resolverClasses.get( 0 );
-								resolverClasses.add( 0, reference );
-								resolverClasses.add( movedReference );
-							}
-							else {
-								resolverClasses.add( reference );
-							}
-						}
-					}
-					catch ( IOException e ) {
-						throw new PersistenceException( e );
-					}
-					catch ( ClassNotFoundException e ) {
-						throw new PersistenceException( e );
-					}
-				}
-			}
+            return loadedProviders;
+        }
+        
+        /**
+         * Remove garbage collected cache keys & providers.
+         */
+        private void processQueue() {
+            CacheKeyReference ref;
+            while ((ref = (CacheKeyReference) referenceQueue.poll()) != null) {
+                providers.remove(ref.getCacheKey());
+            }            
+        }
 
-			/**
-			 * {@inheritDoc}
-			 */
-			public List<PersistenceProvider> getPersistenceProviders() {
-				//TODO find a way to cache property instances
-				//problem #1: avoid hard ref with classloader (List<WR<PP>>?
-				//problem #2: avoid half GC lists
-				// todo (steve) : why arent we just caching the PersistenceProvider *instances* as the CachingPersistenceProviderResolver state???
-				synchronized ( resolverClasses ) {
-					List<PersistenceProvider> providers = new ArrayList<PersistenceProvider>( resolverClasses.size() );
-					try {
-						for ( WeakReference<Class<? extends PersistenceProvider>> providerClass : resolverClasses ) {
-							providers.add( providerClass.get().newInstance() );
-						}
-					}
-					catch ( InstantiationException e ) {
-						throw new PersistenceException( e );
-					}
-					catch ( IllegalAccessException e ) {
-						throw new PersistenceException( e );
-					}
-					return providers;
-				}
-			}
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public synchronized void clearCachedProviders() {
-				synchronized ( resolverClasses ) {
-					resolverClasses.clear();
-					loadResolverClasses( PersistenceProviderResolverPerClassLoader.getContextualClassLoader() );
-				}
-			}
+        /**
+         * Wraps <code>Thread.currentThread().getContextClassLoader()</code> into a doPrivileged block if security manager is present
+         */
+        private static ClassLoader getContextClassLoader() {
+            if (System.getSecurityManager() == null) {
+                return Thread.currentThread().getContextClassLoader();
+            }
+            else {
+                return  (ClassLoader) java.security.AccessController.doPrivileged(
+                        new java.security.PrivilegedAction() {
+                            public java.lang.Object run() {
+                                return Thread.currentThread().getContextClassLoader();
+                            }
+                        }
+                );
+            }
+        }
 
 
-			private static final Pattern nonCommentPattern = Pattern.compile( "^([^#]+)" );
+        private static final String LOGGER_SUBSYSTEM = "javax.persistence.spi";
 
-			private static Set<String> providerNamesFromReader(BufferedReader reader) throws IOException {
-				Set<String> names = new HashSet<String>();
-				String line;
-				while ( ( line = reader.readLine() ) != null ) {
-					line = line.trim();
-					Matcher m = nonCommentPattern.matcher( line );
-					if ( m.find() ) {
-						names.add( m.group().trim() );
-					}
-				}
-				return names;
-			}
-		}
-	}
+        private Logger logger;
 
+        private void log(Level level, String message) {
+            if (this.logger == null) {
+                this.logger = Logger.getLogger(LOGGER_SUBSYSTEM);
+            }
+            this.logger.log(level, LOGGER_SUBSYSTEM + "::" + message);
+        }
+
+        private static final String SERVICE_PROVIDER_FILE = "META-INF/services/javax.persistence.spi.PersistenceProvider";
+
+        /**
+         * Locate all JPA provider services files and collect all of the
+         * provider names available.
+         */
+        private Collection<ProviderName> getProviderNames(ClassLoader loader) {
+            Enumeration<URL> resources = null;
+
+            try {
+                resources = loader.getResources(SERVICE_PROVIDER_FILE);
+            } catch (IOException ioe) {
+                throw new PersistenceException("IOException caught: " + loader + ".getResources(" + SERVICE_PROVIDER_FILE + ")", ioe);
+            }
+
+            Collection<ProviderName> providerNames = new ArrayList<ProviderName>();
+
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
+                addProviderNames(url, providerNames);
+            }
+
+            return providerNames;
+        }
+
+        private static final Pattern nonCommentPattern = Pattern.compile("^([^#]+)");
+
+        /**
+         * For each services file look for uncommented provider names on each
+         * line.
+         */
+        private void addProviderNames(URL url, Collection<ProviderName> providerNames) {
+            InputStream in = null;
+            try {
+                in = url.openStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    Matcher m = nonCommentPattern.matcher(line);
+                    if (m.find()) {
+                        providerNames.add(new ProviderName(m.group().trim(), url));
+                    }
+                }
+            } catch (IOException ioe) {
+                throw new PersistenceException("IOException caught reading: " + url, ioe);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+        }
+
+        /**
+         * Clear all cached providers
+         */
+        public void clearCachedProviders() {
+            this.providers.clear();
+        }
+
+        /**
+         * A ProviderName captures each provider name found in a service file as
+         * well as the URL for the service file it was found in. This
+         * information is only used for diagnostic purposes.
+         */
+        private class ProviderName {
+
+            /** Provider name **/
+            private String name;
+
+            /** URL for the service file where the provider name was found **/
+            private URL source;
+
+            public ProviderName(String name, URL sourceURL) {
+                this.name = name;
+                this.source = sourceURL;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public URL getSource() {
+                return source;
+            }
+
+            public String toString() {
+                return getName() + " - " + getSource();
+            }
+        }
+        
+        /**
+         * The common interface to get a CacheKey implemented by
+         * LoaderReference and PersistenceProviderReference.
+         */
+        private interface CacheKeyReference {
+            public CacheKey getCacheKey();
+        }        
+        
+        /**
+          * Key used for cached persistence providers. The key checks
+          * the class loader to determine if the persistence providers
+          * is a match to the requested one. The loader may be null.
+          */
+        private class CacheKey implements Cloneable {
+            
+            /* Weak Reference to ClassLoader */
+            private LoaderReference loaderRef;
+            
+            /* Cached Hashcode */
+            private int hashCodeCache;
+
+            CacheKey(ClassLoader loader) {
+                if (loader == null) {
+                    this.loaderRef = null;
+                } else {
+                    loaderRef = new LoaderReference(loader, referenceQueue, this);
+                }
+                calculateHashCode();
+            }
+
+            ClassLoader getLoader() {
+                return (loaderRef != null) ? loaderRef.get() : null;
+            }
+
+            public boolean equals(Object other) {
+                if (this == other) {
+                    return true;
+                }
+                try {
+                    final CacheKey otherEntry = (CacheKey) other;
+                    // quick check to see if they are not equal
+                    if (hashCodeCache != otherEntry.hashCodeCache) {
+                        return false;
+                    }
+                    // are refs (both non-null) or (both null)?
+                    if (loaderRef == null) {
+                        return otherEntry.loaderRef == null;
+                    }
+                    ClassLoader loader = loaderRef.get();
+                    return (otherEntry.loaderRef != null)
+                    // with a null reference we can no longer find
+                    // out which class loader was referenced; so
+                    // treat it as unequal
+                    && (loader != null) && (loader == otherEntry.loaderRef.get());
+                } catch (NullPointerException e) {
+                } catch (ClassCastException e) {
+                }
+
+                return false;
+            }
+
+            public int hashCode() {
+                return hashCodeCache;
+            }
+
+            private void calculateHashCode() {
+                ClassLoader loader = getLoader();
+                if (loader != null) {
+                    hashCodeCache = loader.hashCode();
+                }
+            }
+
+            public Object clone() {
+                try {
+                    CacheKey clone = (CacheKey) super.clone();
+                    if (loaderRef != null) {
+                        clone.loaderRef = new LoaderReference(loaderRef.get(), referenceQueue, clone);
+                    }
+                    return clone;
+                } catch (CloneNotSupportedException e) {
+                    // this should never happen
+                    throw new InternalError();
+                }
+            }
+
+            public String toString() {
+                return "CacheKey[" + getLoader() + ")]";
+            }
+        }
+       
+       /**
+         * References to class loaders are weak references, so that they can be
+         * garbage collected when nobody else is using them. The DefaultPersistenceProviderResolver 
+         * class has no reason to keep class loaders alive.
+         */
+        private class LoaderReference extends WeakReference<ClassLoader> 
+                implements CacheKeyReference {
+            private CacheKey cacheKey;
+
+            LoaderReference(ClassLoader referent, ReferenceQueue q, CacheKey key) {
+                super(referent, q);
+                cacheKey = key;
+            }
+
+            public CacheKey getCacheKey() {
+                return cacheKey;
+            }
+        }
+
+        /**
+         * References to persistence provider are soft references so that they can be garbage
+         * collected when they have no hard references.
+         */
+        private class PersistenceProviderReference extends SoftReference<List<PersistenceProvider>>
+                implements CacheKeyReference {
+            private CacheKey cacheKey;
+
+            PersistenceProviderReference(List<PersistenceProvider> referent, ReferenceQueue q, CacheKey key) {
+                super(referent, q);
+                cacheKey = key;
+            }
+
+            public CacheKey getCacheKey() {
+                return cacheKey;
+            }
+        }
+    }
 }
