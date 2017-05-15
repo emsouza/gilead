@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.services;
 
@@ -14,18 +14,13 @@ import net.sf.gilead.core.PersistentBeanManager;
 
 /**
  * Request service implementation.
- * 
+ *
  * @author bruno.marchesson
  */
 public class BaseRequestService {
     // ----
     // Attributes
     // ----
-    /**
-     * Serialization ID
-     */
-    private static final long serialVersionUID = 814725549964949202L;
-
     /**
      * Logger channel
      */

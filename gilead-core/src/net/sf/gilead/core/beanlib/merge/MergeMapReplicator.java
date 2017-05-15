@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.core.beanlib.merge;
 
@@ -15,7 +15,7 @@ import net.sf.gilead.core.IPersistenceUtil;
 
 /**
  * Encapsulation of the collection replicator
- * 
+ *
  * @author bruno.marchesson
  */
 public class MergeMapReplicator extends Hibernate4MapReplicator {
@@ -27,7 +27,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
 
     /**
      * Factory for {@link MergeClassBeanReplicator}
-     * 
+     *
      * @author bruno.marchesson
      */
     private static class Factory implements MapReplicatorSpi.Factory {
@@ -78,7 +78,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     // ----
     /**
      * Constructor
-     * 
+     *
      * @param beanTransformer
      */
     protected MergeMapReplicator(BeanTransformerSpi beanTransformer) {
@@ -133,7 +133,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         //
         if (proxyInformations != null) {
             Object parent = BeanlibThreadLocal.getToBeanStack().peek();
-            return (T) _persistenceUtil.createPersistentMap(parent, proxyInformations, (Map) map);
+            return (T) _persistenceUtil.createPersistentMap(parent, proxyInformations, (Map<?, ?>) map);
         } else {
             return map;
         }

@@ -33,7 +33,7 @@ import net.sf.gilead.util.IntrospectionHelper;
 
 /**
  * Populatable for Hibernate lazy handling
- * 
+ *
  * @author bruno.marchesson
  */
 public class ClonePropertyFilter implements DetailedPropertyFilter {
@@ -121,10 +121,10 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
 
             // 'ServerOnly' annotation handling
             //
-            if ((AnnotationsManager.isServerOnly(fromBean, propertyName)) /*
-                                                                           * || ( AnnotationsManager . isServerOnly (
-                                                                           * toBean , propertyName ))
-                                                                           */) {
+            if ((AnnotationsManager.isServerOnly(fromBean,
+                    propertyName)) /*
+                                    * || ( AnnotationsManager . isServerOnly ( toBean , propertyName ))
+                                    */) {
                 return false;
             }
 
@@ -149,9 +149,9 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
                 //
                 Map<String, Serializable> proxyInformations;
                 if (isPersistentMap) {
-                    proxyInformations = _persistenceUtil.serializePersistentMap((Map) fromValue);
+                    proxyInformations = _persistenceUtil.serializePersistentMap((Map<?, ?>) fromValue);
                 } else if (isPersistentCollection) {
-                    proxyInformations = _persistenceUtil.serializePersistentCollection((Collection) fromValue);
+                    proxyInformations = _persistenceUtil.serializePersistentCollection((Collection<?>) fromValue);
                 } else {
                     proxyInformations = _persistenceUtil.serializeEntityProxy(fromValue);
                 }
@@ -168,13 +168,13 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
             } else if (isPersistentMap) {
                 // Persistent map handling
                 //
-                Map<String, Serializable> proxyInformations = _persistenceUtil.serializePersistentMap((Map) fromValue);
+                Map<String, Serializable> proxyInformations = _persistenceUtil.serializePersistentMap((Map<?, ?>) fromValue);
 
                 _proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
             } else if (isPersistentCollection) {
                 // Persistent collection handling
                 //
-                Map<String, Serializable> proxyInformations = _persistenceUtil.serializePersistentCollection((Collection) fromValue);
+                Map<String, Serializable> proxyInformations = _persistenceUtil.serializePersistentCollection((Collection<?>) fromValue);
 
                 _proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
             }
@@ -193,8 +193,8 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
     /**
      * Read a property value, even if it has a private getter
      */
-    private Object readPropertyValue(Object bean, String propertyGetter) throws SecurityException, NoSuchMethodException, IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException {
+    private Object readPropertyValue(Object bean, String propertyGetter)
+            throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         Method readMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertyGetter, (Class[]) null);
         readMethod.setAccessible(true);
 

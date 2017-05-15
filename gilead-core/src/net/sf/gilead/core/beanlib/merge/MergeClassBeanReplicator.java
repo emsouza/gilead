@@ -33,7 +33,7 @@ import net.sf.gilead.exception.TransientObjectException;
 
 /**
  * Bean replicator with different from and to classes for merge operation
- * 
+ *
  * @author bruno.marchesson
  */
 public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
@@ -68,7 +68,7 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     /**
      * Factory for {@link MergeClassBeanReplicator}
-     * 
+     *
      * @author bruno.marchesson
      */
     public static class Factory implements BeanReplicatorSpi.Factory {
@@ -161,12 +161,12 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
-            SecurityException, NoSuchMethodException {
+    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass)
+            throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException {
         // Clone mapper indirection
         //
         if (_classMapper != null) {
-            Class sourceClass = _classMapper.getSourceClass(UnEnhancer.unenhanceClass(from.getClass()));
+            Class<T> sourceClass = (Class<T>) _classMapper.getSourceClass(UnEnhancer.unenhanceClass(from.getClass()));
             if (sourceClass != null) {
                 _log.log(Level.FINE, "Creating mapped class " + sourceClass);
                 toClass = sourceClass;

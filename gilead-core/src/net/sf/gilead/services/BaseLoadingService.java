@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.services;
 
@@ -18,18 +18,13 @@ import net.sf.gilead.util.IntrospectionHelper;
 
 /**
  * Remote loading service
- * 
+ *
  * @author bruno.marchesson
  */
 public class BaseLoadingService<T extends ILightEntity> {
     // ----
     // Attributes
     // ----
-    /**
-     * Serialization ID
-     */
-    private static final long serialVersionUID = 5714428833885668669L;
-
     /**
      * Logger channel
      */
@@ -74,7 +69,7 @@ public class BaseLoadingService<T extends ILightEntity> {
     // -------------------------------------------------------------------------
     /**
      * Load an association from the parent entity
-     * 
+     *
      * @param parent the entity
      * @param property the name of the property to load
      * @return the loaded entity

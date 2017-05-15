@@ -25,62 +25,62 @@ import net.sf.gilead.exception.ProxyStoreException;
 
 /**
  * Proxy store for stateful web application
- * 
+ *
  * @author bruno.marchesson
  */
 public class HttpSessionProxyStore extends AbstractStatefulProxyStore {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * The storage thread local
-	 */
-	private static ThreadLocal<HttpSession> _httpSession = new ThreadLocal<HttpSession>();
+    // ----
+    // Attributes
+    // ----
+    /**
+     * The storage thread local
+     */
+    private static ThreadLocal<HttpSession> _httpSession = new ThreadLocal<HttpSession>();
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * Store the current HTTP session in the thread local
-	 */
-	public static void setHttpSession(HttpSession session) {
-		_httpSession.set(session);
-	}
+    // ----
+    // Properties
+    // ----
+    /**
+     * Store the current HTTP session in the thread local
+     */
+    public static void setHttpSession(HttpSession session) {
+        _httpSession.set(session);
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Abstract methods implementation
-	//
-	// -------------------------------------------------------------------------
-	@Override
-	public void delete(String key) {
-		getSession().removeAttribute(key);
-	}
+    // -------------------------------------------------------------------------
+    //
+    // Abstract methods implementation
+    //
+    // -------------------------------------------------------------------------
+    @Override
+    public void delete(String key) {
+        getSession().removeAttribute(key);
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Map<String, Serializable> get(String key) {
-		return (Map<String, Serializable>) getSession().getAttribute(key);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<String, Serializable> get(String key) {
+        return (Map<String, Serializable>) getSession().getAttribute(key);
+    }
 
-	@Override
-	public void store(String key, Map<String, Serializable> proxyInformation) {
-		getSession().setAttribute(key, proxyInformation);
-	}
+    @Override
+    public void store(String key, Map<String, Serializable> proxyInformation) {
+        getSession().setAttribute(key, proxyInformation);
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Internal methods
-	//
-	// ------------------------------------------------------------------------
-	/**
-	 * @return the HTTP session stored in thread local
-	 */
-	private HttpSession getSession() {
-		HttpSession session = (HttpSession) _httpSession.get();
-		if (session == null) {
-			throw new ProxyStoreException("No HTTP session stored", null);
-		}
-		return session;
-	}
+    // -------------------------------------------------------------------------
+    //
+    // Internal methods
+    //
+    // ------------------------------------------------------------------------
+    /**
+     * @return the HTTP session stored in thread local
+     */
+    private HttpSession getSession() {
+        HttpSession session = _httpSession.get();
+        if (session == null) {
+            throw new ProxyStoreException("No HTTP session stored", null);
+        }
+        return session;
+    }
 }
