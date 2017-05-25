@@ -6,7 +6,7 @@
 	<groupId>net.sf.gilead</groupId>
 	<artifactId>gilead</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.3-SNAPSHOT</version>
+	<version>3.0.3</version>
 	<name>gilead</name>
 	<url>http://gilead.sourceforge.net/</url>
 	<description>Generic Light Entity Adapter</description>
