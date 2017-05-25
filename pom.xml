@@ -20,7 +20,7 @@
 
 	<properties>
 		<beanlib.version>7.0.0</beanlib.version>
-		<gwt.version>2.8.0</gwt.version>
+		<gwt.version>2.8.1</gwt.version>
 		<hibernate.version>5.0.10.Final</hibernate.version>
 		<wildfly.version>10.1.0.Final</wildfly.version>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
