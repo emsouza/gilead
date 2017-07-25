@@ -28,7 +28,7 @@ import net.sf.gilead.pojo.base.ILightEntity;
 
 /**
  * Stateless proxy store. The proxy informations is stored on the pojo, by implementing the ILightEntity interface.
- * 
+ *
  * @see ILightEntity
  * @author bruno.marchesson
  */
@@ -193,8 +193,8 @@ public class StatelessProxyStore implements IProxyStore {
                 }
             }
             thread.setRunning(false);
-            _serializationThread.set(null);
         }
+        _serializationThread.remove();
     }
 
     // -------------------------------------------------------------------------

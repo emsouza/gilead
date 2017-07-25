@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 import net.sf.beanlib.utils.ClassUtils;
 import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
 import net.sf.gilead.core.store.IProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 import net.sf.gilead.exception.CloneException;
@@ -50,7 +51,7 @@ import net.sf.gilead.util.CollectionHelper;
 
 /**
  * Manager for Persistent POJO handling
- * 
+ *
  * @author bruno.marchesson
  */
 public class PersistentBeanManager {
@@ -111,7 +112,7 @@ public class PersistentBeanManager {
      * set the used pojo store
      */
     public void setProxyStore(IProxyStore proxyStore) {
-        _log.info("Using Proxy Store : " + proxyStore);
+        _log.fine("Using Proxy Store : " + proxyStore);
         _proxyStore = proxyStore;
         _lazyKiller.setProxyStore(_proxyStore);
     }
@@ -127,9 +128,8 @@ public class PersistentBeanManager {
      * @param mapper the class Mapper to set
      */
     public void setClassMapper(IClassMapper mapper) {
-        _log.info("Using class mapper : " + mapper);
+        _log.fine("Using class mapper : " + mapper);
         _classMapper = mapper;
-
         _lazyKiller.setClassMapper(mapper);
     }
 
@@ -144,8 +144,7 @@ public class PersistentBeanManager {
      * @param util the _persistenceUtil to set
      */
     public void setPersistenceUtil(IPersistenceUtil util) {
-        _log.info("Using persistence util : " + util);
-
+        _log.fine("Using persistence util : " + util);
         _persistenceUtil = util;
         _lazyKiller.setPersistenceUtil(util);
     }
@@ -175,68 +174,19 @@ public class PersistentBeanManager {
      */
     public Object clone(Object object) {
         // Explicit clone : no assignable compatibility checking
-        try {
-            return clone(object, false);
-        } finally {
-            _proxyStore.cleanUp();
-            _lazyKiller.reset();
-        }
+        return clone(object, false, true);
     }
 
     /**
      * Clone and store the Hibernate POJO
-     * 
+     *
      * @param object the object to store
      * @param assignable if the assignation from source to target class (via ClassMapper) must be checked
      * @return the clone
      */
-    public Object clone(Object object, boolean assignable) {
+    public Object clone(Object object, boolean assignable, boolean cleanThread) {
 
         // Precondition checking
-        if (object == null) {
-            return null;
-        }
-        if (_persistenceUtil == null) {
-            throw new RuntimeException("No Persistence Util set !");
-        }
-
-        // Flush any pending modifications before clone
-        _persistenceUtil.flushIfNeeded();
-
-        // Collection handling
-        if (object instanceof Collection) {
-            return cloneCollection((Collection<?>) object, assignable);
-        } else if (object instanceof Map) {
-            return cloneMap((Map<?, ?>) object, assignable);
-        } else if (object.getClass().isArray()) {
-            // Clone as a collection
-            Object[] array = (Object[]) object;
-            Collection<?> result = cloneCollection(Arrays.asList(array), assignable);
-
-            // Get the result as an array (much more tricky !!!)
-            Class<?> componentType = object.getClass().getComponentType();
-            Object[] copy = (Object[]) java.lang.reflect.Array.newInstance(componentType, array.length);
-            return result.toArray(copy);
-        } else {
-            return clonePojo(object, assignable);
-        }
-    }
-
-    /**
-     * Merge the clone POJO to its Hibernate counterpart
-     */
-    public Object merge(Object object) {
-        // Explicit merge
-        return merge(object, false);
-    }
-
-    /**
-     * Merge the clone POJO to its Hibernate counterpart
-     */
-    @SuppressWarnings("unchecked")
-    public Object merge(Object object, boolean assignable) {
-        // Precondition checking
-        //
         if (object == null) {
             return null;
         }
@@ -245,42 +195,39 @@ public class PersistentBeanManager {
             throw new RuntimeException("No Persistence Util set !");
         }
 
-        // Collection handling
-        //
-        if (object instanceof Collection) {
-            return mergeCollection((Collection) object, assignable);
-        } else if (object instanceof Map) {
-            return mergeMap((Map) object, assignable);
-        } else if (object.getClass().isArray()) {
-            // Check primitive type
-            //
-            if (object.getClass().getComponentType().isPrimitive()) {
-                return object;
+        try {
+            // Flush any pending modifications before clone
+            _persistenceUtil.flushIfNeeded();
+
+            // Collection handling
+            if (object instanceof Collection) {
+                return cloneCollection((Collection<?>) object, assignable);
+            } else if (object instanceof Map) {
+                return cloneMap((Map<?, ?>) object, assignable);
+            } else if (object.getClass().isArray()) {
+                // Clone as a collection
+                Object[] array = (Object[]) object;
+                Collection<?> result = cloneCollection(Arrays.asList(array), assignable);
+
+                // Get the result as an array (much more tricky !!!)
+                Class<?> componentType = object.getClass().getComponentType();
+                Object[] copy = (Object[]) java.lang.reflect.Array.newInstance(componentType, array.length);
+                return result.toArray(copy);
+            } else {
+                return clonePojo(object, assignable);
             }
-
-            // Merge as a collection
-            //
-            Object[] array = (Object[]) object;
-            Collection result = mergeCollection(Arrays.asList(array), assignable);
-
-            // Get the result as an array (much more tricky !!!)
-            //
-            Class<?> componentType = object.getClass().getComponentType();
-            Object[] copy = (Object[]) java.lang.reflect.Array.newInstance(componentType, array.length);
-            return result.toArray(copy);
-        } else {
-            return mergePojo(object, assignable);
+        } finally {
+            if (cleanThread) {
+                _proxyStore.cleanUp();
+                _lazyKiller.reset();
+                BeanlibThreadLocal.removeAll();
+            }
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Hibernate Java 1.4 POJO internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Clone and store the Hibernate POJO
-     * 
+     *
      * @param pojo the pojo to store
      * @param assignable does the source and target class must be assignable?
      * @exception NotAssignableException if source and target class are not assignable
@@ -340,7 +287,7 @@ public class PersistentBeanManager {
         Map<Object, Object> cloneMap = createNewMap(hibernatePojoMap);
 
         for (Map.Entry<?, ?> entry : hibernatePojoMap.entrySet()) {
-            cloneMap.put(clone(entry.getKey(), assignable), clone(entry.getValue(), assignable));
+            cloneMap.put(clone(entry.getKey(), assignable, false), clone(entry.getValue(), assignable, false));
         }
 
         return cloneMap;
@@ -354,15 +301,75 @@ public class PersistentBeanManager {
         // Clone each element of the collection
         Collection<Object> clonePojoList = createNewCollection(hibernatePojoList);
         for (Object hibernatePojo : hibernatePojoList) {
-            clonePojoList.add(clone(hibernatePojo, assignable));
+            clonePojoList.add(clone(hibernatePojo, assignable, false));
         }
 
         return clonePojoList;
     }
 
     /**
+     * Merge the clone POJO to its Hibernate counterpart
+     */
+    public Object merge(Object object) {
+        // Explicit merge
+        return merge(object, false, true);
+    }
+
+    /**
+     * Merge the clone POJO to its Hibernate counterpart
+     */
+    @SuppressWarnings("unchecked")
+    public Object merge(Object object, boolean assignable, boolean cleanThread) {
+        // Precondition checking
+        //
+        if (object == null) {
+            return null;
+        }
+
+        if (_persistenceUtil == null) {
+            throw new RuntimeException("No Persistence Util set !");
+        }
+
+        try {
+            // Collection handling
+            //
+            if (object instanceof Collection) {
+                return mergeCollection((Collection) object, assignable);
+            } else if (object instanceof Map) {
+                return mergeMap((Map) object, assignable);
+            } else if (object.getClass().isArray()) {
+                // Check primitive type
+                //
+                if (object.getClass().getComponentType().isPrimitive()) {
+                    return object;
+                }
+
+                // Merge as a collection
+                //
+                Object[] array = (Object[]) object;
+                Collection result = mergeCollection(Arrays.asList(array), assignable);
+
+                // Get the result as an array (much more tricky !!!)
+                //
+                Class<?> componentType = object.getClass().getComponentType();
+                Object[] copy = (Object[]) java.lang.reflect.Array.newInstance(componentType, array.length);
+                return result.toArray(copy);
+            } else {
+                return mergePojo(object, assignable);
+            }
+        } finally {
+            if (cleanThread) {
+                _persistenceUtil.closeCurrentSession();
+                _proxyStore.cleanUp();
+                _lazyKiller.reset();
+                BeanlibThreadLocal.removeAll();
+            }
+        }
+    }
+
+    /**
      * Retrieve the Hibernate Pojo and merge the modification from GWT
-     * 
+     *
      * @param clonePojo the clone pojo
      * @param assignable does the source and target class must be assignable
      * @return the merged Hibernate POJO
@@ -392,71 +399,67 @@ public class PersistentBeanManager {
         }
 
         // Retrieve the pojo
+        Serializable id = null;
         try {
-            Serializable id = null;
-            try {
-                id = _persistenceUtil.getId(clonePojo, hibernateClass);
-                if (id == null) {
-                    _log.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
-                }
-            } catch (TransientObjectException ex) {
-                _log.info("Transient object : " + clonePojo);
-            } catch (NotPersistentObjectException ex) {
-                if (holdPersistentObject(clonePojo) == false) {
-                    // Do not merge not persistent instance, since they do not
-                    // necessary
-                    // implement the Java bean specification
-                    //
-                    _log.log(Level.FINE, "Not persistent object, merge is not needed : " + clonePojo);
-                    return clonePojo;
-                } else {
-                    _log.log(Level.FINE, "Merging wrapper object : " + clonePojo);
-                }
+            id = _persistenceUtil.getId(clonePojo, hibernateClass);
+            if (id == null) {
+                _log.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
             }
-
-            if (ClassUtils.immutable(hibernateClass)) {
-                // Do not clone immutable types
+        } catch (TransientObjectException ex) {
+            _log.info("Transient object : " + clonePojo);
+        } catch (NotPersistentObjectException ex) {
+            if (holdPersistentObject(clonePojo) == false) {
+                // Do not merge not persistent instance, since they do not
+                // necessary
+                // implement the Java bean specification
                 //
+                _log.log(Level.FINE, "Not persistent object, merge is not needed : " + clonePojo);
                 return clonePojo;
+            } else {
+                _log.log(Level.FINE, "Merging wrapper object : " + clonePojo);
             }
-
-            // Create a new POJO instance
-            //
-            Object hibernatePojo = null;
-            try {
-                if (AnnotationsManager.hasGileadAnnotations(hibernateClass)) {
-                    if (id != null) {
-                        // ServerOnly or ReadOnly annotation : load from DB
-                        // needed
-                        //
-                        hibernatePojo = _persistenceUtil.load(id, hibernateClass);
-                    } else {
-                        // Transient instance
-                        //
-                        hibernatePojo = clonePojo;
-                    }
-                } else {
-                    Constructor<?> constructor = hibernateClass.getDeclaredConstructor(new Class<?>[] {});
-                    constructor.setAccessible(true);
-                    hibernatePojo = constructor.newInstance();
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Cannot create a fresh new instance of the class " + hibernateClass, e);
-            }
-
-            // Merge the modification in the Hibernate Pojo
-            //
-            _lazyKiller.attach(hibernatePojo, clonePojo);
-            return hibernatePojo;
-        } finally {
-            _persistenceUtil.closeCurrentSession();
-            _proxyStore.cleanUp();
         }
+
+        if (ClassUtils.immutable(hibernateClass)) {
+            // Do not clone immutable types
+            //
+            return clonePojo;
+        }
+
+        // Create a new POJO instance
+        //
+        Object hibernatePojo = null;
+        try {
+            if (AnnotationsManager.hasGileadAnnotations(hibernateClass)) {
+                if (id != null) {
+                    // ServerOnly or ReadOnly annotation : load from DB
+                    // needed
+                    //
+                    hibernatePojo = _persistenceUtil.load(id, hibernateClass);
+                } else {
+                    // Transient instance
+                    //
+                    hibernatePojo = clonePojo;
+                }
+            } else {
+                Constructor<?> constructor = hibernateClass.getDeclaredConstructor(new Class<?>[] {});
+                constructor.setAccessible(true);
+                hibernatePojo = constructor.newInstance();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot create a fresh new instance of the class " + hibernateClass, e);
+        }
+
+        // Merge the modification in the Hibernate Pojo
+        //
+        _lazyKiller.attach(hibernatePojo, clonePojo);
+        return hibernatePojo;
+
     }
 
     /**
      * Retrieve the Hibernate Pojo List and merge the modification from GWT
-     * 
+     *
      * @param clonePojoList the clone pojo list
      * @return a list of merged Hibernate POJO
      * @exception UnsupportedOperationException if a POJO from the list does not implements ILightEntity and the POJO
@@ -469,7 +472,7 @@ public class PersistentBeanManager {
         //
         for (Object clonePojo : clonePojoList) {
             try {
-                hibernatePojoList.add(merge(clonePojo, assignable));
+                hibernatePojoList.add(merge(clonePojo, assignable, false));
             } catch (TransientObjectException e) {
                 // Keep new pojo (probably created from GWT)
                 //
@@ -482,7 +485,7 @@ public class PersistentBeanManager {
 
     /**
      * Fill copy map with Hibernate merged POJO
-     * 
+     *
      * @param cloneMap
      * @return a map with merge Hibernate POJO
      */
@@ -495,14 +498,14 @@ public class PersistentBeanManager {
             // Merge key
             Object key = entry.getKey();
             try {
-                key = merge(key, assignable);
+                key = merge(key, assignable, false);
             } catch (TransientObjectException ex) { /* keep key untouched */
             }
 
             // Merge value
             Object value = entry.getValue();
             try {
-                value = merge(value, assignable);
+                value = merge(value, assignable, false);
             } catch (TransientObjectException ex) { /* keep value untouched */
             }
 
@@ -514,7 +517,7 @@ public class PersistentBeanManager {
 
     /**
      * Create a new collection with the same behavior than the argument one
-     * 
+     *
      * @param pojoCollection the source collection
      * @return a newly created, empty collection
      */
@@ -548,8 +551,8 @@ public class PersistentBeanManager {
                     // No empty or simple constructor : fallback on basic
                     // collection
                     //
-                    _log.log(Level.WARNING, "Unable to find basic constructor for " + collectionClass.getName()
-                            + " : falling back to basic collection");
+                    _log.log(Level.WARNING,
+                            "Unable to find basic constructor for " + collectionClass.getName() + " : falling back to basic collection");
                     return createBasicCollection(pojoCollection);
                 } catch (Exception ex) {
                     throw new RuntimeException("Cannot instantiate collection !", ex);
@@ -570,7 +573,7 @@ public class PersistentBeanManager {
 
     /**
      * Creation of basic collection
-     * 
+     *
      * @param pojoCollection
      * @return
      */
@@ -604,7 +607,7 @@ public class PersistentBeanManager {
 
     /**
      * Create a new map with the same behavior than the argument one
-     * 
+     *
      * @param pojoMap the source map
      * @return a newly created, empty map
      */
@@ -629,7 +632,7 @@ public class PersistentBeanManager {
     /**
      * In deep persistent association checking. This method is used to detect wrapping object (ie not persistent class
      * holding persistent associations)
-     * 
+     *
      * @param pojo the wrapping pojo
      * @return true if the pojo contains persistent member, false otherwise
      */
@@ -640,7 +643,7 @@ public class PersistentBeanManager {
     /**
      * In deep persistent association checking. This method is used to detect wrapping object (ie not persistent class
      * holding persistent associations)
-     * 
+     *
      * @param pojo the wrapping pojo
      * @param alreadyChecked list of already checked pojos
      * @return true if the pojo contains persistent member, false otherwise

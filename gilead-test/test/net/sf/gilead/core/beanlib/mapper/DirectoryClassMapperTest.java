@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.core.beanlib.mapper;
 
@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 /**
  * Test case for the Directory Class Mapper class
- * 
+ *
  * @author bruno.marchesson
  */
 public class DirectoryClassMapperTest extends TestCase {
@@ -23,8 +23,8 @@ public class DirectoryClassMapperTest extends TestCase {
         classMapper.setRootClonePackage("net.sf.gilead.core.beanlib.mapper.dto1");
         classMapper.setCloneSuffix("DTO");
 
-        Class sourceClass = net.sf.gilead.core.beanlib.mapper.domain1.DomainClass1.class;
-        Class targetClass = net.sf.gilead.core.beanlib.mapper.dto1.DomainClass1DTO.class;
+        Class<?> sourceClass = net.sf.gilead.core.beanlib.mapper.domain1.DomainClass1.class;
+        Class<?> targetClass = net.sf.gilead.core.beanlib.mapper.dto1.DomainClass1DTO.class;
 
         // Test Domain -> DTO mapping
         //
@@ -48,8 +48,8 @@ public class DirectoryClassMapperTest extends TestCase {
         classMapper.setRootClonePackage("net.sf.gilead.core.beanlib.mapper.domain1.dto");
         classMapper.setCloneSuffix("DTO");
 
-        Class sourceClass = net.sf.gilead.core.beanlib.mapper.domain1.DomainClass1.class;
-        Class targetClass = net.sf.gilead.core.beanlib.mapper.domain1.dto.DomainClass1DTO.class;
+        Class<?> sourceClass = net.sf.gilead.core.beanlib.mapper.domain1.DomainClass1.class;
+        Class<?> targetClass = net.sf.gilead.core.beanlib.mapper.domain1.dto.DomainClass1DTO.class;
 
         // Test Domain -> DTO mapping
         //

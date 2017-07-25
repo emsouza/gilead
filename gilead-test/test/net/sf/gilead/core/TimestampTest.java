@@ -69,7 +69,6 @@ public class TimestampTest extends TestCase {
         //
         assertNotNull(mergedMessage);
         assertNotNull(mergedMessage.getDate());
-        assertTrue(mergedMessage.getDate() instanceof Date);
         assertTrue(mergedMessage.getDate() instanceof java.sql.Timestamp);
         assertEquals(message.getDate(), mergedMessage.getDate());
 

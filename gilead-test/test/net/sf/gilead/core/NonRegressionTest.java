@@ -3,6 +3,10 @@ package net.sf.gilead.core;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import junit.framework.TestCase;
 import net.sf.gilead.core.store.stateful.AbstractStatefulProxyStore;
 import net.sf.gilead.core.store.stateful.InMemoryProxyStore;
@@ -17,10 +21,6 @@ import net.sf.gilead.test.domain.misc.Project;
 import net.sf.gilead.test.domain.misc.SomeDictionary;
 import net.sf.gilead.test.domain.misc.Utente;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 /**
  * Non regression test based on user feedback
  *
@@ -32,68 +32,6 @@ public class NonRegressionTest extends TestCase {
     // Test methods
     //
     // -------------------------------------------------------------------------
-    /**
-     * Test order set preservation
-     *
-     * @throws FileNotFoundException
-     */
-    public void testOrderedSet() throws FileNotFoundException {
-        // Init bean manager
-        //
-        PersistentBeanManager beanManager = TestHelper.initJava5SupportBeanManager();
-
-        // Create test user and reload it
-        //
-        Utente utente = createTestUtente();
-        utente = loadUser(utente.getId());
-
-        // test order
-        int index = 1;
-        for (Preference pref : utente.getPreferences()) {
-            assertEquals(index++, pref.getIntValue());
-        }
-
-        // Clone utente
-        //
-        utente = (Utente) beanManager.clone(utente);
-
-        // Test preferences order on cloned bean
-        //
-        index = 1;
-        for (Preference pref : utente.getPreferences()) {
-            assertEquals(index++, pref.getIntValue());
-        }
-
-        // Add a new preference
-        Preference newPreference = new Preference();
-        newPreference.setIntValue(utente.getPreferences().size() + 1);
-        newPreference.setUser(utente);
-        utente.getPreferences().add(newPreference);
-
-        // Remove first element
-        utente.getPreferences().remove(utente.getPreferences().iterator().next());
-
-        // Merge and save user
-        //
-        utente = (Utente) beanManager.merge(utente);
-        index = 2;
-        for (Preference pref : utente.getPreferences()) {
-            assertEquals(index++, pref.getIntValue());
-        }
-        save(utente);
-
-        // Reload it
-        //
-        Utente loaded = loadUser(utente.getId());
-        assertNotNull(loaded.getPreferences());
-        assertEquals(utente.getPreferences().size(), loaded.getPreferences().size());
-
-        index = 2;
-        for (Preference pref : loaded.getPreferences()) {
-            assertEquals(index++, pref.getIntValue());
-        }
-    }
-
     /**
      * Clone an exception that contains persistent attribute
      */
@@ -116,7 +54,7 @@ public class NonRegressionTest extends TestCase {
     /**
      * Test merge on many to many
      */
-    public void testMergeManyToMany() throws FileNotFoundException {
+    public void testMergeManyToMany() {
         // Init bean manager
         //
         PersistentBeanManager beanManager = TestHelper.initJava5SupportBeanManager();
@@ -222,7 +160,7 @@ public class NonRegressionTest extends TestCase {
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
-            Utente user = (Utente) session.get(Utente.class, id);
+            Utente user = session.get(Utente.class, id);
             user.getPreferences().size();
             transaction.commit();
 

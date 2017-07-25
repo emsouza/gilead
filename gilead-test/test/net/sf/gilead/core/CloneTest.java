@@ -13,6 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hibernate.FlushMode;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
 import junit.framework.TestCase;
 import net.sf.gilead.core.wrapper.WrappingArrayClass;
 import net.sf.gilead.core.wrapper.WrappingClass;
@@ -27,12 +33,6 @@ import net.sf.gilead.test.domain.misc.BaseListLoadResult;
 import net.sf.gilead.test.domain.misc.Configuration;
 import net.sf.gilead.test.domain.misc.PagingList;
 import net.sf.gilead.test.domain.misc.Style;
-
-import org.hibernate.FlushMode;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
 /**
  * Test case clone and merge server operations
@@ -1125,7 +1125,7 @@ public abstract class CloneTest extends TestCase {
         IMessage mergeMessage = (IMessage) mergeList.get(1);
         assertNotNull(mergeUser);
         assertNotNull(mergeMessage);
-        assertTrue(mergeUser == mergeMessage.getAuthor());
+        assertEquals(mergeUser, mergeMessage.getAuthor());
     }
 
     // -------------------------------------------------------------------------
