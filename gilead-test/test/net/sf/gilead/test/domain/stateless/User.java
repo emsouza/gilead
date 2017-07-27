@@ -1,5 +1,6 @@
 package net.sf.gilead.test.domain.stateless;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 /**
  * User Domain class for stateless server
  */
-public class User extends LightEntity implements IUser {
+public class User extends LightEntity implements Serializable, IUser {
     /**
      * Serialisation ID
      */
@@ -175,6 +176,7 @@ public class User extends LightEntity implements IUser {
 
         if (groupList.contains(group) == false) {
             groupList.add(group);
+            // group.addMember(this);
         }
     }
 
@@ -185,19 +187,7 @@ public class User extends LightEntity implements IUser {
     public void removeUserFromGroup(IGroup group) {
         if ((groupList != null) && (groupList.contains(group))) {
             groupList.remove(group);
+            // group.removeMember(this);
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj == null) || (obj instanceof User == false)) {
-            return false;
-        } else if (this == obj) {
-            return true;
-        }
-
-        // ID comparison
-        User other = (User) obj;
-        return (id == other.getId());
     }
 }

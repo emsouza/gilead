@@ -17,9 +17,11 @@ import net.sf.gilead.test.domain.misc.Configuration;
 import net.sf.gilead.test.domain.stateless.Message;
 import net.sf.gilead.test.domain.stateless.User;
 
+import org.hibernate.SessionFactory;
+
 /**
  * Hibernate Helper test case
- *
+ * 
  * @author bruno.marchesson
  */
 public class HibernateUtilTest extends TestCase {
@@ -37,7 +39,9 @@ public class HibernateUtilTest extends TestCase {
 
         // Retrieve Hibernate session factory
         HibernateContext.setContext(Context.stateless);
-        HibernateUtil.getInstance().setSessionFactory(HibernateContext.getSessionFactory());
+        SessionFactory factory = HibernateContext.getSessionFactory();
+
+        HibernateUtil.getInstance().setSessionFactory(factory);
 
         // Init db if needed
         //

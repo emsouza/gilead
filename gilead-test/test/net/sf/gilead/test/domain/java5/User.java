@@ -125,8 +125,9 @@ public class User implements Serializable, IUser {
      * @return the messageList
      */
     @Override
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class)
     @JoinColumn(name = "USER_ID")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     public Set<IMessage> getMessageList() {
         return messageList;
     }
@@ -215,18 +216,5 @@ public class User implements Serializable, IUser {
     @Override
     public void setAddress(IAddress address) {
         this.address = (Address) address;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj == null) || (obj instanceof User == false)) {
-            return false;
-        } else if (this == obj) {
-            return true;
-        }
-
-        // ID comparison
-        User other = (User) obj;
-        return (id == other.getId());
     }
 }

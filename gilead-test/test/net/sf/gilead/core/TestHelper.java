@@ -367,6 +367,7 @@ public class TestHelper {
     public static PersistentBeanManager initJava5AnnotatedBeanManager() {
         HibernateContext.setContext(HibernateContext.Context.annotated);
 
+        // force init
         PersistentBeanManager.getInstance().setPersistenceUtil(null);
 
         return ConfigurationHelper.initStatelessBeanManager(new HibernateUtil(HibernateContext.getSessionFactory(), null));

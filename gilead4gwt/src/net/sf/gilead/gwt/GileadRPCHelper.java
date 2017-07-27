@@ -1,9 +1,7 @@
 /**
- *
+ * 
  */
 package net.sf.gilead.gwt;
-
-import com.google.gwt.user.server.rpc.RPCRequest;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,9 +16,11 @@ import net.sf.gilead.exception.TransientObjectException;
 import net.sf.gilead.proxy.AdditionalCodeManager;
 import net.sf.gilead.proxy.ProxyClassLoader;
 
+import com.google.gwt.user.server.rpc.RPCRequest;
+
 /**
  * Static helper class for PersistentRemoteService and HibernateRPCServiceExporter (GWT-SL)
- *
+ * 
  * @author bruno.marchesson
  */
 public class GileadRPCHelper {
@@ -58,7 +58,7 @@ public class GileadRPCHelper {
 
     /**
      * Parse RPC input parameters. Must be called before GWT service invocation.
-     *
+     * 
      * @param rpcRequest the input GWT RPC request
      * @param beanManager the Hibernate bean manager
      * @param session the HTTP session (for HTTP Pojo store)
@@ -81,7 +81,7 @@ public class GileadRPCHelper {
             for (int index = 0; index < parameters.length; index++) {
                 if (parameters[index] != null) {
                     try {
-                        parameters[index] = beanManager.merge(parameters[index], true, true);
+                        parameters[index] = beanManager.merge(parameters[index], true);
                     } catch (NotAssignableException ex) {
                         log.log(Level.FINE, parameters[index] + " not assignable");
                     } catch (TransientObjectException ex) {
@@ -95,7 +95,7 @@ public class GileadRPCHelper {
 
     /**
      * Parse RPC input parameters. Must be called before GWT service invocation.
-     *
+     * 
      * @param rpcRequest the input GWT RPC request
      * @param beanManager the Hibernate bean manager
      * @param session the HTTP session (for HTTP Pojo store)
@@ -115,7 +115,7 @@ public class GileadRPCHelper {
 
     /**
      * Clone the service result. Must be called after successful service invocation
-     *
+     * 
      * @param returnValue the service return value
      * @param beanManager the Hibernate bean manager
      * @return the cloned service value
@@ -126,7 +126,7 @@ public class GileadRPCHelper {
         if (returnValue != null) {
             long start = System.currentTimeMillis();
             try {
-                returnValue = beanManager.clone(returnValue, true, true);
+                returnValue = beanManager.clone(returnValue, true);
             } catch (NotAssignableException ex) {
                 log.log(Level.FINE, returnValue + " not assignable");
             } catch (TransientObjectException ex) {

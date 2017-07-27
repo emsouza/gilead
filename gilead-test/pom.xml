@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>net.sf.gilead</groupId>
 		<artifactId>gilead</artifactId>
-		<version>3.0.6-SNAPSHOT</version>
+		<version>3.0.4-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -29,26 +29,32 @@
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>gilead-core</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>gilead4gwt</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>gilead-hibernate</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.beanlib</groupId>
 			<artifactId>beanlib</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.beanlib</groupId>
 			<artifactId>beanlib-hibernate</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>dom4j</groupId>
@@ -59,18 +65,22 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>net.sourceforge.htmlunit</groupId>
@@ -81,10 +91,12 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

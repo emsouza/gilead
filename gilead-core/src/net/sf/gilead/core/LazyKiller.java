@@ -33,7 +33,7 @@ import net.sf.gilead.core.store.IProxyStore;
  * This class replaces all "lazy but not loaded" Hibernate association with null to allow the argument POJO to be used
  * in other libraries without additional loading of 'LazyInitializationException'. The lazy properties are stored as
  * string. They can be reused for "reattaching" the clone pojo to a fresh Hibernate object.
- *
+ * 
  * @author bruno.marchesson
  */
 public class LazyKiller {
@@ -63,7 +63,7 @@ public class LazyKiller {
     /**
      * The cloned map. It is used to propagate treated beans throughout collection clone and merge.
      */
-    private static ThreadLocal<Map<Object, Object>> _clonedMap = new ThreadLocal<>();
+    private ThreadLocal<Map<Object, Object>> _clonedMap;
 
     // ----
     // Properties
@@ -117,12 +117,13 @@ public class LazyKiller {
 
     /**
      * Base constructor
-     *
+     * 
      * @param classMapper the class mapping service
      * @param persistenceUtil persistence util implementation
      * @param proxyStore the proxy store
      */
     public LazyKiller(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+        _clonedMap = new ThreadLocal<Map<Object, Object>>();
         setClassMapper(classMapper);
         setPersistenceUtil(persistenceUtil);
         setProxyStore(proxyStore);
@@ -137,12 +138,12 @@ public class LazyKiller {
      * Reset the clone map.
      */
     public void reset() {
-        _clonedMap.remove();
+        _clonedMap.set(null);
     }
 
     /**
      * Hibernate detachment
-     *
+     * 
      * @param hibernatePojo the input hibernate pojo
      * @return a pure Java clone
      */
@@ -170,7 +171,7 @@ public class LazyKiller {
 
     /**
      * Hibernate detachment
-     *
+     * 
      * @param hibernatePojo the input hibernate pojo
      * @return a pure Java clone
      */
@@ -190,7 +191,7 @@ public class LazyKiller {
 
     /**
      * Hibernate attachment
-     *
+     * 
      * @param hibernatePojo the stored or fresh Hibernate POJO
      * @param clonePojo the cloned pojo
      */
@@ -216,7 +217,7 @@ public class LazyKiller {
     /**
      * Clone the abstract POJO with BeanLib Every time a lazy property is detected, it is replaced with null. It is also
      * marked as "lazy" for ILightEntity sub-classes
-     *
+     * 
      * @param pojo
      * @return
      */

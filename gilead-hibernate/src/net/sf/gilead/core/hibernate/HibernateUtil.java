@@ -18,6 +18,16 @@ import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.beanlib.hibernate.UnEnhancer;
+import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.serialization.SerializableId;
+import net.sf.gilead.exception.ComponentTypeException;
+import net.sf.gilead.exception.NotPersistentObjectException;
+import net.sf.gilead.exception.TransientObjectException;
+import net.sf.gilead.pojo.base.ILightEntity;
+import net.sf.gilead.pojo.base.IUserType;
+import net.sf.gilead.util.IntrospectionHelper;
+
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -44,16 +54,6 @@ import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.CompositeType;
 import org.hibernate.type.Type;
-
-import net.sf.beanlib.hibernate.UnEnhancer;
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.serialization.SerializableId;
-import net.sf.gilead.exception.ComponentTypeException;
-import net.sf.gilead.exception.NotPersistentObjectException;
-import net.sf.gilead.exception.TransientObjectException;
-import net.sf.gilead.pojo.base.ILightEntity;
-import net.sf.gilead.pojo.base.IUserType;
-import net.sf.gilead.util.IntrospectionHelper;
 
 /**
  * Persistent helper for Hibernate implementation Centralizes the SessionFactory and add some needed methods. Not really
@@ -426,8 +426,8 @@ public class HibernateUtil implements IPersistenceUtil {
             if (hSession.created == true) {
                 hSession.session.close();
             }
+            _session.remove();
         }
-        _session.remove();
     }
 
     /*

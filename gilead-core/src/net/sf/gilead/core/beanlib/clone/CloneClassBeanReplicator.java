@@ -29,7 +29,7 @@ import net.sf.gilead.core.beanlib.merge.MergeClassBeanReplicator;
 
 /**
  * Bean replicator with different from and to classes for clone operation
- *
+ * 
  * @author bruno.marchesson
  */
 public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
@@ -58,7 +58,7 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     /**
      * Factory for {@link MergeClassBeanReplicator}
-     *
+     * 
      * @author bruno.marchesson
      */
     public static class Factory implements BeanReplicatorSpi.Factory {
@@ -123,14 +123,13 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
         BeanlibThreadLocal.getFromBeanStack().push(from);
         T result = super.replicateBean(from, toClass);
         BeanlibThreadLocal.getFromBeanStack().pop();
-
         return result;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass)
-            throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException {
+    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
+            SecurityException, NoSuchMethodException {
         // Class mapper indirection
         //
         if (_classMapper != null) {

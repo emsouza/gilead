@@ -154,6 +154,7 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
         BeanlibThreadLocal.getFromBeanStack().push(from);
         T result = super.replicateBean(from, toClass);
         BeanlibThreadLocal.getFromBeanStack().pop();
+        BeanlibThreadLocal.getToBeanStack().pop();
 
         return result;
     }

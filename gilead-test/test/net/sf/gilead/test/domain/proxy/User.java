@@ -233,17 +233,4 @@ public class User implements Serializable, IUser {
     public void setAddress(IAddress address) {
         this.address = address;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj == null) || (obj instanceof User == false)) {
-            return false;
-        } else if (this == obj) {
-            return true;
-        }
-
-        // ID comparison
-        User other = (User) obj;
-        return (id == other.getId());
-    }
 }
