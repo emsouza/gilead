@@ -1,12 +1,14 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.gwt;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.google.gwt.user.server.rpc.RPCRequest;
 
 import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.core.beanlib.mapper.ProxyClassMapper;
@@ -16,21 +18,14 @@ import net.sf.gilead.exception.TransientObjectException;
 import net.sf.gilead.proxy.AdditionalCodeManager;
 import net.sf.gilead.proxy.ProxyClassLoader;
 
-import com.google.gwt.user.server.rpc.RPCRequest;
-
 /**
  * Static helper class for PersistentRemoteService and HibernateRPCServiceExporter (GWT-SL)
- * 
+ *
  * @author bruno.marchesson
  */
 public class GileadRPCHelper {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * The log channel
-     */
-    private static Logger log = Logger.getLogger(GileadRPCHelper.class.getSimpleName());
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GileadRPCHelper.class);
 
     // -------------------------------------------------------------------------
     //
@@ -45,7 +40,7 @@ public class GileadRPCHelper {
         //
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         if (contextClassLoader instanceof ProxyClassLoader == false) {
-            log.info("Setting proxy class loader for thread " + Thread.currentThread());
+            LOGGER.info("Setting proxy class loader for thread " + Thread.currentThread());
 
             // initialize AdditionalCodeManager before changing class loader to
             // prevent stack overflow
@@ -58,7 +53,7 @@ public class GileadRPCHelper {
 
     /**
      * Parse RPC input parameters. Must be called before GWT service invocation.
-     * 
+     *
      * @param rpcRequest the input GWT RPC request
      * @param beanManager the Hibernate bean manager
      * @param session the HTTP session (for HTTP Pojo store)
@@ -83,19 +78,19 @@ public class GileadRPCHelper {
                     try {
                         parameters[index] = beanManager.merge(parameters[index], true);
                     } catch (NotAssignableException ex) {
-                        log.log(Level.FINE, parameters[index] + " not assignable");
+                        LOGGER.error(parameters[index] + " not assignable");
                     } catch (TransientObjectException ex) {
-                        log.log(Level.INFO, parameters[index] + " is transient : cannot merge...");
+                        LOGGER.error(parameters[index] + " is transient : cannot merge...");
                     }
                 }
             }
-            log.log(Level.FINE, "Merge took " + (System.currentTimeMillis() - start) + " ms.");
+            LOGGER.trace("Merge took " + (System.currentTimeMillis() - start) + " ms.");
         }
     }
 
     /**
      * Parse RPC input parameters. Must be called before GWT service invocation.
-     * 
+     *
      * @param rpcRequest the input GWT RPC request
      * @param beanManager the Hibernate bean manager
      * @param session the HTTP session (for HTTP Pojo store)
@@ -115,7 +110,7 @@ public class GileadRPCHelper {
 
     /**
      * Clone the service result. Must be called after successful service invocation
-     * 
+     *
      * @param returnValue the service return value
      * @param beanManager the Hibernate bean manager
      * @return the cloned service value
@@ -128,14 +123,14 @@ public class GileadRPCHelper {
             try {
                 returnValue = beanManager.clone(returnValue, true);
             } catch (NotAssignableException ex) {
-                log.log(Level.FINE, returnValue + " not assignable");
+                LOGGER.error(returnValue + " not assignable");
             } catch (TransientObjectException ex) {
-                log.log(Level.INFO, returnValue + " is transient : cannot clone...");
+                LOGGER.error(returnValue + " is transient : cannot clone...");
             } finally {
                 beanManager.getProxyStore().cleanUp();
             }
 
-            log.log(Level.FINE, "Clone took " + (System.currentTimeMillis() - start) + " ms.");
+            LOGGER.trace("Clone took " + (System.currentTimeMillis() - start) + " ms.");
         }
 
         // Remove HTTP session of Pojo store thread local

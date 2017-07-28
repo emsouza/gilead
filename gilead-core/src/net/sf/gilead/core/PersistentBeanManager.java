@@ -33,8 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.utils.ClassUtils;
 import net.sf.gilead.core.annotations.AnnotationsManager;
@@ -50,10 +51,13 @@ import net.sf.gilead.util.CollectionHelper;
 
 /**
  * Manager for Persistent POJO handling
- * 
+ *
  * @author bruno.marchesson
  */
 public class PersistentBeanManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistentBeanManager.class);
+
     // ----
     // Attributes
     // ----
@@ -61,11 +65,6 @@ public class PersistentBeanManager {
      * The unique instance of the Persistence Bean Manager
      */
     private static PersistentBeanManager _instance = null;
-
-    /**
-     * Logger channel
-     */
-    private Logger _log = Logger.getLogger(PersistentBeanManager.class.getSimpleName());
 
     /**
      * The associated Proxy informations store
@@ -111,7 +110,7 @@ public class PersistentBeanManager {
      * set the used pojo store
      */
     public void setProxyStore(IProxyStore proxyStore) {
-        _log.info("Using Proxy Store : " + proxyStore);
+        LOGGER.info("Using Proxy Store : " + proxyStore);
         _proxyStore = proxyStore;
         _lazyKiller.setProxyStore(_proxyStore);
     }
@@ -127,7 +126,7 @@ public class PersistentBeanManager {
      * @param mapper the class Mapper to set
      */
     public void setClassMapper(IClassMapper mapper) {
-        _log.info("Using class mapper : " + mapper);
+        LOGGER.info("Using class mapper : " + mapper);
         _classMapper = mapper;
 
         _lazyKiller.setClassMapper(mapper);
@@ -144,7 +143,7 @@ public class PersistentBeanManager {
      * @param util the _persistenceUtil to set
      */
     public void setPersistenceUtil(IPersistenceUtil util) {
-        _log.info("Using persistence util : " + util);
+        LOGGER.info("Using persistence util : " + util);
 
         _persistenceUtil = util;
         _lazyKiller.setPersistenceUtil(util);
@@ -185,7 +184,7 @@ public class PersistentBeanManager {
 
     /**
      * Clone and store the Hibernate POJO
-     * 
+     *
      * @param object the object to store
      * @param assignable if the assignation from source to target class (via ClassMapper) must be checked
      * @return the clone
@@ -280,7 +279,7 @@ public class PersistentBeanManager {
     // -------------------------------------------------------------------------
     /**
      * Clone and store the Hibernate POJO
-     * 
+     *
      * @param pojo the pojo to store
      * @param assignable does the source and target class must be assignable?
      * @exception NotAssignableException if source and target class are not assignable
@@ -320,7 +319,7 @@ public class PersistentBeanManager {
             } else if (holdPersistentObject(pojo) == false) {
 
                 // Do not clone not persistent classes, since they do not necessary implement Java Bean specification.
-                _log.log(Level.FINE, "Not persistent instance, clone is not needed : " + pojo.toString());
+                LOGGER.trace("Not persistent instance, clone is not needed : " + pojo.toString());
                 return pojo;
             }
 
@@ -362,7 +361,7 @@ public class PersistentBeanManager {
 
     /**
      * Retrieve the Hibernate Pojo and merge the modification from GWT
-     * 
+     *
      * @param clonePojo the clone pojo
      * @param assignable does the source and target class must be assignable
      * @return the merged Hibernate POJO
@@ -397,20 +396,20 @@ public class PersistentBeanManager {
             try {
                 id = _persistenceUtil.getId(clonePojo, hibernateClass);
                 if (id == null) {
-                    _log.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
+                    LOGGER.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
                 }
             } catch (TransientObjectException ex) {
-                _log.info("Transient object : " + clonePojo);
+                LOGGER.info("Transient object : " + clonePojo);
             } catch (NotPersistentObjectException ex) {
                 if (holdPersistentObject(clonePojo) == false) {
                     // Do not merge not persistent instance, since they do not
                     // necessary
                     // implement the Java bean specification
                     //
-                    _log.log(Level.FINE, "Not persistent object, merge is not needed : " + clonePojo);
+                    LOGGER.trace("Not persistent object, merge is not needed : " + clonePojo);
                     return clonePojo;
                 } else {
-                    _log.log(Level.FINE, "Merging wrapper object : " + clonePojo);
+                    LOGGER.trace("Merging wrapper object : " + clonePojo);
                 }
             }
 
@@ -456,7 +455,7 @@ public class PersistentBeanManager {
 
     /**
      * Retrieve the Hibernate Pojo List and merge the modification from GWT
-     * 
+     *
      * @param clonePojoList the clone pojo list
      * @return a list of merged Hibernate POJO
      * @exception UnsupportedOperationException if a POJO from the list does not implements ILightEntity and the POJO
@@ -482,7 +481,7 @@ public class PersistentBeanManager {
 
     /**
      * Fill copy map with Hibernate merged POJO
-     * 
+     *
      * @param cloneMap
      * @return a map with merge Hibernate POJO
      */
@@ -514,7 +513,7 @@ public class PersistentBeanManager {
 
     /**
      * Create a new collection with the same behavior than the argument one
-     * 
+     *
      * @param pojoCollection the source collection
      * @return a newly created, empty collection
      */
@@ -548,8 +547,7 @@ public class PersistentBeanManager {
                     // No empty or simple constructor : fallback on basic
                     // collection
                     //
-                    _log.log(Level.WARNING, "Unable to find basic constructor for " + collectionClass.getName()
-                            + " : falling back to basic collection");
+                    LOGGER.warn("Unable to find basic constructor for " + collectionClass.getName() + " : falling back to basic collection");
                     return createBasicCollection(pojoCollection);
                 } catch (Exception ex) {
                     throw new RuntimeException("Cannot instantiate collection !", ex);
@@ -570,7 +568,7 @@ public class PersistentBeanManager {
 
     /**
      * Creation of basic collection
-     * 
+     *
      * @param pojoCollection
      * @return
      */
@@ -581,7 +579,7 @@ public class PersistentBeanManager {
             } catch (Exception ex) {
                 // No access to size ? lazy initialization exception ?
                 //
-                _log.log(Level.FINE, "Error creating array list with size " + ex);
+                LOGGER.trace("Error creating array list with size " + ex);
                 return new ArrayList<Object>();
             }
         } else if (pojoCollection instanceof Set) {
@@ -593,7 +591,7 @@ public class PersistentBeanManager {
                 } catch (Exception ex) {
                     // No access to size ? lazy initialization exception ?
                     //
-                    _log.log(Level.FINE, "Error creating hash set with size " + ex);
+                    LOGGER.trace("Error creating hash set with size " + ex);
                     return new HashSet<Object>();
                 }
             }
@@ -604,7 +602,7 @@ public class PersistentBeanManager {
 
     /**
      * Create a new map with the same behavior than the argument one
-     * 
+     *
      * @param pojoMap the source map
      * @return a newly created, empty map
      */
@@ -612,7 +610,8 @@ public class PersistentBeanManager {
     protected Map<Object, Object> createNewMap(Map<?, ?> pojoMap) {
         Class<? extends Map> mapClass = pojoMap.getClass();
 
-        if (_persistenceUtil.isPersistentCollection(mapClass) || mapClass.isAnonymousClass() || mapClass.isMemberClass() || mapClass.isLocalClass()) {
+        if (_persistenceUtil.isPersistentCollection(mapClass) || mapClass.isAnonymousClass() || mapClass.isMemberClass()
+                || mapClass.isLocalClass()) {
             return new HashMap<Object, Object>();
         } else {
             // Create the same map
@@ -629,7 +628,7 @@ public class PersistentBeanManager {
     /**
      * In deep persistent association checking. This method is used to detect wrapping object (ie not persistent class
      * holding persistent associations)
-     * 
+     *
      * @param pojo the wrapping pojo
      * @return true if the pojo contains persistent member, false otherwise
      */
@@ -640,7 +639,7 @@ public class PersistentBeanManager {
     /**
      * In deep persistent association checking. This method is used to detect wrapping object (ie not persistent class
      * holding persistent associations)
-     * 
+     *
      * @param pojo the wrapping pojo
      * @param alreadyChecked list of already checked pojos
      * @return true if the pojo contains persistent member, false otherwise
@@ -736,7 +735,8 @@ public class PersistentBeanManager {
                     propertyClass = _classMapper.getSourceClass(propertyClass);
                 }
 
-                if ((_persistenceUtil.isPersistentClass(propertyClass) == true) || (_persistenceUtil.isPersistentCollection(propertyClass) == true)) {
+                if ((_persistenceUtil.isPersistentClass(propertyClass) == true)
+                        || (_persistenceUtil.isPersistentCollection(propertyClass) == true)) {
                     return true;
                 }
 

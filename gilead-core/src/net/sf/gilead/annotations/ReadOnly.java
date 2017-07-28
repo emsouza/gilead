@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.annotations;
 
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for "ReadOnly" properties. Value coming back from client side is ignored during 'merge' phase
- * 
+ *
  * @author bruno.marchesson
  */
 @Target({ METHOD, FIELD })

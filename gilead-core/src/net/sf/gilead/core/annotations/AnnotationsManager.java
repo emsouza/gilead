@@ -6,8 +6,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.annotations.LimitedAccess;
 import net.sf.gilead.annotations.ReadOnly;
@@ -16,23 +17,21 @@ import net.sf.gilead.util.IntrospectionHelper;
 
 /**
  * Helper class for annotation management
- * 
+ *
  * @author bruno.marchesson
  */
 public class AnnotationsManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationsManager.class);
+
     // ----
     // Attributes
     // ----
     /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(AnnotationsManager.class.getSimpleName());
-
-    /**
      * Annotation map. It is filled with associated Gilead annotation for all classes and properties for performance
      * purpose (computing it each time is very expensive)
      */
-    private static Map<Class<?>, Map<String, Class<?>>> _annotationMap = new HashMap<Class<?>, Map<String, Class<?>>>();
+    private static Map<Class<?>, Map<String, Class<?>>> annotationMap = new HashMap<Class<?>, Map<String, Class<?>>>();
 
     /**
      * The associated access manager
@@ -114,7 +113,7 @@ public class AnnotationsManager {
      * Indicated if the argument has "ReadOnly" annotation on one of its field.
      */
     private static Map<String, Class<?>> getGileadAnnotations(Class<?> clazz) {
-        _log.log(Level.FINE, "Looking for Gilead annotations for " + clazz);
+        LOGGER.trace("Looking for Gilead annotations for " + clazz);
 
         Map<String, Class<?>> result = new HashMap<String, Class<?>>();
 
@@ -128,7 +127,7 @@ public class AnnotationsManager {
                 // ReadOnly
                 ReadOnly readOnly = field.getAnnotation(ReadOnly.class);
                 if (readOnly != null) {
-                    _log.log(Level.FINE, propertyName + " member has @ReadOnly");
+                    LOGGER.trace(propertyName + " member has @ReadOnly");
                     result.put(propertyName, ReadOnly.class);
                     continue;
                 }
@@ -136,7 +135,7 @@ public class AnnotationsManager {
                 // ServerOnly
                 ServerOnly serverOnly = field.getAnnotation(ServerOnly.class);
                 if (serverOnly != null) {
-                    _log.log(Level.FINE, propertyName + " member has @ServerOnly");
+                    LOGGER.trace(propertyName + " member has @ServerOnly");
                     result.put(propertyName, ServerOnly.class);
                     continue;
                 }
@@ -144,13 +143,13 @@ public class AnnotationsManager {
                 // LimitedAccess
                 LimitedAccess limitedAccess = field.getAnnotation(LimitedAccess.class);
                 if (limitedAccess != null) {
-                    _log.log(Level.FINE, propertyName + " member has @LimitedAccess");
+                    LOGGER.trace(propertyName + " member has @LimitedAccess");
                     result.put(propertyName, LimitedAccess.class);
                     continue;
                 }
 
                 // No Gilead annotation
-                _log.log(Level.FINE, propertyName + " member has no Gilead annotation");
+                LOGGER.trace(propertyName + " member has no Gilead annotation");
 
                 result.put(propertyName, null);
             }
@@ -174,7 +173,7 @@ public class AnnotationsManager {
                     //
                     ReadOnly readOnly = descriptor.getReadMethod().getAnnotation(ReadOnly.class);
                     if (readOnly != null) {
-                        _log.log(Level.FINE, propertyName + " getter has @ReadOnly");
+                        LOGGER.trace(propertyName + " getter has @ReadOnly");
                         result.put(propertyName, ReadOnly.class);
                         continue;
                     }
@@ -183,7 +182,7 @@ public class AnnotationsManager {
                     //
                     ServerOnly serverOnly = descriptor.getReadMethod().getAnnotation(ServerOnly.class);
                     if (serverOnly != null) {
-                        _log.log(Level.FINE, propertyName + " getter has @ServerOnly");
+                        LOGGER.trace(propertyName + " getter has @ServerOnly");
                         result.put(propertyName, ServerOnly.class);
                     }
 
@@ -191,7 +190,7 @@ public class AnnotationsManager {
                     //
                     LimitedAccess limitedAccess = descriptor.getReadMethod().getAnnotation(LimitedAccess.class);
                     if (limitedAccess != null) {
-                        _log.log(Level.FINE, propertyName + " getter has @LimitedAccess");
+                        LOGGER.trace(propertyName + " getter has @LimitedAccess");
                         result.put(propertyName, LimitedAccess.class);
                     }
 
@@ -213,13 +212,13 @@ public class AnnotationsManager {
         // Map checking
         //
         Class<?> clazz = entity.getClass();
-        Map<String, Class<?>> propertyAnnotations = _annotationMap.get(clazz);
+        Map<String, Class<?>> propertyAnnotations = annotationMap.get(clazz);
         if (propertyAnnotations == null) {
             // Compute property annotations
             //
             propertyAnnotations = getGileadAnnotations(clazz);
-            synchronized (_annotationMap) {
-                _annotationMap.put(clazz, propertyAnnotations);
+            synchronized (annotationMap) {
+                annotationMap.put(clazz, propertyAnnotations);
             }
         }
 
@@ -234,7 +233,7 @@ public class AnnotationsManager {
             // Call access manager
             //
             if (_accessManager == null) {
-                _log.log(Level.WARNING, "No Access Manager defined whereas @LimitedAccess annotation is used !");
+                LOGGER.warn("No Access Manager defined whereas @LimitedAccess annotation is used !");
             } else {
                 annotation = _accessManager.getActiveAnnotation(entity, propertyName);
             }
@@ -259,13 +258,13 @@ public class AnnotationsManager {
     private static boolean isAnnotedClass(Class<?> entityClass, Class<?> annotationClass) {
         // Map checking
         //
-        Map<String, Class<?>> propertyAnnotations = _annotationMap.get(entityClass);
+        Map<String, Class<?>> propertyAnnotations = annotationMap.get(entityClass);
         if (propertyAnnotations == null) {
             // Compute property annotations
             //
             propertyAnnotations = getGileadAnnotations(entityClass);
-            synchronized (_annotationMap) {
-                _annotationMap.put(entityClass, propertyAnnotations);
+            synchronized (annotationMap) {
+                annotationMap.put(entityClass, propertyAnnotations);
             }
         }
 

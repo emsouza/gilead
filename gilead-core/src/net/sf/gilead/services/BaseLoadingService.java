@@ -7,8 +7,9 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
@@ -22,14 +23,12 @@ import net.sf.gilead.util.IntrospectionHelper;
  * @author bruno.marchesson
  */
 public class BaseLoadingService<T extends ILightEntity> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseLoadingService.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(BaseLoadingService.class.getSimpleName());
-
     /**
      * The associated bean manager. Default value is defined by the unique instance of the singleton.
      */
@@ -130,7 +129,7 @@ public class BaseLoadingService<T extends ILightEntity> {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
 
-        _log.log(Level.FINE, "Loading entity " + className + " with ID" + id);
+        LOGGER.trace("Loading entity " + className + " with ID" + id);
 
         // Load entity and clone it
         //
@@ -166,7 +165,7 @@ public class BaseLoadingService<T extends ILightEntity> {
         }
 
         if (AnnotationsManager.isServerOnly(parent, propertyName)) {
-            _log.log(Level.WARNING, "Cannot load @ServerOnly property " + propertyName);
+            LOGGER.warn("Cannot load @ServerOnly property " + propertyName);
             return null;
         }
 
@@ -177,7 +176,7 @@ public class BaseLoadingService<T extends ILightEntity> {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
 
-        _log.log(Level.FINE, "Loading property " + propertyName + " for entity " + parent);
+        LOGGER.trace("Loading property " + propertyName + " for entity " + parent);
 
         // Get Id
         //
@@ -187,7 +186,7 @@ public class BaseLoadingService<T extends ILightEntity> {
         //
         Object entity = persistenceUtil.loadAssociation(parent.getClass(), id, propertyName);
         if (entity == null) {
-            _log.log(Level.WARNING, "Cannot load entity " + parent.getClass() + "[" + id + "] with property " + propertyName);
+            LOGGER.warn("Cannot load entity " + parent.getClass() + "[" + id + "] with property " + propertyName);
             return null;
         }
 

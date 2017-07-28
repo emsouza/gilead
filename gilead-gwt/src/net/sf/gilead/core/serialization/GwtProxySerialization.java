@@ -1,33 +1,32 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.core.serialization;
 
+import com.google.gwt.user.client.rpc.SerializationException;
+
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.pojo.gwt.GwtSerializableId;
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
 import net.sf.gilead.pojo.gwt.SerializedParameter;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-
 /**
  * GWT compatible map serialization. Each basic type is encapsulated as IRequestParameter. Non basic type is serialised
  * as string and send as this
- * 
+ *
  * @author bruno.marchesson
  */
 public class GwtProxySerialization extends GwtSerializer implements IProxySerialization {
+
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(GwtProxySerialization.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static final Logger _log = Logger.getLogger(GwtProxySerialization.class.getSimpleName());
-
     /**
      * String serializer
      */
@@ -140,7 +139,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
         try {
             return super.convertBasicToGwt(object);
         } catch (SerializationException ex) {
-            _log.log(Level.FINE, object.getClass() + " not serializable => convert to string");
+            LOGGER.trace(object.getClass() + " not serializable => convert to string");
             return new SerializedParameter((String) _stringSerializer.serialize(object));
         }
     }
@@ -182,7 +181,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
         try {
             return super.convertListToGwt(object);
         } catch (SerializationException ex) {
-            _log.log(Level.FINE, object.getClass() + " not serializable => convert to string");
+            LOGGER.trace(object.getClass() + " not serializable => convert to string");
             return new SerializedParameter((String) _stringSerializer.serialize(object));
         }
     }
@@ -210,7 +209,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
         try {
             return super.convertSetToGwt(object);
         } catch (SerializationException ex) {
-            _log.log(Level.FINE, object.getClass() + " not serializable => convert to string");
+            LOGGER.trace(object.getClass() + " not serializable => convert to string");
             return new SerializedParameter((String) _stringSerializer.serialize(object));
         }
     }
@@ -238,7 +237,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
         try {
             return super.convertMapToGwt(object);
         } catch (SerializationException ex) {
-            _log.log(Level.FINE, object.getClass() + " not serializable => convert to string");
+            LOGGER.trace(object.getClass() + " not serializable => convert to string");
             return new SerializedParameter((String) _stringSerializer.serialize(object));
         }
     }

@@ -18,8 +18,9 @@ package net.sf.gilead.core.store.stateless;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.serialization.IProxySerialization;
 import net.sf.gilead.core.store.IProxyStore;
@@ -28,19 +29,17 @@ import net.sf.gilead.pojo.base.ILightEntity;
 
 /**
  * Stateless proxy store. The proxy informations is stored on the pojo, by implementing the ILightEntity interface.
- * 
+ *
  * @see ILightEntity
  * @author bruno.marchesson
  */
 public class StatelessProxyStore implements IProxyStore {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatelessProxyStore.class);
+
     // ----
     // Attribute
     // -----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(StatelessProxyStore.class.getSimpleName());
-
     /**
      * Serializer for proxy informations
      */
@@ -181,7 +180,7 @@ public class StatelessProxyStore implements IProxyStore {
     @Override
     public void cleanUp() {
         if ((_useSerializationThread == true) && (_serializationThread.get() != null)) {
-            _log.log(Level.FINE, "Cleaning up serialization thread");
+            LOGGER.trace("Cleaning up serialization thread");
             SerializationThread thread = getSerializationThread();
 
             // Wait for end of serialization

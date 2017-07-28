@@ -4,7 +4,9 @@
 package net.sf.gilead.performance;
 
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 import net.sf.gilead.core.PersistentBeanManager;
@@ -19,14 +21,12 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public abstract class PerformanceTest extends TestCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceTest.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(PerformanceTest.class.getSimpleName());
-
     /**
      * Persistent lazy manager
      */
@@ -87,14 +87,14 @@ public abstract class PerformanceTest extends TestCase {
         long end = System.currentTimeMillis();
         assertNotNull(cloneUser);
 
-        _log.info(getClass().getSimpleName() + " / Clone user took " + (end - start) + " ms.");
+        LOGGER.info(getClass().getSimpleName() + " / Clone user took " + (end - start) + " ms.");
 
         if (_merge) {
             // Merge user
             //
             start = System.currentTimeMillis();
             IUser mergeUser = (IUser) _beanManager.merge(cloneUser);
-            _log.info(getClass().getSimpleName() + " / Merge user took " + (System.currentTimeMillis() - start) + " ms.");
+            LOGGER.info(getClass().getSimpleName() + " / Merge user took " + (System.currentTimeMillis() - start) + " ms.");
 
             // Test merged user
             //
@@ -122,14 +122,15 @@ public abstract class PerformanceTest extends TestCase {
         long end = System.currentTimeMillis();
         assertNotNull(cloneUserList);
 
-        _log.info(getClass().getSimpleName() + " / [CGLIB check enabled] Clone user list took " + (end - start) + " ms.");
+        LOGGER.info(getClass().getSimpleName() + " / [CGLIB check enabled] Clone user list took " + (end - start) + " ms.");
 
         if (_merge) {
             // Merge user
             //
             start = System.currentTimeMillis();
             List<IUser> mergeUserList = (List<IUser>) _beanManager.merge(cloneUserList);
-            _log.info(getClass().getSimpleName() + " / [CGLIB check enabled] Merge user list took " + (System.currentTimeMillis() - start) + " ms.");
+            LOGGER.info(
+                    getClass().getSimpleName() + " / [CGLIB check enabled] Merge user list took " + (System.currentTimeMillis() - start) + " ms.");
 
             // Test merged user
             //
@@ -158,7 +159,7 @@ public abstract class PerformanceTest extends TestCase {
             long end = System.currentTimeMillis();
             assertNotNull(cloneUserList);
 
-            _log.info(getClass().getSimpleName() + " / [CGLIB check disabled]Clone user list took " + (end - start) + " ms.");
+            LOGGER.info(getClass().getSimpleName() + " / [CGLIB check disabled]Clone user list took " + (end - start) + " ms.");
         }
     }
 }

@@ -1,7 +1,9 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.core.serialization;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,8 +19,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
 import net.sf.gilead.pojo.gwt.basic.BooleanParameter;
@@ -35,30 +38,15 @@ import net.sf.gilead.pojo.gwt.collection.ListParameter;
 import net.sf.gilead.pojo.gwt.collection.MapParameter;
 import net.sf.gilead.pojo.gwt.collection.SetParameter;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-
 /**
  * GWT compatible serialization. Since Object class is not allowed, we replace it with a marker interface and
  * encapsulates each basic supported types and collections in an implementation of the interface.
- * 
+ *
  * @author bruno.marchesson
  */
 public class GwtSerializer {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Logger channel
-     */
-    private static final Logger _log = Logger.getLogger(GwtSerializer.class.getSimpleName());
 
-    // ----
-    // Constructor
-    // ----
-    /**
-     * Constructor
-     */
-    public GwtSerializer() {}
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(GwtSerializer.class);
 
     // -------------------------------------------------------------------------
     //
@@ -67,7 +55,7 @@ public class GwtSerializer {
     // -------------------------------------------------------------------------
     /**
      * Converts a serializable type to GWT supported encapsulation.
-     * 
+     *
      * @throws SerializationException if the serializable argument is not supported by GWT JRE.
      */
     public IGwtSerializableParameter convertToGwt(Serializable serializable) throws SerializationException {
@@ -77,7 +65,7 @@ public class GwtSerializer {
             return null;
         }
 
-        _log.log(Level.FINE, "Converting " + serializable + " to GWT supported type");
+        LOGGER.trace("Converting " + serializable + " to GWT supported type");
 
         // Type checking
         //
@@ -99,7 +87,7 @@ public class GwtSerializer {
      * @return
      */
     public Serializable convertFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
-        _log.log(Level.FINE, "Converting " + parameter + " from GWT back to serializable type");
+        LOGGER.trace("Converting " + parameter + " from GWT back to serializable type");
         // Precondition checking
         //
         if (parameter == null) {
@@ -179,7 +167,7 @@ public class GwtSerializer {
 
     /**
      * Convert IRequestParameter back to Serializable
-     * 
+     *
      * @param parameter
      * @return
      */
@@ -226,7 +214,7 @@ public class GwtSerializer {
 
     /**
      * Convert the argument list from GWT IRequestParameter one
-     * 
+     *
      * @throws SerializationException
      */
     @SuppressWarnings("unchecked")

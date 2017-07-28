@@ -5,8 +5,9 @@ package net.sf.gilead.core.beanlib.merge;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
@@ -19,6 +20,8 @@ import net.sf.gilead.core.IPersistenceUtil;
  * @author bruno.marchesson
  */
 public class MergeMapReplicator extends Hibernate4MapReplicator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MergeMapReplicator.class);
 
     // ----
     // Factory
@@ -46,11 +49,6 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(MergeMapReplicator.class.getSimpleName());
-
     /**
      * The associated persistence util
      */
@@ -103,7 +101,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     @SuppressWarnings("unchecked")
     @Override
     public <K, V, T> T replicateMap(Map<K, V> from, Class<T> toClass) {
-        _log.log(Level.FINE, "Merge map from " + from + " to class " + toClass);
+        LOGGER.trace("Merge map from " + from + " to class " + toClass);
 
         // Get and reset persistent collection class if any
         //
@@ -121,7 +119,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
             } catch (Exception e) {
                 type = e.getMessage();
             }
-            _log.log(Level.WARNING, "Invalid map : " + from.toString() + " for type " + type);
+            LOGGER.warn("Invalid map : " + from.toString() + " for type " + type);
             toClass = (Class<T>) java.util.HashMap.class;
         }
 

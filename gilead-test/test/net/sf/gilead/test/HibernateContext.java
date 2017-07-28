@@ -3,11 +3,10 @@
  */
 package net.sf.gilead.test;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hibernate context utility class
@@ -15,6 +14,9 @@ import org.hibernate.cfg.Configuration;
  * @author bruno.marchesson
  */
 public class HibernateContext {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HibernateContext.class);
+
     // ----
     // Enumeration
     // ----
@@ -70,11 +72,6 @@ public class HibernateContext {
     // Attributes
     // ----
     /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(HibernateContext.class.getSimpleName());
-
-    /**
      * Current configuration
      */
     private static Context _context;
@@ -123,7 +120,7 @@ public class HibernateContext {
                 _sessionFactory = new Configuration().configure(getContextFile()).buildSessionFactory();
             } catch (Throwable ex) {
                 // Make sure you log the exception, as it might be swallowed
-                _log.log(Level.SEVERE, "Initial SessionFactory creation failed.", ex);
+                LOGGER.error("Initial SessionFactory creation failed.", ex);
                 throw new ExceptionInInitializerError(ex);
             }
         }

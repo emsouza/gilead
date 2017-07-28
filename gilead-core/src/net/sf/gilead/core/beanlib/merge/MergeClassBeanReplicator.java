@@ -17,8 +17,9 @@
 package net.sf.gilead.core.beanlib.merge;
 
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
@@ -37,15 +38,12 @@ import net.sf.gilead.exception.TransientObjectException;
  * @author bruno.marchesson
  */
 public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MergeClassBeanReplicator.class);
+
     // ---
     // Attributes
     // ---
-
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(MergeClassBeanReplicator.class.getSimpleName());
-
     /**
      * The class mapper (can be null)
      */
@@ -168,10 +166,10 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
         if (_classMapper != null) {
             Class<T> sourceClass = (Class<T>) _classMapper.getSourceClass(UnEnhancer.unenhanceClass(from.getClass()));
             if (sourceClass != null) {
-                _log.log(Level.FINE, "Creating mapped class " + sourceClass);
+                LOGGER.trace("Creating mapped class " + sourceClass);
                 toClass = sourceClass;
             } else {
-                _log.log(Level.FINE, "Creating merged class " + toClass);
+                LOGGER.trace("Creating merged class " + toClass);
             }
         }
 
@@ -194,10 +192,10 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
                 toClass = chooseClass(from.getClass(), toClass);
                 result = (T) _persistenceUtil.load(id, toClass);
             } catch (NotPersistentObjectException e) {
-                _log.log(Level.WARNING, "Not an hibernate class (" + toClass + ") : annotated values will not be restored.");
+                LOGGER.warn("Not an hibernate class (" + toClass + ") : annotated values will not be restored.");
                 return (T) from;
             } catch (TransientObjectException e) {
-                _log.log(Level.WARNING, "Transient value of class " + toClass + " : annotated values will not be restored.");
+                LOGGER.warn("Transient value of class " + toClass + " : annotated values will not be restored.");
                 return (T) from;
             }
         }

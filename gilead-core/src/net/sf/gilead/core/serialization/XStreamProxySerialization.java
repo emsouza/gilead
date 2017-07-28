@@ -1,29 +1,28 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.core.serialization;
 
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.thoughtworks.xstream.XStream;
+
+import java.io.Serializable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * XStream Serialization strategy. It serializes Serializable instances to String using XStream and deserializes them
  * when back. (needed for proxy informations, since GWT does not like Serializable type in Map<String, Serializable>)
- * 
+ *
  * @author bruno.marchesson
  */
 public class XStreamProxySerialization implements IProxySerialization {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XStreamProxySerialization.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel.
-     */
-    private static Logger _log = Logger.getLogger(XStreamProxySerialization.class.getSimpleName());
-
     /**
      * The XStream facade
      */
@@ -40,8 +39,6 @@ public class XStreamProxySerialization implements IProxySerialization {
     public XStreamProxySerialization() {
         _xstream = new XStream();
         _xstream.registerConverter(new SerializableIdConverter(_xstream));
-        // _xstream.registerConverter(new
-        // JavaBeanConverter(_xstream.getMapper()));
     }
 
     // -------------------------------------------------------------------------
@@ -54,7 +51,7 @@ public class XStreamProxySerialization implements IProxySerialization {
      */
     @Override
     public Object serialize(Serializable serializable) {
-        _log.log(Level.FINE, "Serialization of " + serializable);
+        LOGGER.trace("Serialization of " + serializable);
         // Precondition checking
         //
         if (serializable == null) {
@@ -82,7 +79,7 @@ public class XStreamProxySerialization implements IProxySerialization {
         }
 
         String string = (String) object;
-        _log.log(Level.FINE, "Unserialization of " + string);
+        LOGGER.trace("Unserialization of " + string);
 
         // String checking
         //

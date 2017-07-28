@@ -9,26 +9,25 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.serialization.IProxySerialization;
 import net.sf.gilead.pojo.base.ILightEntity;
 
 /**
  * Thread for handling proxy information serialization. (Performance purpose)
- * 
+ *
  * @author
  */
 public class SerializationThread implements Runnable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializationThread.class);
+
     // ----
     // Attribute
     // -----
-    /**
-     * Logger channel
-     */
-    private static final Logger _log = Logger.getLogger(SerializationThread.class.getSimpleName());
-
     /**
      * Serializer for proxy informations
      */
@@ -102,7 +101,7 @@ public class SerializationThread implements Runnable {
 
     /**
      * Inidcates if serialization is finished or not
-     * 
+     *
      * @return
      */
     public boolean isSerializationFinished() {
@@ -134,7 +133,7 @@ public class SerializationThread implements Runnable {
             } catch (InterruptedException e) {
                 // Not matter
             } catch (Throwable ex) {
-                _log.log(Level.SEVERE, ex.getMessage(), ex);
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
     }
@@ -143,7 +142,7 @@ public class SerializationThread implements Runnable {
 
 /**
  * Serialization item.
- * 
+ *
  * @author bruno.marchesson
  */
 class SerializationItem {

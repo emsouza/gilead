@@ -6,8 +6,9 @@ package net.sf.gilead.services;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
@@ -18,14 +19,12 @@ import net.sf.gilead.core.PersistentBeanManager;
  * @author bruno.marchesson
  */
 public class BaseRequestService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseRequestService.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(BaseRequestService.class.getSimpleName());
-
     /**
      * The associated bean manager. Default value is defined by the unique instance of the singleton.
      */
@@ -64,7 +63,7 @@ public class BaseRequestService {
             throw new RuntimeException("Missing query !");
         }
 
-        _log.log(Level.FINE, "Executing request " + query);
+        LOGGER.trace("Executing request " + query);
 
         if (beanManager == null) {
             throw new NullPointerException("Bean manager not set !");
@@ -95,7 +94,7 @@ public class BaseRequestService {
             throw new RuntimeException("Missing query !");
         }
 
-        _log.log(Level.FINE, "Executing request " + query);
+        LOGGER.trace("Executing request " + query);
 
         if (beanManager == null) {
             throw new NullPointerException("Bean manager not set !");

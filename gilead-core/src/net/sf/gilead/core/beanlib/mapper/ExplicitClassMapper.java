@@ -18,26 +18,26 @@ package net.sf.gilead.core.beanlib.mapper;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.beanlib.IClassMapper;
 
 /**
  * Class mapper based on explicitly parameterized classes
- * 
+ *
  * @author Olaf Kock, Florian Siebert
  */
 public class ExplicitClassMapper implements IClassMapper {
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(ExplicitClassMapper.class.getSimpleName());
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExplicitClassMapper.class);
 
     /**
      * The maps of the domain class to their target class correspondence.
      */
     private Map<Class<?>, Class<?>> _domainToTargetMap = new HashMap<Class<?>, Class<?>>();
+
     private Map<Class<?>, Class<?>> _targetToDomainMap = new HashMap<Class<?>, Class<?>>();
 
     // -------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class ExplicitClassMapper implements IClassMapper {
     /**
      * Add an association between source- and Clone-Class<?>, where source is the domain class that shall be cloned to
      * the given clone class, in order to be transferable via gwt to the client.
-     * 
+     *
      * @param sourceclass your hibernate-domain-class
      * @param targetclass the class to be transferred to the gwt client
      */
@@ -69,7 +69,7 @@ public class ExplicitClassMapper implements IClassMapper {
 
     /**
      * Set the associations between source- and Clone-Class<?>. All previous association get deleted.
-     * 
+     *
      * @author Norman Maurer
      * @param mappings map with sourcClass as key and targetClass as value
      */
@@ -98,7 +98,7 @@ public class ExplicitClassMapper implements IClassMapper {
     @Override
     public Class<?> getTargetClass(Class<?> sourceClass) {
         Class<?> result = _domainToTargetMap.get(sourceClass);
-        _log.log(Level.FINE, "Target class for " + sourceClass.getCanonicalName() + ": " + (result == null ? "null" : result.getCanonicalName()));
+        LOGGER.trace("Target class for " + sourceClass.getCanonicalName() + ": " + (result == null ? "null" : result.getCanonicalName()));
         return result;
     }
 
@@ -109,7 +109,7 @@ public class ExplicitClassMapper implements IClassMapper {
     @Override
     public Class<?> getSourceClass(Class<?> targetClass) {
         Class<?> result = _targetToDomainMap.get(targetClass);
-        _log.log(Level.FINE, "Source class for " + targetClass.getCanonicalName() + ": " + (result == null ? "null" : result.getCanonicalName()));
+        LOGGER.trace("Source class for " + targetClass.getCanonicalName() + ": " + (result == null ? "null" : result.getCanonicalName()));
         return result;
     }
 }

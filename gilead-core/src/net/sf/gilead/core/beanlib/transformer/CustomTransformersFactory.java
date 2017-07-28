@@ -3,26 +3,25 @@ package net.sf.gilead.core.beanlib.transformer;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 
 /**
  * Factory for gilead custom transformers
- * 
+ *
  * @author Alexandre Pretyman, Bruno Marchesson
  */
 public class CustomTransformersFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomTransformersFactory.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(CustomTransformersFactory.class.getSimpleName());
-
     /**
      * Singleton instance
      */
@@ -104,7 +103,7 @@ public class CustomTransformersFactory {
 
     /**
      * Create a union transformer for clone if needed
-     * 
+     *
      * @param beanTransformer the input bean transformer
      * @return the beanlib CustomBeanTransformer.
      */
@@ -128,7 +127,7 @@ public class CustomTransformersFactory {
 
     /**
      * Create a union transformer for merge if needed
-     * 
+     *
      * @param beanTransformer the input bean transformer
      * @return the beanlib CustomBeanTransformer.
      */
@@ -157,7 +156,7 @@ public class CustomTransformersFactory {
     // -------------------------------------------------------------------------
     /**
      * Get constructor for the argument class
-     * 
+     *
      * @param clazz the custom bean transformer class
      * @return the constructor that take a BeanTransformerSpi as argument from the class
      */
@@ -170,14 +169,14 @@ public class CustomTransformersFactory {
             // Search for constructors with BeanTransformerSpi argument
             return clazz.getConstructor(ctArg);
         } catch (Exception e) {
-            _log.log(Level.SEVERE, "Cannot find constructor with BeanTransformerSpi argument for class " + clazz, e);
+            LOGGER.error("Cannot find constructor with BeanTransformerSpi argument for class " + clazz, e);
             throw new RuntimeException("Error retrieving constructor for " + clazz, e);
         }
     }
 
     /**
      * Create a new transformer instance
-     * 
+     *
      * @param constructor the constructor
      * @param beanTransformer the bean transformer needed argument
      * @return the CustomBeanTransformer
@@ -192,7 +191,7 @@ public class CustomTransformersFactory {
         } catch (Exception e) {
             // Throw unrecoverable error on exception
             //
-            _log.log(Level.SEVERE, "Transformer initialization error", e);
+            LOGGER.error("Transformer initialization error", e);
             throw new RuntimeException("Transformer initialization error", e);
         }
     }

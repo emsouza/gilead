@@ -6,23 +6,20 @@ package net.sf.gilead.core.serialization;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
 /**
  * Test serialization manager behavior
- * 
+ *
  * @author bruno.marchesson
  */
 public class SerializationManagerTest extends TestCase {
-    // ----
-    // Logger channel
-    // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(SerializationManagerTest.class.getSimpleName());
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializationManagerTest.class);
 
     // -------------------------------------------------------------------------
     //
@@ -89,7 +86,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(value, proxySerialization.unserialize(serialized));
         long end = System.nanoTime();
 
-        _log.info("Integer serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
+        LOGGER.info("Integer serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
 
         // int conversion
         //
@@ -102,7 +99,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(intValue, proxySerialization.unserialize(serialized));
         end = System.nanoTime();
 
-        _log.info("int serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
+        LOGGER.info("int serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
     }
 
     /**
@@ -120,7 +117,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(value, proxySerialization.unserialize(serialized));
         long end = System.nanoTime();
 
-        _log.info("Long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
+        LOGGER.info("Long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
 
         // long conversion
         //
@@ -133,7 +130,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(longValue, proxySerialization.unserialize(serialized));
         end = System.nanoTime();
 
-        _log.info("long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
+        LOGGER.info("long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
     }
 
     /**
@@ -162,7 +159,7 @@ public class SerializationManagerTest extends TestCase {
         HashMap<String, Serializable> unserialized = (HashMap<String, Serializable>) proxySerialization.unserialize(serialized);
         long end = System.nanoTime();
 
-        _log.info("Map serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
+        LOGGER.info("Map serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
 
         // Map checking
         //

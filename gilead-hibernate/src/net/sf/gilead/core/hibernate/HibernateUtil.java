@@ -11,22 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.sf.beanlib.hibernate.UnEnhancer;
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.serialization.SerializableId;
-import net.sf.gilead.exception.ComponentTypeException;
-import net.sf.gilead.exception.NotPersistentObjectException;
-import net.sf.gilead.exception.TransientObjectException;
-import net.sf.gilead.pojo.base.ILightEntity;
-import net.sf.gilead.pojo.base.IUserType;
-import net.sf.gilead.util.IntrospectionHelper;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -54,6 +41,18 @@ import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.CompositeType;
 import org.hibernate.type.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.beanlib.hibernate.UnEnhancer;
+import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.serialization.SerializableId;
+import net.sf.gilead.exception.ComponentTypeException;
+import net.sf.gilead.exception.NotPersistentObjectException;
+import net.sf.gilead.exception.TransientObjectException;
+import net.sf.gilead.pojo.base.ILightEntity;
+import net.sf.gilead.pojo.base.IUserType;
+import net.sf.gilead.util.IntrospectionHelper;
 
 /**
  * Persistent helper for Hibernate implementation Centralizes the SessionFactory and add some needed methods. Not really
@@ -62,6 +61,9 @@ import org.hibernate.type.Type;
  * @author BMARCHESSON
  */
 public class HibernateUtil implements IPersistenceUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HibernateUtil.class);
+
     // ----
     // Serialized proxy informations map constants
     // ----
@@ -103,11 +105,6 @@ public class HibernateUtil implements IPersistenceUtil {
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(HibernateUtil.class.getSimpleName());
-
     /**
      * The pseudo unique instance of the singleton
      */
@@ -239,7 +236,7 @@ public class HibernateUtil implements IPersistenceUtil {
         if (isPersistentClass(hibernateClass) == false) {
             // Not an hibernate Class !
             //
-            _log.log(Level.FINE, hibernateClass + " is not persistent");
+            LOGGER.trace(hibernateClass + " is not persistent");
 
             throw new NotPersistentObjectException(pojo);
         }
@@ -639,7 +636,8 @@ public class HibernateUtil implements IPersistenceUtil {
      * @return
      */
     @Override
-    public Collection<?> createPersistentCollection(Object parent, Map<String, Serializable> proxyInformations, Collection<?> underlyingCollection) {
+    public Collection<?> createPersistentCollection(Object parent, Map<String, Serializable> proxyInformations,
+            Collection<?> underlyingCollection) {
         try {
             // Re-create original collection
             //
@@ -734,7 +732,7 @@ public class HibernateUtil implements IPersistenceUtil {
             // unable to re-create persistent collection (embeddable items) :
             // load it
             //
-            _log.log(Level.WARNING, "Unable to re-create persistent collection of not persistent items, loading it...");
+            LOGGER.warn("Unable to re-create persistent collection of not persistent items, loading it...");
 
             String role = proxyInformations.get(ROLE).toString();
             role = role.substring(role.lastIndexOf(".") + 1);
@@ -822,7 +820,7 @@ public class HibernateUtil implements IPersistenceUtil {
             }
         } else {
             // Not implemented
-            _log.log(Level.WARNING, "Unimplemented collection type :" + collection.getClass());
+            LOGGER.warn("Unimplemented collection type :" + collection.getClass());
             return null;
         }
     }
@@ -852,7 +850,7 @@ public class HibernateUtil implements IPersistenceUtil {
     public void flushIfNeeded() {
         Session session = getCurrentSession();
         if (session != null) {
-            _log.log(Level.FINE, "Flushing session !");
+            LOGGER.trace("Flushing session !");
             session.flush();
         }
     }
@@ -880,7 +878,7 @@ public class HibernateUtil implements IPersistenceUtil {
         queryString.append(" item LEFT OUTER JOIN FETCH item.");
         queryString.append(propertyName);
         queryString.append(" WHERE item.id = :id");
-        _log.log(Level.FINE, "Query is '" + queryString.toString() + "'");
+        LOGGER.trace("Query is '" + queryString.toString() + "'");
 
         // Fill query
         //
@@ -900,7 +898,7 @@ public class HibernateUtil implements IPersistenceUtil {
     @Override
     @SuppressWarnings("unchecked")
     public List<Object> executeQuery(String query, List<Object> parameters) {
-        _log.log(Level.FINE, "Executing query '" + query + "'");
+        LOGGER.trace("Executing query '" + query + "'");
 
         // Fill query
         //
@@ -927,7 +925,7 @@ public class HibernateUtil implements IPersistenceUtil {
     @Override
     @SuppressWarnings("unchecked")
     public List<Object> executeQuery(String query, Map<String, Object> parameters) {
-        _log.log(Level.FINE, "Executing query '" + query + "'");
+        LOGGER.trace("Executing query '" + query + "'");
 
         // Fill query
         //
@@ -999,7 +997,7 @@ public class HibernateUtil implements IPersistenceUtil {
         for (String entityName : entityNames) {
             Type[] types = _sessionFactory.getClassMetadata(entityName).getPropertyTypes();
             for (Type type : types) {
-                _log.log(Level.FINE, "Scanning type " + type.getName() + " from " + clazz);
+                LOGGER.trace("Scanning type " + type.getName() + " from " + clazz);
                 computePersistentForType(type);
             }
         }
@@ -1013,9 +1011,9 @@ public class HibernateUtil implements IPersistenceUtil {
      */
     private void markClassAsPersistent(Class<?> clazz, boolean persistent) {
         if (persistent) {
-            _log.log(Level.FINE, "Marking " + clazz + " as persistent");
+            LOGGER.trace("Marking " + clazz + " as persistent");
         } else {
-            _log.log(Level.FINE, "Marking " + clazz + " as not persistent");
+            LOGGER.trace("Marking " + clazz + " as not persistent");
         }
         synchronized (_persistenceMap) {
             // Debug check
@@ -1048,12 +1046,12 @@ public class HibernateUtil implements IPersistenceUtil {
             }
         }
 
-        _log.log(Level.FINE, "Scanning type " + type.getName());
+        LOGGER.trace("Scanning type " + type.getName());
 
         if (type.isComponentType()) {
             // Add the Class to the persistent map
             //
-            _log.log(Level.FINE, "Type " + type.getName() + " is component type");
+            LOGGER.trace("Type " + type.getName() + " is component type");
 
             markClassAsPersistent(type.getReturnedClass(), true);
 
@@ -1064,32 +1062,17 @@ public class HibernateUtil implements IPersistenceUtil {
         } else if (IUserType.class.isAssignableFrom(type.getReturnedClass())) {
             // Add the Class to the persistent map
             //
-            _log.log(Level.FINE, "Type " + type.getName() + " is user type");
+            LOGGER.trace("Type " + type.getName() + " is user type");
 
             markClassAsPersistent(type.getReturnedClass(), true);
         } else if (type.isCollectionType()) {
             // Collection handling
             //
-            _log.log(Level.FINE, "Type " + type.getName() + " is collection type");
+            LOGGER.trace("Type " + type.getName() + " is collection type");
             computePersistentForType(((CollectionType) type).getElementType(_sessionFactory));
         } else if (type.isEntityType()) {
-            _log.log(Level.FINE, "Type " + type.getName() + " is entity type");
+            LOGGER.trace("Type " + type.getName() + " is entity type");
             computePersistenceForClass(type.getReturnedClass());
-        }
-    }
-
-    /**
-     * Debug method : dump persistence map for checking
-     */
-    private void dumpPersistenceMap() {
-        synchronized (_persistenceMap) {
-            // Dump every entry
-            //
-            _log.log(Level.FINE, "-- Start of persistence map --");
-            for (Entry<Class<?>, Boolean> persistenceEntry : _persistenceMap.entrySet()) {
-                _log.log(Level.FINE, persistenceEntry.getKey() + " persistence is " + persistenceEntry.getValue());
-            }
-            _log.log(Level.FINE, "-- End of persistence map --");
         }
     }
 
@@ -1424,7 +1407,7 @@ public class HibernateUtil implements IPersistenceUtil {
                     // The data has already been deleted, just remove it from
                     // the collection
                     //
-                    _log.log(Level.FINE, "Deleted entity : " + sid + " cannot be retrieved from DB and thus added to snapshot", ex);
+                    LOGGER.trace("Deleted entity : " + sid + " cannot be retrieved from DB and thus added to snapshot", ex);
                 }
             }
         } else // if (sid.getHashCode() != null)
@@ -1543,7 +1526,7 @@ public class HibernateUtil implements IPersistenceUtil {
                 return null;
             }
         } catch (HibernateException ex) {
-            _log.log(Level.FINE, "Exception during getCurrentSession", ex);
+            LOGGER.trace("Exception during getCurrentSession", ex);
             return null;
         }
 

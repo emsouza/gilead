@@ -20,8 +20,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.spi.DetailedPropertyFilter;
 import net.sf.gilead.core.IPersistenceUtil;
@@ -37,14 +38,12 @@ import net.sf.gilead.util.IntrospectionHelper;
  * @author bruno.marchesson
  */
 public class ClonePropertyFilter implements DetailedPropertyFilter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClonePropertyFilter.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(ClonePropertyFilter.class.getSimpleName());
-
     /**
      * The associated persistence utils
      */
@@ -143,7 +142,7 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
             if (_persistenceUtil.isInitialized(fromValue) == false) {
                 // Lazy property !
                 //
-                _log.log(Level.FINE, fromBean.toString() + "." + propertyName + " --> not initialized");
+                LOGGER.trace(fromBean.toString() + "." + propertyName + " --> not initialized");
 
                 // Get proxy informations
                 //

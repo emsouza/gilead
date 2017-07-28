@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.core.serialization;
 
@@ -10,35 +10,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.exception.ConvertorException;
 
 /**
  * Serialization manager singleton. It serializes Serializable instances to simple byte array and deserializes them when
  * back. (needed for proxy informations, since GWT does not like Serializable type in Map<String, Serializable>)
- * 
+ *
  * @author bruno.marchesson
  */
 public class ByteStringProxySerialization implements IProxySerialization {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Logger channel.
-     */
-    private static Logger _log = Logger.getLogger(ByteStringProxySerialization.class.getSimpleName());
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
-    /**
-     * Constructor.
-     */
-    public ByteStringProxySerialization() {}
+    private static final Logger LOGGER = LoggerFactory.getLogger(ByteStringProxySerialization.class);
 
     // -------------------------------------------------------------------------
     //
@@ -51,7 +37,7 @@ public class ByteStringProxySerialization implements IProxySerialization {
      */
     @Override
     public Object serialize(Serializable serializable) {
-        _log.log(Level.FINE, "Serialization of " + serializable);
+        LOGGER.trace("Serialization of " + serializable);
         // Precondition checking
         //
         if (serializable == null) {
@@ -88,7 +74,7 @@ public class ByteStringProxySerialization implements IProxySerialization {
         }
 
         byte[] bytes = Base64.decodeFast((String) object);
-        _log.log(Level.FINE, "Unserialization of " + Arrays.toString(bytes));
+        LOGGER.trace("Unserialization of " + Arrays.toString(bytes));
 
         // Precondition checking
         //

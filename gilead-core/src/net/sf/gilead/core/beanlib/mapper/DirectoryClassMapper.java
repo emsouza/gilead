@@ -17,25 +17,24 @@ package net.sf.gilead.core.beanlib.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.beanlib.IClassMapper;
 
 /**
  * Class mapper based on package hierarchy (Domain and DTO must have the same name and placed in identified packages)
- * 
+ *
  * @author bruno.marchesson
  */
 public class DirectoryClassMapper implements IClassMapper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryClassMapper.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(DirectoryClassMapper.class.getSimpleName());
-
     /**
      * The root package of all Domain classes
      */
@@ -164,13 +163,13 @@ public class DirectoryClassMapper implements IClassMapper {
 
             // Instantiate target Class<?>
             //
-            _log.info("Source Class name is " + sourceClassName);
-            _log.info("Computed target Class name is " + targetClassName);
+            LOGGER.info("Source Class name is " + sourceClassName);
+            LOGGER.info("Computed target Class name is " + targetClassName);
 
             try {
                 targetClass = Class.forName(targetClassName);
             } catch (ClassNotFoundException e) {
-                _log.log(Level.FINE, "Target Class does not exist : " + targetClassName, e);
+                LOGGER.trace("Target Class does not exist : " + targetClassName, e);
                 return null;
             }
 
@@ -236,13 +235,13 @@ public class DirectoryClassMapper implements IClassMapper {
 
             // Instantiate target Class<?>
             //
-            _log.info("Target Class name is " + targetClassName);
-            _log.info("Computed source Class name is " + sourceClassName);
+            LOGGER.info("Target Class name is " + targetClassName);
+            LOGGER.info("Computed source Class name is " + sourceClassName);
 
             try {
                 sourceClass = Class.forName(sourceClassName);
             } catch (ClassNotFoundException e) {
-                _log.log(Level.FINE, "Source Class does not exist : " + sourceClassName, e);
+                LOGGER.trace("Source Class does not exist : " + sourceClassName, e);
                 return null;
             }
 

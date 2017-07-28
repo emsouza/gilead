@@ -16,8 +16,8 @@
 
 package net.sf.gilead.core.beanlib.clone;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
@@ -29,18 +29,16 @@ import net.sf.gilead.core.beanlib.merge.MergeClassBeanReplicator;
 
 /**
  * Bean replicator with different from and to classes for clone operation
- * 
+ *
  * @author bruno.marchesson
  */
 public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloneClassBeanReplicator.class);
+
     // ---
     // Attributes
     // ---
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(CloneClassBeanReplicator.class.getSimpleName());
-
     /**
      * The class mapper (can be null)
      */
@@ -58,7 +56,7 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     /**
      * Factory for {@link MergeClassBeanReplicator}
-     * 
+     *
      * @author bruno.marchesson
      */
     public static class Factory implements BeanReplicatorSpi.Factory {
@@ -128,8 +126,8 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass) throws InstantiationException, IllegalAccessException,
-            SecurityException, NoSuchMethodException {
+    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass)
+            throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException {
         // Class mapper indirection
         //
         if (_classMapper != null) {
@@ -140,10 +138,10 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
             // Keep target class only if not null
             //
             if (targetClass != null) {
-                _log.log(Level.FINE, "Class mapper : from " + from.getClass() + " to " + targetClass);
+                LOGGER.trace("Class mapper : from " + from.getClass() + " to " + targetClass);
                 toClass = targetClass;
             } else {
-                _log.log(Level.FINE, "Class mapper : no target class for " + from.getClass());
+                LOGGER.trace("Class mapper : no target class for " + from.getClass());
             }
         }
         return super.createToInstance(from, toClass);

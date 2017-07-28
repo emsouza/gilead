@@ -16,7 +16,9 @@
 
 package net.sf.gilead.proxy;
 
-import java.util.logging.Logger;
+import org.apache.commons.lang3.ClassUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javassist.CannotCompileException;
 import javassist.ClassClassPath;
@@ -33,21 +35,14 @@ import net.sf.gilead.proxy.xml.Attribute;
 import net.sf.gilead.proxy.xml.Constructor;
 import net.sf.gilead.proxy.xml.Method;
 
-import org.apache.commons.lang3.ClassUtils;
-
 /**
  * Javassist proxy generator (for server side)
  *
  * @author bruno.marchesson
  */
 public class JavassistProxyGenerator implements IServerProxyGenerator {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(JavassistProxyGenerator.class.getSimpleName());
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavassistProxyGenerator.class);
 
     // -------------------------------------------------------------------------
     //
@@ -65,7 +60,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
             //
             String sourceClassName = superClass.getName();
             String proxyClassName = sourceClassName + additionalCode.getSuffix();
-            _log.info("Generating server proxy " + proxyClassName + " for class " + sourceClassName);
+            LOGGER.info("Generating server proxy " + proxyClassName + " for class " + sourceClassName);
 
             // Create proxy class
             //

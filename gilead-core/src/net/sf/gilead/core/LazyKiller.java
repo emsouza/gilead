@@ -17,8 +17,9 @@
 package net.sf.gilead.core;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.provider.BeanPopulator;
@@ -33,18 +34,16 @@ import net.sf.gilead.core.store.IProxyStore;
  * This class replaces all "lazy but not loaded" Hibernate association with null to allow the argument POJO to be used
  * in other libraries without additional loading of 'LazyInitializationException'. The lazy properties are stored as
  * string. They can be reused for "reattaching" the clone pojo to a fresh Hibernate object.
- * 
+ *
  * @author bruno.marchesson
  */
 public class LazyKiller {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LazyKiller.class);
+
     // ----
     // Attributes
     // ----
-    /**
-     * Logger channel
-     */
-    private static Logger _log = Logger.getLogger(LazyKiller.class.getSimpleName());
-
     /**
      * The class mapper
      */
@@ -117,7 +116,7 @@ public class LazyKiller {
 
     /**
      * Base constructor
-     * 
+     *
      * @param classMapper the class mapping service
      * @param persistenceUtil persistence util implementation
      * @param proxyStore the proxy store
@@ -143,7 +142,7 @@ public class LazyKiller {
 
     /**
      * Hibernate detachment
-     * 
+     *
      * @param hibernatePojo the input hibernate pojo
      * @return a pure Java clone
      */
@@ -154,7 +153,7 @@ public class LazyKiller {
             return null;
         }
 
-        _log.log(Level.FINE, "Detaching " + hibernatePojo.toString());
+        LOGGER.trace("Detaching " + hibernatePojo.toString());
 
         // Search for Proxy
         //
@@ -171,7 +170,7 @@ public class LazyKiller {
 
     /**
      * Hibernate detachment
-     * 
+     *
      * @param hibernatePojo the input hibernate pojo
      * @return a pure Java clone
      */
@@ -182,7 +181,7 @@ public class LazyKiller {
             return null;
         }
 
-        _log.log(Level.FINE, "Detaching " + hibernatePojo.toString());
+        LOGGER.trace("Detaching " + hibernatePojo.toString());
 
         // Clone with beanLib
         //
@@ -191,7 +190,7 @@ public class LazyKiller {
 
     /**
      * Hibernate attachment
-     * 
+     *
      * @param hibernatePojo the stored or fresh Hibernate POJO
      * @param clonePojo the cloned pojo
      */
@@ -202,7 +201,7 @@ public class LazyKiller {
             return;
         }
 
-        _log.log(Level.FINE, "Attaching " + clonePojo.toString());
+        LOGGER.trace("Attaching " + clonePojo.toString());
 
         // Populate with BeanLib
         //
@@ -217,7 +216,7 @@ public class LazyKiller {
     /**
      * Clone the abstract POJO with BeanLib Every time a lazy property is detected, it is replaced with null. It is also
      * marked as "lazy" for ILightEntity sub-classes
-     * 
+     *
      * @param pojo
      * @return
      */
