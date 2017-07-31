@@ -41,28 +41,25 @@ public class LazyKiller {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LazyKiller.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The class mapper
      */
-    private IClassMapper _classMapper;
+    private IClassMapper classMapper;
 
     /**
      * The associated persistence utils
      */
-    private IPersistenceUtil _persistenceUtil;
+    private IPersistenceUtil persistenceUtil;
 
     /**
      * The used proxy store
      */
-    private IProxyStore _proxyStore;
+    private IProxyStore proxyStore;
 
     /**
      * The cloned map. It is used to propagate treated beans throughout collection clone and merge.
      */
-    private ThreadLocal<Map<Object, Object>> _clonedMap;
+    private static ThreadLocal<Map<Object, Object>> clonedMap = new ThreadLocal<Map<Object, Object>>();
 
     // ----
     // Properties
@@ -71,42 +68,37 @@ public class LazyKiller {
      * @return the persistence Util implementation to use
      */
     public IPersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
+        return persistenceUtil;
     }
 
     /**
      * @param util the persistenceUtil to set
      */
     public void setPersistenceUtil(IPersistenceUtil util) {
-        _persistenceUtil = util;
+        persistenceUtil = util;
     }
 
     /**
      * @param mapper the class Mapper to set
      */
     public void setClassMapper(IClassMapper mapper) {
-        _classMapper = mapper;
+        classMapper = mapper;
     }
 
     /**
      * @return the associated proxy Store
      */
     public IProxyStore getProxyStore() {
-        return _proxyStore;
+        return proxyStore;
     }
 
     /**
      * @param store the proxy Store to set
      */
     public void setProxyStore(IProxyStore store) {
-        _proxyStore = store;
+        proxyStore = store;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Empty constructor
      */
@@ -122,22 +114,16 @@ public class LazyKiller {
      * @param proxyStore the proxy store
      */
     public LazyKiller(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
-        _clonedMap = new ThreadLocal<Map<Object, Object>>();
         setClassMapper(classMapper);
         setPersistenceUtil(persistenceUtil);
         setProxyStore(proxyStore);
     }
 
-    // ------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // ------------------------------------------------------------------------
     /**
      * Reset the clone map.
      */
     public void reset() {
-        _clonedMap.set(null);
+        clonedMap.remove();
     }
 
     /**
@@ -148,7 +134,6 @@ public class LazyKiller {
      */
     public Object detach(Object hibernatePojo) {
         // Precondition checking
-        //
         if (hibernatePojo == null) {
             return null;
         }
@@ -156,10 +141,9 @@ public class LazyKiller {
         LOGGER.trace("Detaching " + hibernatePojo.toString());
 
         // Search for Proxy
-        //
         Class<?> targetClass = hibernatePojo.getClass();
-        if (_classMapper != null) {
-            Class<?> mappedClass = _classMapper.getTargetClass(targetClass);
+        if (classMapper != null) {
+            Class<?> mappedClass = classMapper.getTargetClass(targetClass);
             if (mappedClass != null) {
                 targetClass = mappedClass;
             }
@@ -176,7 +160,6 @@ public class LazyKiller {
      */
     public Object detach(Object hibernatePojo, Class<?> cloneClass) {
         // Precondition checking
-        //
         if (hibernatePojo == null) {
             return null;
         }
@@ -184,7 +167,6 @@ public class LazyKiller {
         LOGGER.trace("Detaching " + hibernatePojo.toString());
 
         // Clone with beanLib
-        //
         return clone(hibernatePojo, cloneClass);
     }
 
@@ -196,7 +178,6 @@ public class LazyKiller {
      */
     public void attach(Object hibernatePojo, Object clonePojo) {
         // Precondition checking
-        //
         if ((hibernatePojo == null) || (clonePojo == null)) {
             return;
         }
@@ -204,15 +185,9 @@ public class LazyKiller {
         LOGGER.trace("Attaching " + clonePojo.toString());
 
         // Populate with BeanLib
-        //
         populate(hibernatePojo, clonePojo);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Clone the abstract POJO with BeanLib Every time a lazy property is detected, it is replaced with null. It is also
      * marked as "lazy" for ILightEntity sub-classes
@@ -221,7 +196,7 @@ public class LazyKiller {
      * @return
      */
     protected Object clone(Object hibernatePojo, Class<?> cloneClass) {
-        HibernateBeanReplicator replicator = new CloneBeanReplicator(_classMapper, _persistenceUtil, _proxyStore);
+        HibernateBeanReplicator replicator = new CloneBeanReplicator(classMapper, persistenceUtil, proxyStore);
 
         return replicator.copy(hibernatePojo, cloneClass);
     }
@@ -233,11 +208,11 @@ public class LazyKiller {
     public void populate(Object hibernatePojo, Object clonePojo) {
 
         // Populate hibernate POJO from the cloned pojo
-        BeanPopulator replicator = MergeBeanPopulator.newBeanPopulator(clonePojo, hibernatePojo, _classMapper, _persistenceUtil, _proxyStore);
+        BeanPopulator replicator = MergeBeanPopulator.newBeanPopulator(clonePojo, hibernatePojo, classMapper, persistenceUtil, proxyStore);
 
         // Propagate cloned map if needed
         BeanTransformerSpi transformer = (BeanTransformerSpi) replicator.getTransformer();
-        Map<Object, Object> clonedMap = _clonedMap.get();
+        Map<Object, Object> clonedMap = LazyKiller.clonedMap.get();
         if (clonedMap != null) {
             transformer.getClonedMap().putAll(clonedMap);
         }
@@ -250,6 +225,10 @@ public class LazyKiller {
         replicator.populate();
 
         // Fill cloned map if needed
-        _clonedMap.set(transformer.getClonedMap());
+        LazyKiller.clonedMap.set(transformer.getClonedMap());
+    }
+
+    public void info(String origem) {
+        LoggerFactory.getLogger(LazyKiller.class).info(origem + " cloneMap " + (clonedMap.get() != null ? "NOK" : "OK"));
     }
 }

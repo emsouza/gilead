@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import net.sf.beanlib.utils.ClassUtils;
 import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
 import net.sf.gilead.core.store.IProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 import net.sf.gilead.exception.CloneException;
@@ -58,127 +59,116 @@ public class PersistentBeanManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistentBeanManager.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The unique instance of the Persistence Bean Manager
      */
-    private static PersistentBeanManager _instance = null;
+    private static PersistentBeanManager INSTANCE;
 
     /**
      * The associated Proxy informations store
      */
-    protected IProxyStore _proxyStore;
+    protected IProxyStore proxyStore;
 
     /**
      * The Class mapper
      */
-    protected IClassMapper _classMapper;
+    protected IClassMapper classMapper;
 
     /**
      * The POJO lazy killer
      */
-    protected LazyKiller _lazyKiller;
+    protected LazyKiller lazyKiller;
 
     /**
      * The associated persistence util implementation
      */
-    protected IPersistenceUtil _persistenceUtil;
+    protected IPersistenceUtil persistenceUtil;
 
-    // ----
-    // Property
-    // ----
     /**
      * @return the unique instance of the singleton
      */
     public synchronized static PersistentBeanManager getInstance() {
-        if (_instance == null) {
-            _instance = new PersistentBeanManager();
+        if (INSTANCE == null) {
+            INSTANCE = new PersistentBeanManager();
         }
-        return _instance;
+        return INSTANCE;
     }
 
     /**
      * @return the proxy store
      */
     public IProxyStore getProxyStore() {
-        return _proxyStore;
+        return this.proxyStore;
     }
 
     /**
      * set the used pojo store
      */
     public void setProxyStore(IProxyStore proxyStore) {
-        LOGGER.info("Using Proxy Store : " + proxyStore);
-        _proxyStore = proxyStore;
-        _lazyKiller.setProxyStore(_proxyStore);
+        LOGGER.trace("Using Proxy Store : " + proxyStore);
+        this.proxyStore = proxyStore;
+        this.lazyKiller.setProxyStore(proxyStore);
     }
 
     /**
      * @return the class mapper
      */
     public IClassMapper getClassMapper() {
-        return _classMapper;
+        return this.classMapper;
     }
 
     /**
      * @param mapper the class Mapper to set
      */
     public void setClassMapper(IClassMapper mapper) {
-        LOGGER.info("Using class mapper : " + mapper);
-        _classMapper = mapper;
-
-        _lazyKiller.setClassMapper(mapper);
+        LOGGER.trace("Using class mapper : " + mapper);
+        this.classMapper = mapper;
+        this.lazyKiller.setClassMapper(mapper);
     }
 
     /**
      * @return the _persistenceUtil
      */
     public IPersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
+        return this.persistenceUtil;
     }
 
     /**
      * @param util the _persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
-        LOGGER.info("Using persistence util : " + util);
-
-        _persistenceUtil = util;
-        _lazyKiller.setPersistenceUtil(util);
+    public void setPersistenceUtil(IPersistenceUtil persistenceUtil) {
+        LOGGER.trace("Using persistence util : " + persistenceUtil);
+        this.persistenceUtil = persistenceUtil;
+        this.lazyKiller.setPersistenceUtil(persistenceUtil);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Empty Constructor
      */
-    public PersistentBeanManager() {
+    protected PersistentBeanManager() {
         // Default parameters
-        _proxyStore = new StatelessProxyStore();
-        _lazyKiller = new LazyKiller();
-        _lazyKiller.setProxyStore(_proxyStore);
+        this.proxyStore = new StatelessProxyStore();
+        this.lazyKiller = new LazyKiller();
+        this.lazyKiller.setProxyStore(proxyStore);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Hibernate Java 1.4 POJO public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Clone and store the Hibernate POJO(s)
      */
     public Object clone(Object object) {
         // Explicit clone : no assignable compatibility checking
+        return clone(object, false);
+    }
+
+    public Object clone(Object object, boolean assignable) {
         try {
-            return clone(object, false);
+            return cloneInternal(object, assignable);
         } finally {
-            _proxyStore.cleanUp();
-            _lazyKiller.reset();
+            persistenceUtil.closeCurrentSession();
+            proxyStore.cleanUp();
+            lazyKiller.reset();
+            lazyKiller.info("clone");
+            BeanlibThreadLocal.cleanStack();
         }
     }
 
@@ -189,18 +179,17 @@ public class PersistentBeanManager {
      * @param assignable if the assignation from source to target class (via ClassMapper) must be checked
      * @return the clone
      */
-    public Object clone(Object object, boolean assignable) {
-
+    private Object cloneInternal(Object object, boolean assignable) {
         // Precondition checking
         if (object == null) {
             return null;
         }
-        if (_persistenceUtil == null) {
+        if (persistenceUtil == null) {
             throw new RuntimeException("No Persistence Util set !");
         }
 
         // Flush any pending modifications before clone
-        _persistenceUtil.flushIfNeeded();
+        persistenceUtil.flushIfNeeded();
 
         // Collection handling
         if (object instanceof Collection) {
@@ -222,6 +211,83 @@ public class PersistentBeanManager {
     }
 
     /**
+     * Clone and store the Hibernate POJO
+     *
+     * @param pojo the pojo to store
+     * @param assignable does the source and target class must be assignable?
+     * @exception NotAssignableException if source and target class are not assignable
+     */
+    protected Object clonePojo(Object pojo, boolean assignable) {
+
+        // Null checking
+        if (pojo == null) {
+            return null;
+        }
+
+        // Precondition checking : is the pojo managed by Hibernate
+        Class<?> targetClass = pojo.getClass();
+        if (persistenceUtil.isPersistentPojo(pojo) == true) {
+
+            // Assignation test
+            Class<?> hibernateClass = persistenceUtil.getUnenhancedClass(pojo.getClass());
+            targetClass = null;
+            if (classMapper != null) {
+                targetClass = classMapper.getTargetClass(hibernateClass);
+            }
+
+            if (targetClass == null) {
+                targetClass = hibernateClass;
+            }
+
+            if ((assignable == true) && (hibernateClass.isAssignableFrom(targetClass) == false)) {
+                throw new NotAssignableException(hibernateClass, targetClass);
+            }
+
+            // Proxy checking
+            if (persistenceUtil.isInitialized(pojo) == false) {
+                // If the root pojo is not initialized, replace it by null
+                return null;
+            }
+        } else if (holdPersistentObject(pojo) == false) {
+
+            // Do not clone not persistent classes, since they do not necessary implement Java Bean specification.
+            LOGGER.trace("Not persistent instance, clone is not needed : " + pojo.toString());
+            return pojo;
+        }
+
+        // Clone the pojo
+        return lazyKiller.detach(pojo, targetClass);
+    }
+
+    /**
+     * Clone and store a map of Hibernate POJO
+     */
+    protected Map<?, ?> cloneMap(Map<?, ?> hibernatePojoMap, boolean assignable) {
+        // Clone each element of the map
+        Map<Object, Object> cloneMap = createNewMap(hibernatePojoMap);
+
+        for (Map.Entry<?, ?> entry : hibernatePojoMap.entrySet()) {
+            cloneMap.put(cloneInternal(entry.getKey(), assignable), cloneInternal(entry.getValue(), assignable));
+        }
+
+        return cloneMap;
+    }
+
+    /**
+     * Clone and store a collection of Hibernate POJO
+     */
+    protected Collection<?> cloneCollection(Collection<?> hibernatePojoList, boolean assignable) {
+
+        // Clone each element of the collection
+        Collection<Object> clonePojoList = createNewCollection(hibernatePojoList);
+        for (Object hibernatePojo : hibernatePojoList) {
+            clonePojoList.add(cloneInternal(hibernatePojo, assignable));
+        }
+
+        return clonePojoList;
+    }
+
+    /**
      * Merge the clone POJO to its Hibernate counterpart
      */
     public Object merge(Object object) {
@@ -232,15 +298,30 @@ public class PersistentBeanManager {
     /**
      * Merge the clone POJO to its Hibernate counterpart
      */
-    @SuppressWarnings("unchecked")
     public Object merge(Object object, boolean assignable) {
+        try {
+            return mergeInternal(object, assignable);
+        } finally {
+            persistenceUtil.closeCurrentSession();
+            proxyStore.cleanUp();
+            lazyKiller.reset();
+            lazyKiller.info("merge");
+            BeanlibThreadLocal.cleanStack();
+        }
+    }
+
+    /**
+     * Merge the clone POJO to its Hibernate counterpart
+     */
+    @SuppressWarnings("unchecked")
+    private Object mergeInternal(Object object, boolean assignable) {
         // Precondition checking
         //
         if (object == null) {
             return null;
         }
 
-        if (_persistenceUtil == null) {
+        if (persistenceUtil == null) {
             throw new RuntimeException("No Persistence Util set !");
         }
 
@@ -272,93 +353,6 @@ public class PersistentBeanManager {
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Hibernate Java 1.4 POJO internal methods
-    //
-    // -------------------------------------------------------------------------
-    /**
-     * Clone and store the Hibernate POJO
-     *
-     * @param pojo the pojo to store
-     * @param assignable does the source and target class must be assignable?
-     * @exception NotAssignableException if source and target class are not assignable
-     */
-    protected Object clonePojo(Object pojo, boolean assignable) {
-
-        // Null checking
-        if (pojo == null) {
-            return null;
-        }
-
-        // Precondition checking : is the pojo managed by Hibernate
-        try {
-            Class<?> targetClass = pojo.getClass();
-            if (_persistenceUtil.isPersistentPojo(pojo) == true) {
-
-                // Assignation test
-                Class<?> hibernateClass = _persistenceUtil.getUnenhancedClass(pojo.getClass());
-                targetClass = null;
-                if (_classMapper != null) {
-                    targetClass = _classMapper.getTargetClass(hibernateClass);
-                }
-
-                if (targetClass == null) {
-                    targetClass = hibernateClass;
-                }
-
-                if ((assignable == true) && (hibernateClass.isAssignableFrom(targetClass) == false)) {
-                    throw new NotAssignableException(hibernateClass, targetClass);
-                }
-
-                // Proxy checking
-                if (_persistenceUtil.isInitialized(pojo) == false) {
-                    // If the root pojo is not initialized, replace it by null
-                    return null;
-                }
-            } else if (holdPersistentObject(pojo) == false) {
-
-                // Do not clone not persistent classes, since they do not necessary implement Java Bean specification.
-                LOGGER.trace("Not persistent instance, clone is not needed : " + pojo.toString());
-                return pojo;
-            }
-
-            // Clone the pojo
-            return _lazyKiller.detach(pojo, targetClass);
-        } finally {
-            _persistenceUtil.closeCurrentSession();
-            _proxyStore.cleanUp();
-        }
-    }
-
-    /**
-     * Clone and store a map of Hibernate POJO
-     */
-    protected Map<?, ?> cloneMap(Map<?, ?> hibernatePojoMap, boolean assignable) {
-        // Clone each element of the map
-        Map<Object, Object> cloneMap = createNewMap(hibernatePojoMap);
-
-        for (Map.Entry<?, ?> entry : hibernatePojoMap.entrySet()) {
-            cloneMap.put(clone(entry.getKey(), assignable), clone(entry.getValue(), assignable));
-        }
-
-        return cloneMap;
-    }
-
-    /**
-     * Clone and store a collection of Hibernate POJO
-     */
-    protected Collection<?> cloneCollection(Collection<?> hibernatePojoList, boolean assignable) {
-
-        // Clone each element of the collection
-        Collection<Object> clonePojoList = createNewCollection(hibernatePojoList);
-        for (Object hibernatePojo : hibernatePojoList) {
-            clonePojoList.add(clone(hibernatePojo, assignable));
-        }
-
-        return clonePojoList;
-    }
-
     /**
      * Retrieve the Hibernate Pojo and merge the modification from GWT
      *
@@ -374,8 +368,8 @@ public class PersistentBeanManager {
         // Get Hibernate associated class
         Class<?> cloneClass = clonePojo.getClass();
         Class<?> hibernateClass = null;
-        if (_classMapper != null) {
-            hibernateClass = _classMapper.getSourceClass(cloneClass);
+        if (classMapper != null) {
+            hibernateClass = classMapper.getSourceClass(cloneClass);
         }
         if (hibernateClass == null) {
             // Not a clone : take the inner class
@@ -383,7 +377,7 @@ public class PersistentBeanManager {
         }
 
         // Precondition checking : is the pojo managed by Hibernate
-        if (_persistenceUtil.isPersistentClass(hibernateClass) == true) {
+        if (persistenceUtil.isPersistentClass(hibernateClass) == true) {
             // Assignation checking
             if ((assignable == true) && (hibernateClass.isAssignableFrom(cloneClass) == false)) {
                 throw new NotAssignableException(hibernateClass, cloneClass);
@@ -391,66 +385,59 @@ public class PersistentBeanManager {
         }
 
         // Retrieve the pojo
+        Serializable id = null;
         try {
-            Serializable id = null;
-            try {
-                id = _persistenceUtil.getId(clonePojo, hibernateClass);
-                if (id == null) {
-                    LOGGER.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
-                }
-            } catch (TransientObjectException ex) {
-                LOGGER.info("Transient object : " + clonePojo);
-            } catch (NotPersistentObjectException ex) {
-                if (holdPersistentObject(clonePojo) == false) {
-                    // Do not merge not persistent instance, since they do not
-                    // necessary
-                    // implement the Java bean specification
-                    //
-                    LOGGER.trace("Not persistent object, merge is not needed : " + clonePojo);
-                    return clonePojo;
-                } else {
-                    LOGGER.trace("Merging wrapper object : " + clonePojo);
-                }
+            id = persistenceUtil.getId(clonePojo, hibernateClass);
+            if (id == null) {
+                LOGGER.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
             }
-
-            if (ClassUtils.immutable(hibernateClass)) {
-                // Do not clone immutable types
-                //
+        } catch (TransientObjectException ex) {
+            LOGGER.info("Transient object : " + clonePojo);
+        } catch (NotPersistentObjectException ex) {
+            if (holdPersistentObject(clonePojo) == false) {
+                // Do not merge not persistent instance, since they do not necessary
+                // implement the Java bean specification
+                LOGGER.trace("Not persistent object, merge is not needed : " + clonePojo);
                 return clonePojo;
+            } else {
+                LOGGER.trace("Merging wrapper object : " + clonePojo);
             }
-
-            // Create a new POJO instance
-            //
-            Object hibernatePojo = null;
-            try {
-                if (AnnotationsManager.hasGileadAnnotations(hibernateClass)) {
-                    if (id != null) {
-                        // ServerOnly or ReadOnly annotation : load from DB
-                        // needed
-                        //
-                        hibernatePojo = _persistenceUtil.load(id, hibernateClass);
-                    } else {
-                        // Transient instance
-                        //
-                        hibernatePojo = clonePojo;
-                    }
-                } else {
-                    Constructor<?> constructor = hibernateClass.getDeclaredConstructor(new Class<?>[] {});
-                    constructor.setAccessible(true);
-                    hibernatePojo = constructor.newInstance();
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Cannot create a fresh new instance of the class " + hibernateClass, e);
-            }
-
-            // Merge the modification in the Hibernate Pojo
-            //
-            _lazyKiller.attach(hibernatePojo, clonePojo);
-            return hibernatePojo;
-        } finally {
-            _persistenceUtil.closeCurrentSession();
-            _proxyStore.cleanUp();
         }
+
+        if (ClassUtils.immutable(hibernateClass)) {
+            // Do not clone immutable types
+            //
+            return clonePojo;
+        }
+
+        // Create a new POJO instance
+        //
+        Object hibernatePojo = null;
+        try {
+            if (AnnotationsManager.hasGileadAnnotations(hibernateClass)) {
+                if (id != null) {
+                    // ServerOnly or ReadOnly annotation : load from DB
+                    // needed
+                    //
+                    hibernatePojo = persistenceUtil.load(id, hibernateClass);
+                } else {
+                    // Transient instance
+                    //
+                    hibernatePojo = clonePojo;
+                }
+            } else {
+                Constructor<?> constructor = hibernateClass.getDeclaredConstructor(new Class<?>[] {});
+                constructor.setAccessible(true);
+                hibernatePojo = constructor.newInstance();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot create a fresh new instance of the class " + hibernateClass, e);
+        }
+
+        // Merge the modification in the Hibernate Pojo
+        //
+        lazyKiller.attach(hibernatePojo, clonePojo);
+        return hibernatePojo;
     }
 
     /**
@@ -468,10 +455,9 @@ public class PersistentBeanManager {
         //
         for (Object clonePojo : clonePojoList) {
             try {
-                hibernatePojoList.add(merge(clonePojo, assignable));
+                hibernatePojoList.add(mergeInternal(clonePojo, assignable));
             } catch (TransientObjectException e) {
                 // Keep new pojo (probably created from GWT)
-                //
                 hibernatePojoList.add(clonePojo);
             }
         }
@@ -489,19 +475,18 @@ public class PersistentBeanManager {
         Map<Object, Object> hibernateMap = new HashMap<Object, Object>();
 
         // Iterate over map
-        //
         for (Map.Entry<?, ?> entry : cloneMap.entrySet()) {
             // Merge key
             Object key = entry.getKey();
             try {
-                key = merge(key, assignable);
+                key = mergeInternal(key, assignable);
             } catch (TransientObjectException ex) { /* keep key untouched */
             }
 
             // Merge value
             Object value = entry.getValue();
             try {
-                value = merge(value, assignable);
+                value = mergeInternal(value, assignable);
             } catch (TransientObjectException ex) { /* keep value untouched */
             }
 
@@ -522,31 +507,24 @@ public class PersistentBeanManager {
         Class<? extends Collection> collectionClass = pojoCollection.getClass();
 
         // Exclusion case : persistent collection, base collection or BlazeDS ones
-        //
-        if (_persistenceUtil.isPersistentCollection(collectionClass) || collectionClass.isAnonymousClass() || collectionClass.isMemberClass()
+        if (persistenceUtil.isPersistentCollection(collectionClass) || collectionClass.isAnonymousClass() || collectionClass.isMemberClass()
                 || collectionClass.isLocalClass() || collectionClass.getName().equals("flex.messaging.io.ArrayCollection")) {
             // Create a basic collection
-            //
             return createBasicCollection(pojoCollection);
         } else {
             // Create the same collection
-            //
             Collection<Object> result = null;
             try {
                 // First, search constructor with initial capacity argument
-                //
                 Constructor<?> constructor = collectionClass.getConstructor(Integer.TYPE);
                 result = (Collection<Object>) constructor.newInstance(pojoCollection.size());
             } catch (NoSuchMethodException e) {
                 // No such constructor, so search the empty one
-                //
                 try {
                     Constructor<?> constructor = collectionClass.getConstructor((Class[]) null);
                     result = (Collection<Object>) constructor.newInstance();
                 } catch (NoSuchMethodException ex) {
-                    // No empty or simple constructor : fallback on basic
-                    // collection
-                    //
+                    // No empty or simple constructor : fallback on basic collection
                     LOGGER.warn("Unable to find basic constructor for " + collectionClass.getName() + " : falling back to basic collection");
                     return createBasicCollection(pojoCollection);
                 } catch (Exception ex) {
@@ -558,8 +536,7 @@ public class PersistentBeanManager {
 
             if (collectionClass.getPackage().getName().startsWith("java") == false) {
                 // Extend collections (such as PagingList)
-                //
-                _lazyKiller.populate(result, pojoCollection);
+                lazyKiller.populate(result, pojoCollection);
             }
 
             return result;
@@ -578,7 +555,6 @@ public class PersistentBeanManager {
                 return new ArrayList<Object>(pojoCollection.size());
             } catch (Exception ex) {
                 // No access to size ? lazy initialization exception ?
-                //
                 LOGGER.trace("Error creating array list with size " + ex);
                 return new ArrayList<Object>();
             }
@@ -590,7 +566,6 @@ public class PersistentBeanManager {
                     return new HashSet<Object>(pojoCollection.size());
                 } catch (Exception ex) {
                     // No access to size ? lazy initialization exception ?
-                    //
                     LOGGER.trace("Error creating hash set with size " + ex);
                     return new HashSet<Object>();
                 }
@@ -610,12 +585,11 @@ public class PersistentBeanManager {
     protected Map<Object, Object> createNewMap(Map<?, ?> pojoMap) {
         Class<? extends Map> mapClass = pojoMap.getClass();
 
-        if (_persistenceUtil.isPersistentCollection(mapClass) || mapClass.isAnonymousClass() || mapClass.isMemberClass()
+        if (persistenceUtil.isPersistentCollection(mapClass) || mapClass.isAnonymousClass() || mapClass.isMemberClass()
                 || mapClass.isLocalClass()) {
             return new HashMap<Object, Object>();
         } else {
             // Create the same map
-            //
             try {
                 Constructor<?> constructor = mapClass.getConstructor((Class[]) null);
                 return (Map<Object, Object>) constructor.newInstance();
@@ -654,15 +628,15 @@ public class PersistentBeanManager {
 
             alreadyChecked.add(pojo);
             Class<?> pojoClass = pojo.getClass();
-            if (_classMapper != null) {
-                Class<?> sourceClass = _classMapper.getSourceClass(pojoClass);
+            if (classMapper != null) {
+                Class<?> sourceClass = classMapper.getSourceClass(pojoClass);
                 if (sourceClass != null) {
                     pojoClass = sourceClass;
                 }
             }
 
-            if ((_persistenceUtil.isEnhanced(pojoClass) == true) || (_persistenceUtil.isPersistentClass(pojoClass) == true)
-                    || (_persistenceUtil.isPersistentCollection(pojoClass) == true)) {
+            if ((persistenceUtil.isEnhanced(pojoClass) == true) || (persistenceUtil.isPersistentClass(pojoClass) == true)
+                    || (persistenceUtil.isPersistentCollection(pojoClass) == true)) {
                 return true;
             }
 
@@ -731,12 +705,11 @@ public class PersistentBeanManager {
                 // Get real property class
                 propertyClass = propertyValue.getClass();
 
-                if ((_classMapper != null) && (_classMapper.getSourceClass(propertyClass) != null)) {
-                    propertyClass = _classMapper.getSourceClass(propertyClass);
+                if ((classMapper != null) && (classMapper.getSourceClass(propertyClass) != null)) {
+                    propertyClass = classMapper.getSourceClass(propertyClass);
                 }
 
-                if ((_persistenceUtil.isPersistentClass(propertyClass) == true)
-                        || (_persistenceUtil.isPersistentCollection(propertyClass) == true)) {
+                if ((persistenceUtil.isPersistentClass(propertyClass) == true) || (persistenceUtil.isPersistentCollection(propertyClass) == true)) {
                     return true;
                 }
 

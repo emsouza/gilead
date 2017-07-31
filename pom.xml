@@ -57,6 +57,11 @@
 				<version>${version.org.slf4j}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${version.org.slf4j}</version>
+			</dependency>
+			<dependency>
 				<groupId>net.sf.beanlib</groupId>
 				<artifactId>beanlib-core</artifactId>
 				<version>${version.net.sf.beanlib}</version>

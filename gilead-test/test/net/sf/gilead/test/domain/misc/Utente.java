@@ -3,16 +3,15 @@ package net.sf.gilead.test.domain.misc;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import net.sf.gilead.pojo.java5.LightEntity;
-
-import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Utente extends LightEntity {
@@ -26,8 +25,7 @@ public class Utente extends LightEntity {
     @GeneratedValue
     private Integer id;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("intValue ASC")
     private Set<Preference> preferences = new LinkedHashSet<Preference>();
 

@@ -1,5 +1,5 @@
 <!DOCTYPE hibernate-configuration SYSTEM
-"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
 	<session-factory>
 

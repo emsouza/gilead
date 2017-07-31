@@ -2,24 +2,24 @@ package net.sf.gilead.test.domain.misc;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import net.sf.gilead.pojo.java5.LightEntity;
 
-import org.hibernate.annotations.Parent;
-
-@Embeddable
+@Entity
 public class Preference extends LightEntity implements Serializable {
 
-    /**
-	 * 
-	 */
     private static final long serialVersionUID = -731857320269444208L;
 
-    @Parent
-    private Utente user;
-
+    @Id
     private int intValue;
+
+    @ManyToOne
+    @JoinColumn(name = "ID")
+    private Utente user;
 
     /**
      * @return the user
@@ -72,16 +72,19 @@ public class Preference extends LightEntity implements Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Preference other = (Preference) obj;
-        if (intValue != other.intValue)
+        if (intValue != other.intValue) {
             return false;
+        }
         return true;
     }
-
 }
