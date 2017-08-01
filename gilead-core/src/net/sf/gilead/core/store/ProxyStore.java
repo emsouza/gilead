@@ -24,7 +24,7 @@ import java.util.Map;
  * 
  * @author bruno.marchesson
  */
-public interface IProxyStore {
+public interface ProxyStore {
 	// -------------------------------------------------------------------------
 	//
 	// Store and restore interface

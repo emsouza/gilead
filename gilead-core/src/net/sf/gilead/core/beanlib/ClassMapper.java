@@ -21,7 +21,7 @@ package net.sf.gilead.core.beanlib;
  * 
  * @author bruno.marchesson
  */
-public interface IClassMapper {
+public interface ClassMapper {
 
 	// -------------------------------------------------------------------------
 	//

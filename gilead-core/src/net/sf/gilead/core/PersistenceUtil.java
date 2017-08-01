@@ -11,7 +11,7 @@ import java.util.Map;
  * 
  * @author bruno.marchesson
  */
-public interface IPersistenceUtil {
+public interface PersistenceUtil {
 	// -------------------------------------------------------------------------
 	//
 	// Session Management
