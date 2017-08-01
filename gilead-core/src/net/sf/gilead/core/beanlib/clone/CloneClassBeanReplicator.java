@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.beanlib.IClassMapper;
-import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
+import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.beanlib.ClassMapper;
+import net.sf.gilead.core.beanlib.merge.BeanlibCache;
 import net.sf.gilead.core.beanlib.merge.MergeClassBeanReplicator;
 
 /**
@@ -42,12 +42,12 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     /**
      * The class mapper (can be null)
      */
-    private IClassMapper _classMapper;
+    private ClassMapper _classMapper;
 
     /**
      * Persistence util class
      */
-    private IPersistenceUtil _persistenceUtil;
+    private PersistenceUtil _persistenceUtil;
 
     // ----
     // Factory
@@ -85,28 +85,28 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     /**
      * @return the Class Mapper
      */
-    public IClassMapper getClassMapper() {
+    public ClassMapper getClassMapper() {
         return _classMapper;
     }
 
     /**
      * @param mapper the classMapper to set
      */
-    public void setClassMapper(IClassMapper mapper) {
+    public void setClassMapper(ClassMapper mapper) {
         _classMapper = mapper;
     }
 
     /**
      * @return the persistence Util implementation to use
      */
-    public IPersistenceUtil getPersistenceUtil() {
+    public PersistenceUtil getPersistenceUtil() {
         return _persistenceUtil;
     }
 
     /**
      * @param util the persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
+    public void setPersistenceUtil(PersistenceUtil util) {
         _persistenceUtil = util;
     }
 
@@ -118,9 +118,9 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
         // Force persistence map computation (useful for subclass)
         _persistenceUtil.isPersistentPojo(from);
 
-        BeanlibThreadLocal.getFromBeanStack().push(from);
+        BeanlibCache.getFromBeanStack().push(from);
         T result = super.replicateBean(from, toClass);
-        BeanlibThreadLocal.getFromBeanStack().pop();
+        BeanlibCache.getFromBeanStack().pop();
         return result;
     }
 

@@ -26,62 +26,55 @@ import net.sf.beanlib.spi.BeanMethodCollector;
 /**
  * Fast Private Setter Method collector, inspired by the beanlib one but relying on IntropsectionHelper, that caches
  * getDeclaredMethod results
- * 
+ *
  * @author bruno.marchesson
  */
 public class FastPrivateSetterMethodCollector implements BeanMethodCollector {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Cache map
-	 */
-	private HashMap<Class<?>, Method[]> _cache = new HashMap<Class<?>, Method[]>();
 
-	// -------------------------------------------------------------------------
-	//
-	// BeanMethodFinder implementation
-	//
-	// -------------------------------------------------------------------------
+    /**
+     * Cache map
+     */
+    private HashMap<Class<?>, Method[]> cache = new HashMap<Class<?>, Method[]>();
 
-	@Override
-	public Method[] collect(Object bean) {
-		Class<?> beanClass = bean.getClass();
+    @Override
+    public Method[] collect(Object bean) {
+        Class<?> beanClass = bean.getClass();
 
-		if (_cache.containsKey(beanClass) == false) {
-			// Get all methods declared by the class or interface.
-			// This includes public, protected, default (package) access,
-			// and private methods, but excludes inherited methods.
-			Set<Method> set = new HashSet<Method>();
+        if (cache.containsKey(beanClass) == false) {
+            // Get all methods declared by the class or interface.
+            // This includes public, protected, default (package) access,
+            // and private methods, but excludes inherited methods.
+            Set<Method> set = new HashSet<Method>();
 
-			while (beanClass != Object.class) {
-				for (Method m : beanClass.getDeclaredMethods()) {
-					if (!m.getName().startsWith(getMethodPrefix()))
-						continue;
-					if (m.getParameterTypes().length != 1)
-						continue;
-					final int mod = m.getModifiers();
+            while (beanClass != Object.class) {
+                for (Method m : beanClass.getDeclaredMethods()) {
+                    if (!m.getName().startsWith(getMethodPrefix())) {
+                        continue;
+                    }
+                    if (m.getParameterTypes().length != 1) {
+                        continue;
+                    }
+                    final int mod = m.getModifiers();
 
-					if (Modifier.isStatic(mod))
-						continue;
-					// Adds the specified element to the set if it is not
-					// already present
-					set.add(m);
-				}
-				// climb to the super class and repeat
-				beanClass = beanClass.getSuperclass();
-			}
+                    if (Modifier.isStatic(mod)) {
+                        continue;
+                    }
+                    // Adds the specified element to the set if it is not already present
+                    set.add(m);
+                }
+                // climb to the super class and repeat
+                beanClass = beanClass.getSuperclass();
+            }
 
-			// Add to cache
-			//
-			_cache.put(beanClass, set.toArray(new Method[set.size()]));
-		}
-		return _cache.get(beanClass);
+            // Add to cache
+            cache.put(beanClass, set.toArray(new Method[set.size()]));
+        }
+        return cache.get(beanClass);
 
-	}
+    }
 
-	@Override
-	public String getMethodPrefix() {
-		return "set";
-	}
+    @Override
+    public String getMethodPrefix() {
+        return "set";
+    }
 }

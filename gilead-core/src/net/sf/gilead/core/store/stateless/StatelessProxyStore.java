@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.serialization.IProxySerialization;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.exception.ProxyStoreException;
 import net.sf.gilead.pojo.base.ILightEntity;
 
@@ -33,7 +33,7 @@ import net.sf.gilead.pojo.base.ILightEntity;
  * @see ILightEntity
  * @author bruno.marchesson
  */
-public class StatelessProxyStore implements IProxyStore {
+public class StatelessProxyStore implements ProxyStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatelessProxyStore.class);
 

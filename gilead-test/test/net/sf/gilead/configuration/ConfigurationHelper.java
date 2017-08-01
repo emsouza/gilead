@@ -3,7 +3,7 @@
  */
 package net.sf.gilead.configuration;
 
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.core.serialization.JBossProxySerialization;
 import net.sf.gilead.core.store.NoProxyStore;
@@ -24,7 +24,7 @@ public class ConfigurationHelper {
 	/**
 	 * Init bean manager for stateless mode
 	 */
-	public static PersistentBeanManager initStatelessBeanManager(IPersistenceUtil persistenceUtil) {
+	public static PersistentBeanManager initStatelessBeanManager(PersistenceUtil persistenceUtil) {
 		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
 			PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 			beanManager.setPersistenceUtil(persistenceUtil);
@@ -38,7 +38,7 @@ public class ConfigurationHelper {
 	/**
 	 * Init bean manager for stateless mode for legacy Gilead 1.2 (encoded proxy info)
 	 */
-	public static PersistentBeanManager initLegacyStatelessBeanManager(IPersistenceUtil persistenceUtil) {
+	public static PersistentBeanManager initLegacyStatelessBeanManager(PersistenceUtil persistenceUtil) {
 		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
 			PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
 			beanManager.setPersistenceUtil(persistenceUtil);
@@ -56,7 +56,7 @@ public class ConfigurationHelper {
 	/**
 	 * Init bean manager for stateful mode
 	 */
-	public static PersistentBeanManager initStatefulBeanManager(IPersistenceUtil persistenceUtil) {
+	public static PersistentBeanManager initStatefulBeanManager(PersistenceUtil persistenceUtil) {
 		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
 			HttpSessionProxyStore proxyStore = new HttpSessionProxyStore();
 			proxyStore.setPersistenceUtil(persistenceUtil);
@@ -73,7 +73,7 @@ public class ConfigurationHelper {
 	/**
 	 * Init bean manager for clone only mode
 	 */
-	public static PersistentBeanManager initBeanManagerForCloneOnly(IPersistenceUtil persistenceUtil) {
+	public static PersistentBeanManager initBeanManagerForCloneOnly(PersistenceUtil persistenceUtil) {
 		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
 			PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 			beanManager.setPersistenceUtil(persistenceUtil);

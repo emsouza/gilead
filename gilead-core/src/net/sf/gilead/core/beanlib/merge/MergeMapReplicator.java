@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 
 /**
  * Encapsulation of the collection replicator
@@ -52,7 +52,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     /**
      * The associated persistence util
      */
-    private IPersistenceUtil _persistenceUtil;
+    private PersistenceUtil _persistenceUtil;
 
     // ----
     // Properties
@@ -60,14 +60,14 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     /**
      * @return the _persistenceUtil
      */
-    public IPersistenceUtil getPersistenceUtil() {
+    public PersistenceUtil getPersistenceUtil() {
         return _persistenceUtil;
     }
 
     /**
      * @param util the _persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
+    public void setPersistenceUtil(PersistenceUtil util) {
         _persistenceUtil = util;
     }
 
@@ -90,7 +90,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     protected Object replicate(Object from) {
         // Reset bean local
         //
-        BeanlibThreadLocal.setProxyInformations(null);
+        BeanlibCache.setProxyInformations(null);
 
         return super.replicate(from);
     }
@@ -105,8 +105,8 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
 
         // Get and reset persistent collection class if any
         //
-        Map<String, Serializable> proxyInformations = BeanlibThreadLocal.getProxyInformations();
-        BeanlibThreadLocal.setProxyInformations(null);
+        Map<String, Serializable> proxyInformations = BeanlibCache.getProxyInformations();
+        BeanlibCache.setProxyInformations(null);
 
         // AS Object BlazeDS map handling
         //
@@ -130,7 +130,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         // Turn into persistent map if needed
         //
         if (proxyInformations != null) {
-            Object parent = BeanlibThreadLocal.getToBeanStack().peek();
+            Object parent = BeanlibCache.getToBeanStack().peek();
             return (T) _persistenceUtil.createPersistentMap(parent, proxyInformations, (Map<?, ?>) map);
         } else {
             return map;

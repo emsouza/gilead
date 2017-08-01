@@ -24,11 +24,11 @@ import org.slf4j.LoggerFactory;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
-import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.beanlib.ClassMapper;
 import net.sf.gilead.core.beanlib.clone.CloneBeanReplicator;
-import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
+import net.sf.gilead.core.beanlib.merge.BeanlibCache;
 import net.sf.gilead.core.beanlib.merge.MergeBeanPopulator;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.store.ProxyStore;
 
 /**
  * This class replaces all "lazy but not loaded" Hibernate association with null to allow the argument POJO to be used
@@ -44,58 +44,55 @@ public class LazyKiller {
     /**
      * The class mapper
      */
-    private IClassMapper classMapper;
+    private ClassMapper classMapper;
 
     /**
      * The associated persistence utils
      */
-    private IPersistenceUtil persistenceUtil;
+    private PersistenceUtil persistenceUtil;
 
     /**
      * The used proxy store
      */
-    private IProxyStore proxyStore;
+    private ProxyStore proxyStore;
 
     /**
      * The cloned map. It is used to propagate treated beans throughout collection clone and merge.
      */
     private static ThreadLocal<Map<Object, Object>> clonedMap = new ThreadLocal<Map<Object, Object>>();
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the persistence Util implementation to use
      */
-    public IPersistenceUtil getPersistenceUtil() {
+    public PersistenceUtil getPersistenceUtil() {
         return persistenceUtil;
     }
 
     /**
      * @param util the persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
+    public void setPersistenceUtil(PersistenceUtil util) {
         persistenceUtil = util;
     }
 
     /**
      * @param mapper the class Mapper to set
      */
-    public void setClassMapper(IClassMapper mapper) {
+    public void setClassMapper(ClassMapper mapper) {
         classMapper = mapper;
     }
 
     /**
      * @return the associated proxy Store
      */
-    public IProxyStore getProxyStore() {
+    public ProxyStore getProxyStore() {
         return proxyStore;
     }
 
     /**
      * @param store the proxy Store to set
      */
-    public void setProxyStore(IProxyStore store) {
+    public void setProxyStore(ProxyStore store) {
         proxyStore = store;
     }
 
@@ -113,7 +110,7 @@ public class LazyKiller {
      * @param persistenceUtil persistence util implementation
      * @param proxyStore the proxy store
      */
-    public LazyKiller(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+    public LazyKiller(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
         setClassMapper(classMapper);
         setPersistenceUtil(persistenceUtil);
         setProxyStore(proxyStore);
@@ -197,7 +194,6 @@ public class LazyKiller {
      */
     protected Object clone(Object hibernatePojo, Class<?> cloneClass) {
         HibernateBeanReplicator replicator = new CloneBeanReplicator(classMapper, persistenceUtil, proxyStore);
-
         return replicator.copy(hibernatePojo, cloneClass);
     }
 
@@ -218,9 +214,9 @@ public class LazyKiller {
         }
 
         // Store root pojo on bean stack
-        BeanlibThreadLocal.getFromBeanStack().clear();
-        BeanlibThreadLocal.getFromBeanStack().push(clonePojo);
-        BeanlibThreadLocal.getToBeanStack().push(hibernatePojo);
+        BeanlibCache.getFromBeanStack().clear();
+        BeanlibCache.getFromBeanStack().push(clonePojo);
+        BeanlibCache.getToBeanStack().push(hibernatePojo);
 
         replicator.populate();
 

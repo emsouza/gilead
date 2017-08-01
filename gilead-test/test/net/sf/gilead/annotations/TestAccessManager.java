@@ -3,14 +3,14 @@
  */
 package net.sf.gilead.annotations;
 
-import net.sf.gilead.core.annotations.IAccessManager;
+import net.sf.gilead.core.annotations.AccessManager;
 
 /**
  * Role based test access manager.
  * 
  * @author bruno.marchesson
  */
-public class TestAccessManager implements IAccessManager {
+public class TestAccessManager implements AccessManager {
     // ----
     // Enum
     // ----

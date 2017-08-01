@@ -25,7 +25,7 @@ import java.util.Map;
  * 
  * @author bruno.marchesson
  */
-public class NoProxyStore implements IProxyStore {
+public class NoProxyStore implements ProxyStore {
 	// -------------------------------------------------------------------------
 	//
 	// Constructor

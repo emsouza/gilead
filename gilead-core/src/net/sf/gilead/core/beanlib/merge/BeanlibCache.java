@@ -14,10 +14,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author bruno.marchesson
  */
-public class BeanlibThreadLocal {
-    // ----
-    // Attributes
-    // ----
+public class BeanlibCache {
+
     /**
      * Target merge persistent collection class
      */
@@ -34,9 +32,6 @@ public class BeanlibThreadLocal {
      */
     private static ThreadLocal<Stack<Object>> toBeanStack = new ThreadLocal<Stack<Object>>();
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the proxy informations
      */
@@ -48,7 +43,7 @@ public class BeanlibThreadLocal {
      * @param proxyInfo the proxy informations to set
      */
     public static void setProxyInformations(Map<String, Serializable> proxyInfo) {
-        BeanlibThreadLocal.proxyInformations.set(proxyInfo);
+        proxyInformations.set(proxyInfo);
     }
 
     /**
@@ -80,8 +75,8 @@ public class BeanlibThreadLocal {
         fromBeanStack.remove();
         toBeanStack.remove();
 
-        LoggerFactory.getLogger(BeanlibThreadLocal.class).info("Clean proxyInformations " + (proxyInformations.get() != null ? "NOK" : "OK"));
-        LoggerFactory.getLogger(BeanlibThreadLocal.class).info("Clean fromBeanStack " + (fromBeanStack.get() != null ? "NOK" : "OK"));
-        LoggerFactory.getLogger(BeanlibThreadLocal.class).info("Clean toBeanStack " + (toBeanStack.get() != null ? "NOK" : "OK"));
+        LoggerFactory.getLogger(BeanlibCache.class).info("Clean proxyInformations " + (proxyInformations.get() != null ? "NOK" : "OK"));
+        LoggerFactory.getLogger(BeanlibCache.class).info("Clean fromBeanStack " + (fromBeanStack.get() != null ? "NOK" : "OK"));
+        LoggerFactory.getLogger(BeanlibCache.class).info("Clean toBeanStack " + (toBeanStack.get() != null ? "NOK" : "OK"));
     }
 }

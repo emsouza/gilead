@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.utils.ClassUtils;
 import net.sf.gilead.core.annotations.AnnotationsManager;
-import net.sf.gilead.core.beanlib.IClassMapper;
-import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.beanlib.ClassMapper;
+import net.sf.gilead.core.beanlib.merge.BeanlibCache;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 import net.sf.gilead.exception.CloneException;
 import net.sf.gilead.exception.InvocationException;
@@ -67,12 +67,12 @@ public class PersistentBeanManager {
     /**
      * The associated Proxy informations store
      */
-    protected IProxyStore proxyStore;
+    protected ProxyStore proxyStore;
 
     /**
      * The Class mapper
      */
-    protected IClassMapper classMapper;
+    protected ClassMapper classMapper;
 
     /**
      * The POJO lazy killer
@@ -82,7 +82,7 @@ public class PersistentBeanManager {
     /**
      * The associated persistence util implementation
      */
-    protected IPersistenceUtil persistenceUtil;
+    protected PersistenceUtil persistenceUtil;
 
     /**
      * @return the unique instance of the singleton
@@ -97,14 +97,14 @@ public class PersistentBeanManager {
     /**
      * @return the proxy store
      */
-    public IProxyStore getProxyStore() {
+    public ProxyStore getProxyStore() {
         return this.proxyStore;
     }
 
     /**
      * set the used pojo store
      */
-    public void setProxyStore(IProxyStore proxyStore) {
+    public void setProxyStore(ProxyStore proxyStore) {
         LOGGER.trace("Using Proxy Store : " + proxyStore);
         this.proxyStore = proxyStore;
         this.lazyKiller.setProxyStore(proxyStore);
@@ -113,14 +113,14 @@ public class PersistentBeanManager {
     /**
      * @return the class mapper
      */
-    public IClassMapper getClassMapper() {
+    public ClassMapper getClassMapper() {
         return this.classMapper;
     }
 
     /**
      * @param mapper the class Mapper to set
      */
-    public void setClassMapper(IClassMapper mapper) {
+    public void setClassMapper(ClassMapper mapper) {
         LOGGER.trace("Using class mapper : " + mapper);
         this.classMapper = mapper;
         this.lazyKiller.setClassMapper(mapper);
@@ -129,14 +129,14 @@ public class PersistentBeanManager {
     /**
      * @return the _persistenceUtil
      */
-    public IPersistenceUtil getPersistenceUtil() {
+    public PersistenceUtil getPersistenceUtil() {
         return this.persistenceUtil;
     }
 
     /**
      * @param util the _persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil persistenceUtil) {
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
         LOGGER.trace("Using persistence util : " + persistenceUtil);
         this.persistenceUtil = persistenceUtil;
         this.lazyKiller.setPersistenceUtil(persistenceUtil);
@@ -168,7 +168,7 @@ public class PersistentBeanManager {
             proxyStore.cleanUp();
             lazyKiller.reset();
             lazyKiller.info("clone");
-            BeanlibThreadLocal.cleanStack();
+            BeanlibCache.cleanStack();
         }
     }
 
@@ -306,7 +306,7 @@ public class PersistentBeanManager {
             proxyStore.cleanUp();
             lazyKiller.reset();
             lazyKiller.info("merge");
-            BeanlibThreadLocal.cleanStack();
+            BeanlibCache.cleanStack();
         }
     }
 

@@ -22,12 +22,12 @@ import net.sf.beanlib.hibernate4.Hibernate4BlobReplicator;
 import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.beanlib.ClassMapper;
 import net.sf.gilead.core.beanlib.finder.FastPrivateReaderMethodFinder;
 import net.sf.gilead.core.beanlib.finder.FastPrivateSetterMethodCollector;
 import net.sf.gilead.core.beanlib.transformer.CustomTransformersFactory;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.store.ProxyStore;
 
 /**
  * Hibernate Bean Replicator override to inject the class mapper used for clone to a different class.
@@ -36,11 +36,11 @@ import net.sf.gilead.core.store.IProxyStore;
  */
 public class CloneBeanReplicator extends HibernateBeanReplicator {
 
-	public CloneBeanReplicator(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+	public CloneBeanReplicator(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
 		super(newBeanTransformer(classMapper, persistenceUtil, proxyStore));
 	}
 
-	private static Hibernate4BeanTransformer newBeanTransformer(IClassMapper classMapper, IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+	private static Hibernate4BeanTransformer newBeanTransformer(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
 		Hibernate4BeanTransformer transformer = new Hibernate4BeanTransformer();
 
 		// Custom collection replicator

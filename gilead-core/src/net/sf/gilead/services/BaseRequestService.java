@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
 
 /**
@@ -71,7 +71,7 @@ public class BaseRequestService {
 
         // Get Persistence util
         //
-        IPersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
+        PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
@@ -102,7 +102,7 @@ public class BaseRequestService {
 
         // Get Persistence util
         //
-        IPersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
+        PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }

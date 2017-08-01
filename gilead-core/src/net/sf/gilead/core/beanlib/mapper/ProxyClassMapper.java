@@ -15,8 +15,8 @@
  */
 package net.sf.gilead.core.beanlib.mapper;
 
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.beanlib.ClassMapper;
 import net.sf.gilead.proxy.AdditionalCodeManager;
 import net.sf.gilead.proxy.ProxyManager;
 import net.sf.gilead.proxy.xml.AdditionalCode;
@@ -26,14 +26,14 @@ import net.sf.gilead.proxy.xml.AdditionalCode;
  * 
  * @author bruno.marchesson
  */
-public class ProxyClassMapper implements IClassMapper {
+public class ProxyClassMapper implements ClassMapper {
 	// ----
 	// Attributes
 	// ----
 	/**
 	 * The associated persistence util
 	 */
-	protected IPersistenceUtil _persistenceUtil;
+	protected PersistenceUtil _persistenceUtil;
 
 	/**
 	 * For newly created proxy, must we use Java5 or Java 1.4 generator
@@ -46,14 +46,14 @@ public class ProxyClassMapper implements IClassMapper {
 	/**
 	 * @return the associated Persistence Util
 	 */
-	public IPersistenceUtil getPersistenceUtil() {
+	public PersistenceUtil getPersistenceUtil() {
 		return _persistenceUtil;
 	}
 
 	/**
 	 * @param persistenceUtil the persistenceUtil to set
 	 */
-	public void setPersistenceUtil(IPersistenceUtil persistenceUtil) {
+	public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
 		_persistenceUtil = persistenceUtil;
 	}
 

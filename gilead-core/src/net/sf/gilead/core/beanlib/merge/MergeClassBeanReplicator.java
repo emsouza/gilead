@@ -25,10 +25,10 @@ import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.annotations.AnnotationsManager;
-import net.sf.gilead.core.beanlib.IClassMapper;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.beanlib.ClassMapper;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.exception.NotPersistentObjectException;
 import net.sf.gilead.exception.TransientObjectException;
 
@@ -47,17 +47,17 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     /**
      * The class mapper (can be null)
      */
-    private IClassMapper _classMapper;
+    private ClassMapper _classMapper;
 
     /**
      * The persistent util class
      */
-    private IPersistenceUtil _persistenceUtil;
+    private PersistenceUtil _persistenceUtil;
 
     /**
      * The current proxy store
      */
-    private IProxyStore _proxyStore;
+    private ProxyStore _proxyStore;
 
     // ----
     // Factory
@@ -95,42 +95,42 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     /**
      * @return the Class Mapper
      */
-    public IClassMapper getClassMapper() {
+    public ClassMapper getClassMapper() {
         return _classMapper;
     }
 
     /**
      * @param mapper the classMapper to set
      */
-    public void setClassMapper(IClassMapper mapper) {
+    public void setClassMapper(ClassMapper mapper) {
         _classMapper = mapper;
     }
 
     /**
      * @return the _persistenceUtil
      */
-    public IPersistenceUtil getPersistenceUtil() {
+    public PersistenceUtil getPersistenceUtil() {
         return _persistenceUtil;
     }
 
     /**
      * @param util the persistence Util to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
+    public void setPersistenceUtil(PersistenceUtil util) {
         _persistenceUtil = util;
     }
 
     /**
      * @return the proxy store
      */
-    public IProxyStore getProxyStore() {
+    public ProxyStore getProxyStore() {
         return _proxyStore;
     }
 
     /**
      * @param store the proxy Store to set
      */
-    public void setProxyStore(IProxyStore store) {
+    public void setProxyStore(ProxyStore store) {
         _proxyStore = store;
     }
 
@@ -140,15 +140,15 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     @Override
     public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
         // Reset bean local
-        BeanlibThreadLocal.setProxyInformations(null);
+        BeanlibCache.setProxyInformations(null);
 
         // Force persistence map computation (useful for subclass)
         _persistenceUtil.isPersistentPojo(from);
 
         // Add current bean to stack
-        BeanlibThreadLocal.getFromBeanStack().push(from);
+        BeanlibCache.getFromBeanStack().push(from);
         T result = super.replicateBean(from, toClass);
-        BeanlibThreadLocal.getFromBeanStack().pop();
+        BeanlibCache.getFromBeanStack().pop();
 
         return result;
     }
@@ -209,7 +209,7 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
         }
 
         // Add the bean to stack
-        BeanlibThreadLocal.getToBeanStack().push(result);
+        BeanlibCache.getToBeanStack().push(result);
         return result;
     }
 }

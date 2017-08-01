@@ -22,10 +22,10 @@ import java.util.Collection;
 import java.util.Map;
 
 import net.sf.beanlib.spi.DetailedPropertyFilter;
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.CloneAndMergeConstants;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.pojo.base.ILightEntity;
 import net.sf.gilead.util.IntrospectionHelper;
 
@@ -44,12 +44,12 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 	/**
 	 * The associated persistence utils
 	 */
-	private IPersistenceUtil _persistenceUtil;
+	private PersistenceUtil _persistenceUtil;
 
 	/**
 	 * The used Pojo store
 	 */
-	private IProxyStore _proxyStore;
+	private ProxyStore _proxyStore;
 
 	// ----
 	// Properties
@@ -57,28 +57,28 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 	/**
 	 * @return the persistence Util implementation to use
 	 */
-	public IPersistenceUtil getPersistenceUtil() {
+	public PersistenceUtil getPersistenceUtil() {
 		return _persistenceUtil;
 	}
 
 	/**
 	 * @param util the persistenceUtil to set
 	 */
-	public void setPersistenceUtil(IPersistenceUtil util) {
+	public void setPersistenceUtil(PersistenceUtil util) {
 		_persistenceUtil = util;
 	}
 
 	/**
 	 * @return the proxy store
 	 */
-	public IProxyStore getProxyStore() {
+	public ProxyStore getProxyStore() {
 		return _proxyStore;
 	}
 
 	/**
 	 * @param store the proxy store to set
 	 */
-	public void setProxyStore(IProxyStore store) {
+	public void setProxyStore(ProxyStore store) {
 		_proxyStore = store;
 	}
 
@@ -90,7 +90,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 	/**
 	 * Constructor
 	 */
-	public MergePropertyFilter(IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+	public MergePropertyFilter(PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
 		setPersistenceUtil(persistenceUtil);
 		setProxyStore(proxyStore);
 	}
@@ -109,7 +109,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 	public boolean propagate(String propertyName, Object cloneBean, Method readerMethod, Object persistentBean, Method setterMethod) {
 		// Always reset proxy information on stack
 		//
-		BeanlibThreadLocal.setProxyInformations(null);
+		BeanlibCache.setProxyInformations(null);
 
 		try {
 			// Precondition checking
@@ -167,7 +167,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 				} else {
 					// Store proxy info for the copy operation
 					//
-					BeanlibThreadLocal.setProxyInformations(proxyInformations);
+					BeanlibCache.setProxyInformations(proxyInformations);
 				}
 			} else if (isMap) {
 				if (isNullValue(cloneValue)) {
@@ -179,7 +179,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 				} else {
 					// Store proxy info for the copy operation
 					//
-					BeanlibThreadLocal.setProxyInformations(proxyInformations);
+					BeanlibCache.setProxyInformations(proxyInformations);
 				}
 			} else if (isNullValue(cloneValue) && isInitialized(proxyInformations) == false) {
 				// Set an entity proxy

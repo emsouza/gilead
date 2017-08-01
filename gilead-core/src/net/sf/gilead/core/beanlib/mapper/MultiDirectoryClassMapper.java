@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.beanlib.ClassMapper;
 
 /**
  * Class mapper based on package hierarchy (Domain and DTO must have the same name and placed in identified packages).
@@ -14,7 +14,7 @@ import net.sf.gilead.core.beanlib.IClassMapper;
  *
  * @author Olaf Kock, Florian Siebert
  */
-public class MultiDirectoryClassMapper implements IClassMapper {
+public class MultiDirectoryClassMapper implements ClassMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiDirectoryClassMapper.class);
 

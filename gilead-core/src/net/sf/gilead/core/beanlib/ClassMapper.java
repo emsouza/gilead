@@ -18,23 +18,18 @@ package net.sf.gilead.core.beanlib;
 
 /**
  * Interface of the class mapper service
- * 
+ *
  * @author bruno.marchesson
  */
 public interface ClassMapper {
 
-	// -------------------------------------------------------------------------
-	//
-	// Public interface
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * @return the mapped class for the argument class
-	 */
-	public Class<?> getTargetClass(Class<?> sourceClass);
+    /**
+     * @return the mapped class for the argument class
+     */
+    Class<?> getTargetClass(Class<?> sourceClass);
 
-	/**
-	 * @return the mapped class for the argument class
-	 */
-	public Class<?> getSourceClass(Class<?> targetClass);
+    /**
+     * @return the mapped class for the argument class
+     */
+    Class<?> getSourceClass(Class<?> targetClass);
 }

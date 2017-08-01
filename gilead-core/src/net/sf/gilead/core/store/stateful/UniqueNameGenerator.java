@@ -6,8 +6,8 @@ package net.sf.gilead.core.store.stateful;
 import java.io.Serializable;
 import java.util.Stack;
 
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.beanlib.merge.BeanlibThreadLocal;
+import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.beanlib.merge.BeanlibCache;
 import net.sf.gilead.exception.ComponentTypeException;
 import net.sf.gilead.exception.TransientObjectException;
 
@@ -26,14 +26,14 @@ public class UniqueNameGenerator {
 	/**
 	 * Generates a unique name for the argument Hibenrate pojo
 	 */
-	public static String generateUniqueName(IPersistenceUtil persistenceUtil, Object hibernatePojo) {
+	public static String generateUniqueName(PersistenceUtil persistenceUtil, Object hibernatePojo) {
 		return generateUniqueName(persistenceUtil, hibernatePojo, hibernatePojo.getClass());
 	}
 
 	/**
 	 * Generates a unique name for the argument DTO associated with the hibernateClass
 	 */
-	public static String generateUniqueName(IPersistenceUtil persistenceUtil, Object pojo, Class<?> hibernateClass) {
+	public static String generateUniqueName(PersistenceUtil persistenceUtil, Object pojo, Class<?> hibernateClass) {
 		// Get ID
 		//
 		Serializable id = getUniqueId(persistenceUtil, pojo);
@@ -65,13 +65,13 @@ public class UniqueNameGenerator {
 	 * @param persistentBean the persistent bean
 	 * @return
 	 */
-	public static Serializable getUniqueId(IPersistenceUtil persistenceUtil, Object persistentBean) {
+	public static Serializable getUniqueId(PersistenceUtil persistenceUtil, Object persistentBean) {
 		try {
 			return persistenceUtil.getId(persistentBean);
 		} catch (ComponentTypeException ex) {
 			// Component type : search parent in bean stack
 			//
-			Stack<Object> stack = BeanlibThreadLocal.getFromBeanStack();
+			Stack<Object> stack = BeanlibCache.getFromBeanStack();
 			for (int index = stack.size() - 1; index >= 0; index--) {
 				Object object = stack.get(index);
 				if (object != persistentBean) {

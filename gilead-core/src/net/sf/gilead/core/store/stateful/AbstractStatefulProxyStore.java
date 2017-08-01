@@ -6,8 +6,8 @@ package net.sf.gilead.core.store.stateful;
 import java.io.Serializable;
 import java.util.Map;
 
-import net.sf.gilead.core.IPersistenceUtil;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.exception.NotPersistentObjectException;
 import net.sf.gilead.exception.TransientObjectException;
 
@@ -16,14 +16,14 @@ import net.sf.gilead.exception.TransientObjectException;
  * 
  * @author bruno.marchesson
  */
-public abstract class AbstractStatefulProxyStore implements IProxyStore {
+public abstract class AbstractStatefulProxyStore implements ProxyStore {
 	// ----
 	// Attributes
 	// ----
 	/**
 	 * The associated persistence util
 	 */
-	protected IPersistenceUtil _persistenceUtil;
+	protected PersistenceUtil _persistenceUtil;
 
 	// ----
 	// Properties
@@ -31,14 +31,14 @@ public abstract class AbstractStatefulProxyStore implements IProxyStore {
 	/**
 	 * @return the persistence Util implementation
 	 */
-	public IPersistenceUtil getPersistenceUtil() {
+	public PersistenceUtil getPersistenceUtil() {
 		return _persistenceUtil;
 	}
 
 	/**
 	 * @param persistenceUtil the persistence Util to set
 	 */
-	public void setPersistenceUtil(IPersistenceUtil persistenceUtil) {
+	public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
 		this._persistenceUtil = persistenceUtil;
 	}
 

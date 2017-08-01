@@ -11,7 +11,7 @@ import java.util.Set;
 import net.sf.beanlib.hibernate4.Hibernate4CollectionReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.util.CollectionHelper;
 
 /**
@@ -52,7 +52,7 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
     /**
      * Persistent util
      */
-    protected IPersistenceUtil _persistenceUtil;
+    protected PersistenceUtil _persistenceUtil;
 
     // ----
     // Properties
@@ -60,14 +60,14 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
     /**
      * @return the _persistenceUtil
      */
-    public IPersistenceUtil getPersistenceUtil() {
+    public PersistenceUtil getPersistenceUtil() {
         return _persistenceUtil;
     }
 
     /**
      * @param util the _persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
+    public void setPersistenceUtil(PersistenceUtil util) {
         _persistenceUtil = util;
     }
 

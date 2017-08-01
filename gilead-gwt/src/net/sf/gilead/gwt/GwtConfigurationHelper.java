@@ -3,7 +3,7 @@
  */
 package net.sf.gilead.gwt;
 
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.core.beanlib.mapper.ProxyClassMapper;
 import net.sf.gilead.core.serialization.GwtProxySerialization;
@@ -16,7 +16,7 @@ public class GwtConfigurationHelper {
 	/**
 	 * Init bean manager for stateless mode for GWT
 	 */
-	public static PersistentBeanManager initGwtStatelessBeanManager(IPersistenceUtil persistenceUtil) {
+	public static PersistentBeanManager initGwtStatelessBeanManager(PersistenceUtil persistenceUtil) {
 		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
 			PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 			beanManager.setPersistenceUtil(persistenceUtil);
@@ -31,7 +31,7 @@ public class GwtConfigurationHelper {
 		return PersistentBeanManager.getInstance();
 	}
 
-	public static PersistentBeanManager initGwtProxyBeanManager(IPersistenceUtil persistenceUtil) {
+	public static PersistentBeanManager initGwtProxyBeanManager(PersistenceUtil persistenceUtil) {
 		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
 			PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 			beanManager.setPersistenceUtil(persistenceUtil);

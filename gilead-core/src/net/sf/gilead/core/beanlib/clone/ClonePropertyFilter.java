@@ -25,10 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.spi.DetailedPropertyFilter;
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.CloneAndMergeConstants;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.pojo.base.ILightEntity;
 import net.sf.gilead.util.IntrospectionHelper;
 
@@ -41,77 +41,55 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClonePropertyFilter.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The associated persistence utils
      */
-    private IPersistenceUtil _persistenceUtil;
+    private PersistenceUtil persistenceUtil;
 
     /**
      * The proxy informations store.
      */
-    private IProxyStore _proxyStore;
+    private ProxyStore proxyStore;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the persistence Util implementation to use
      */
-    public IPersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
+    public PersistenceUtil getPersistenceUtil() {
+        return persistenceUtil;
     }
 
     /**
      * @param util the persistenceUtil to set
      */
-    public void setPersistenceUtil(IPersistenceUtil util) {
-        _persistenceUtil = util;
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
     }
 
     /**
      * @return the used proxy Store
      */
-    public IProxyStore getProxyStore() {
-        return _proxyStore;
+    public ProxyStore getProxyStore() {
+        return proxyStore;
     }
 
     /**
      * @param store the proxy store to set
      */
-    public void setProxyStore(IProxyStore store) {
-        _proxyStore = store;
+    public void setProxyStore(ProxyStore proxyStore) {
+        this.proxyStore = proxyStore;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Constructor
      */
-    public ClonePropertyFilter(IPersistenceUtil persistenceUtil, IProxyStore proxyStore) {
+    public ClonePropertyFilter(PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
         setPersistenceUtil(persistenceUtil);
         setProxyStore(proxyStore);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // DetailedBeanPopulatable implementation
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.beanlib.spi.DetailedBeanPopulatable#shouldPopulate(java.lang.String , java.lang.Object,
-     * java.lang.reflect.Method, java.lang.Object, java.lang.reflect.Method)
-     */
     @Override
     public boolean propagate(String propertyName, Object fromBean, Method readerMethod, Object toBean, Method setterMethod) {
         // Is the property lazy loaded ?
-        //
         try {
             if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
                     || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
@@ -119,63 +97,51 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
             }
 
             // 'ServerOnly' annotation handling
-            //
-            if ((AnnotationsManager.isServerOnly(fromBean,
-                    propertyName)) /*
-                                    * || ( AnnotationsManager . isServerOnly ( toBean , propertyName ))
-                                    */) {
+            if ((AnnotationsManager.isServerOnly(fromBean, propertyName))) {
                 return false;
             }
 
             // Get from value
-            //
             Object fromValue = readPropertyValue(fromBean, readerMethod.getName());
             if (fromValue == null) {
                 return true;
             }
 
-            boolean isPersistentCollection = _persistenceUtil.isPersistentCollection(fromValue.getClass());
-            boolean isPersistentMap = _persistenceUtil.isPersistentMap(fromValue.getClass());
+            boolean isPersistentCollection = persistenceUtil.isPersistentCollection(fromValue.getClass());
+            boolean isPersistentMap = persistenceUtil.isPersistentMap(fromValue.getClass());
 
             // Lazy handling
-            //
-            if (_persistenceUtil.isInitialized(fromValue) == false) {
+            if (persistenceUtil.isInitialized(fromValue) == false) {
                 // Lazy property !
-                //
                 LOGGER.trace(fromBean.toString() + "." + propertyName + " --> not initialized");
 
                 // Get proxy informations
-                //
                 Map<String, Serializable> proxyInformations;
                 if (isPersistentMap) {
-                    proxyInformations = _persistenceUtil.serializePersistentMap((Map<?, ?>) fromValue);
+                    proxyInformations = persistenceUtil.serializePersistentMap((Map<?, ?>) fromValue);
                 } else if (isPersistentCollection) {
-                    proxyInformations = _persistenceUtil.serializePersistentCollection((Collection<?>) fromValue);
+                    proxyInformations = persistenceUtil.serializePersistentCollection((Collection<?>) fromValue);
                 } else {
-                    proxyInformations = _persistenceUtil.serializeEntityProxy(fromValue);
+                    proxyInformations = persistenceUtil.serializeEntityProxy(fromValue);
                 }
 
                 // Add lazy property
-                //
                 proxyInformations.put(ILightEntity.INITIALISED, false);
 
                 // Store proxy information
-                //
-                _proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
+                proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
 
                 return false;
             } else if (isPersistentMap) {
                 // Persistent map handling
-                //
-                Map<String, Serializable> proxyInformations = _persistenceUtil.serializePersistentMap((Map<?, ?>) fromValue);
+                Map<String, Serializable> proxyInformations = persistenceUtil.serializePersistentMap((Map<?, ?>) fromValue);
 
-                _proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
+                proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
             } else if (isPersistentCollection) {
                 // Persistent collection handling
-                //
-                Map<String, Serializable> proxyInformations = _persistenceUtil.serializePersistentCollection((Collection<?>) fromValue);
+                Map<String, Serializable> proxyInformations = persistenceUtil.serializePersistentCollection((Collection<?>) fromValue);
 
-                _proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
+                proxyStore.storeProxyInformations(toBean, fromBean, propertyName, proxyInformations);
             }
 
             return true;
@@ -184,19 +150,14 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Read a property value, even if it has a private getter
      */
     private Object readPropertyValue(Object bean, String propertyGetter)
             throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+
         Method readMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertyGetter, (Class[]) null);
         readMethod.setAccessible(true);
-
         return readMethod.invoke(bean, (Object[]) null);
     }
 }
