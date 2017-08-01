@@ -11,9 +11,7 @@ import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
  * @author bruno.marchesson
  */
 public class FloatParameter implements IGwtSerializableParameter {
-    // ----
-    // Attributes
-    // ----
+
     /**
      * Serialization ID.
      */
@@ -24,9 +22,6 @@ public class FloatParameter implements IGwtSerializableParameter {
      */
     private Float value;
 
-    // ----
-    // Getter and setter
-    // ----
     /**
      * Change value.
      */
@@ -42,9 +37,6 @@ public class FloatParameter implements IGwtSerializableParameter {
         return this.value;
     }
 
-    // ----
-    // Constructor
-    // ----
     /**
      * Constructor.
      */

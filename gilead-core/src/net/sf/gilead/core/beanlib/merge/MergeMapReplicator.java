@@ -23,9 +23,6 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeMapReplicator.class);
 
-    // ----
-    // Factory
-    // ----
     public static final Factory factory = new Factory();
 
     /**
@@ -46,34 +43,25 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         return factory.newMapReplicatable(beanTransformer);
     }
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The associated persistence util
      */
-    private PersistenceUtil _persistenceUtil;
+    private PersistenceUtil persistenceUtil;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the _persistenceUtil
      */
     public PersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
+        return persistenceUtil;
     }
 
     /**
      * @param util the _persistenceUtil to set
      */
-    public void setPersistenceUtil(PersistenceUtil util) {
-        _persistenceUtil = util;
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
     }
 
-    // ----
-    // Constructor
-    // ----
     /**
      * Constructor
      *
@@ -83,15 +71,10 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         super(beanTransformer);
     }
 
-    // ----
-    // Overrides
-    // ----
     @Override
     protected Object replicate(Object from) {
         // Reset bean local
-        //
-        BeanlibCache.setProxyInformations(null);
-
+        BeanlibCache.removeProxyInformations();
         return super.replicate(from);
     }
 
@@ -104,34 +87,16 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         LOGGER.trace("Merge map from " + from + " to class " + toClass);
 
         // Get and reset persistent collection class if any
-        //
         Map<String, Serializable> proxyInformations = BeanlibCache.getProxyInformations();
-        BeanlibCache.setProxyInformations(null);
-
-        // AS Object BlazeDS map handling
-        //
-        if (from.getClass().getName().endsWith(".ASObject")) {
-            // Turn it into regular hash map
-            //
-            String type = null;
-            try {
-                type = (String) from.getClass().getMethod("getType", (Class<?>[]) null).invoke(from, (Object[]) null);
-            } catch (Exception e) {
-                type = e.getMessage();
-            }
-            LOGGER.warn("Invalid map : " + from.toString() + " for type " + type);
-            toClass = (Class<T>) java.util.HashMap.class;
-        }
+        BeanlibCache.removeProxyInformations();
 
         // Clone map
-        //
         T map = super.replicateMap(from, toClass);
 
         // Turn into persistent map if needed
-        //
         if (proxyInformations != null) {
             Object parent = BeanlibCache.getToBeanStack().peek();
-            return (T) _persistenceUtil.createPersistentMap(parent, proxyInformations, (Map<?, ?>) map);
+            return (T) persistenceUtil.createPersistentMap(parent, proxyInformations, (Map<?, ?>) map);
         } else {
             return map;
         }

@@ -11,12 +11,7 @@ import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
  * @author bruno.marchesson
  */
 public class DoubleParameter implements IGwtSerializableParameter {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Serialization ID.
-     */
+
     private static final long serialVersionUID = 2165631776081297493L;
 
     /**
@@ -24,9 +19,6 @@ public class DoubleParameter implements IGwtSerializableParameter {
      */
     private Double value;
 
-    // ----
-    // Getter and setter
-    // ----
     /**
      * Change value.
      */

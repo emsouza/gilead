@@ -167,7 +167,6 @@ public class PersistentBeanManager {
             persistenceUtil.closeCurrentSession();
             proxyStore.cleanUp();
             lazyKiller.reset();
-            lazyKiller.info("clone");
             BeanlibCache.cleanStack();
         }
     }
@@ -305,7 +304,6 @@ public class PersistentBeanManager {
             persistenceUtil.closeCurrentSession();
             proxyStore.cleanUp();
             lazyKiller.reset();
-            lazyKiller.info("merge");
             BeanlibCache.cleanStack();
         }
     }
@@ -316,7 +314,6 @@ public class PersistentBeanManager {
     @SuppressWarnings("unchecked")
     private Object mergeInternal(Object object, boolean assignable) {
         // Precondition checking
-        //
         if (object == null) {
             return null;
         }
@@ -326,25 +323,21 @@ public class PersistentBeanManager {
         }
 
         // Collection handling
-        //
         if (object instanceof Collection) {
             return mergeCollection((Collection) object, assignable);
         } else if (object instanceof Map) {
             return mergeMap((Map) object, assignable);
         } else if (object.getClass().isArray()) {
             // Check primitive type
-            //
             if (object.getClass().getComponentType().isPrimitive()) {
                 return object;
             }
 
             // Merge as a collection
-            //
             Object[] array = (Object[]) object;
             Collection result = mergeCollection(Arrays.asList(array), assignable);
 
             // Get the result as an array (much more tricky !!!)
-            //
             Class<?> componentType = object.getClass().getComponentType();
             Object[] copy = (Object[]) java.lang.reflect.Array.newInstance(componentType, array.length);
             return result.toArray(copy);
@@ -389,10 +382,10 @@ public class PersistentBeanManager {
         try {
             id = persistenceUtil.getId(clonePojo, hibernateClass);
             if (id == null) {
-                LOGGER.info("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
+                LOGGER.trace("HibernatePOJO not found : can be transient or deleted data : " + clonePojo);
             }
         } catch (TransientObjectException ex) {
-            LOGGER.info("Transient object : " + clonePojo);
+            LOGGER.trace("Transient object : " + clonePojo);
         } catch (NotPersistentObjectException ex) {
             if (holdPersistentObject(clonePojo) == false) {
                 // Do not merge not persistent instance, since they do not necessary
@@ -406,23 +399,18 @@ public class PersistentBeanManager {
 
         if (ClassUtils.immutable(hibernateClass)) {
             // Do not clone immutable types
-            //
             return clonePojo;
         }
 
         // Create a new POJO instance
-        //
         Object hibernatePojo = null;
         try {
             if (AnnotationsManager.hasGileadAnnotations(hibernateClass)) {
                 if (id != null) {
-                    // ServerOnly or ReadOnly annotation : load from DB
-                    // needed
-                    //
+                    // ServerOnly or ReadOnly annotation : load from DB needed
                     hibernatePojo = persistenceUtil.load(id, hibernateClass);
                 } else {
                     // Transient instance
-                    //
                     hibernatePojo = clonePojo;
                 }
             } else {
@@ -435,7 +423,6 @@ public class PersistentBeanManager {
         }
 
         // Merge the modification in the Hibernate Pojo
-        //
         lazyKiller.attach(hibernatePojo, clonePojo);
         return hibernatePojo;
     }
@@ -452,7 +439,6 @@ public class PersistentBeanManager {
         Collection<Object> hibernatePojoList = createNewCollection(clonePojoList);
 
         // Retrieve every hibernate from pojo list
-        //
         for (Object clonePojo : clonePojoList) {
             try {
                 hibernatePojoList.add(mergeInternal(clonePojo, assignable));
@@ -621,7 +607,6 @@ public class PersistentBeanManager {
     protected boolean holdPersistentObject(Object pojo, List<Object> alreadyChecked) {
         try {
             // Precondition checking
-            //
             if ((pojo == null) || (alreadyChecked.contains(pojo))) {
                 return false;
             }
@@ -653,39 +638,32 @@ public class PersistentBeanManager {
             }
 
             // Iterate over properties
-            //
             BeanInfo info = Introspector.getBeanInfo(pojo.getClass());
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (PropertyDescriptor descriptor : descriptors) {
                 Class<?> propertyClass = descriptor.getPropertyType();
                 if (propertyClass == null) {
                     // Indexed property
-                    //
                     propertyClass = ((IndexedPropertyDescriptor) descriptor).getPropertyType();
                 } else if (propertyClass.isArray()) {
                     propertyClass = propertyClass.getComponentType();
                 }
                 if (propertyClass == null) {
                     // Can do nothing with this...
-                    //
                     continue;
                 }
 
-                // Check needed for collection or property declared as bare
-                // Object
+                // Check needed for collection or property declared as bare Object
                 boolean isCollection = Collection.class.isAssignableFrom(propertyClass) || Map.class.isAssignableFrom(propertyClass);
                 boolean isObject = propertyClass.equals(Object.class);
 
                 if ((ClassUtils.immutable(propertyClass) == true)
                         || ((ClassUtils.isJavaPackage(propertyClass) == true) && (isCollection == false) && (isObject == false))) {
                     // Basic type : no check needed
-                    //
                     continue;
                 }
 
-                // Not a basic type, so a check is needed
-                //
-                // collection and recursive search handling
+                // Not a basic type, so a check is needed collection and recursive search handling
                 Method readMethod = descriptor.getReadMethod();
                 if (readMethod == null) {
                     continue;
@@ -714,10 +692,8 @@ public class PersistentBeanManager {
                 }
 
                 // Check property value
-                //
                 if (propertyValue instanceof Collection<?>) {
                     // Check collection values
-                    //
                     Collection<?> propertyCollection = (Collection<?>) propertyValue;
                     for (Object value : propertyCollection) {
                         if (holdPersistentObject(value, alreadyChecked) == true) {
@@ -726,7 +702,6 @@ public class PersistentBeanManager {
                     }
                 } else if (propertyValue instanceof Map<?, ?>) {
                     // Check map entry and values
-                    //
                     Map<?, ?> propertyMap = (Map<?, ?>) propertyValue;
                     for (Map.Entry<?, ?> value : propertyMap.entrySet()) {
                         if ((holdPersistentObject(value.getKey(), alreadyChecked) == true)
@@ -736,7 +711,6 @@ public class PersistentBeanManager {
                     }
                 } else if (propertyClass.isArray()) {
                     // Check array elements
-                    //
                     Object[] propertyValues = (Object[]) propertyValue;
                     for (Object propertyValue2 : propertyValues) {
                         if (holdPersistentObject(propertyValue2) == true) {
@@ -745,7 +719,6 @@ public class PersistentBeanManager {
                     }
                 } else {
                     // Recursive search
-                    //
                     if (holdPersistentObject(propertyValue, alreadyChecked) == true) {
                         return true;
                     }

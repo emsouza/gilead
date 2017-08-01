@@ -19,68 +19,51 @@ public class CustomTransformersFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomTransformersFactory.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * Singleton instance
      */
-    private static CustomTransformersFactory _instance = null;
+    private static CustomTransformersFactory INSTANCE = null;
 
     /**
      * List of custom bean transformers constructors for clone operation
      */
-    private List<Constructor<CustomBeanTransformerSpi>> _cloneTransformersList;
+    private List<Constructor<CustomBeanTransformerSpi>> cloneTransformersList;
 
     /**
      * List of custom bean transformers constructors for merge operation
      */
-    private List<Constructor<CustomBeanTransformerSpi>> _mergeTransformersList;
+    private List<Constructor<CustomBeanTransformerSpi>> mergeTransformersList;
 
-    // ----
-    // Singleton
-    // ----
     /**
      * @return the unique instance of the factory
      */
     public static synchronized CustomTransformersFactory getInstance() {
-        if (_instance == null) {
-            _instance = new CustomTransformersFactory();
+        if (INSTANCE == null) {
+            INSTANCE = new CustomTransformersFactory();
         }
-        return _instance;
+        return INSTANCE;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Private constructor
      */
     private CustomTransformersFactory() {
-        _cloneTransformersList = new ArrayList<Constructor<CustomBeanTransformerSpi>>();
-        _mergeTransformersList = new ArrayList<Constructor<CustomBeanTransformerSpi>>();
+        cloneTransformersList = new ArrayList<Constructor<CustomBeanTransformerSpi>>();
+        mergeTransformersList = new ArrayList<Constructor<CustomBeanTransformerSpi>>();
 
         // Transformers needed for Gilead
-        //
         addCustomBeanTransformer(TimestampCustomTransformer.class);
         addCustomBeanTransformer(StackTraceElementCustomTransformer.class);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Add a custom bean transformer for both clone and merge
      */
     @SuppressWarnings("unchecked")
     public void addCustomBeanTransformer(Class transformerClass) {
         Constructor<CustomBeanTransformerSpi> constructor = getConstructorFor(transformerClass);
-        _cloneTransformersList.add(constructor);
-        _mergeTransformersList.add(constructor);
+        cloneTransformersList.add(constructor);
+        mergeTransformersList.add(constructor);
     }
 
     /**
@@ -89,7 +72,7 @@ public class CustomTransformersFactory {
     @SuppressWarnings("unchecked")
     public void addCloneCustomBeanTransformer(Class transformerClass) {
         Constructor<CustomBeanTransformerSpi> constructor = getConstructorFor(transformerClass);
-        _cloneTransformersList.add(constructor);
+        cloneTransformersList.add(constructor);
     }
 
     /**
@@ -98,7 +81,7 @@ public class CustomTransformersFactory {
     @SuppressWarnings("unchecked")
     public void addMergeCustomBeanTransformer(Class transformerClass) {
         Constructor<CustomBeanTransformerSpi> constructor = getConstructorFor(transformerClass);
-        _mergeTransformersList.add(constructor);
+        mergeTransformersList.add(constructor);
     }
 
     /**
@@ -108,17 +91,15 @@ public class CustomTransformersFactory {
      * @return the beanlib CustomBeanTransformer.
      */
     public CustomBeanTransformerSpi createUnionCustomBeanTransformerForClone(BeanTransformerSpi beanTransformer) {
-        int transformerCount = _cloneTransformersList.size();
+        int transformerCount = cloneTransformersList.size();
         if (transformerCount == 1) {
             // No additional custom transformer defined : just use the one
-            //
-            return instantiate(_cloneTransformersList.get(0), beanTransformer);
+            return instantiate(cloneTransformersList.get(0), beanTransformer);
         } else {
             // Create each transformer
-            //
             CustomBeanTransformerSpi[] customBeanTransformers = new CustomBeanTransformerSpi[transformerCount];
             for (int index = 0; index < transformerCount; index++) {
-                customBeanTransformers[index] = instantiate(_cloneTransformersList.get(index), beanTransformer);
+                customBeanTransformers[index] = instantiate(cloneTransformersList.get(index), beanTransformer);
             }
 
             return new UnionCustomBeanTransformer(customBeanTransformers);
@@ -132,28 +113,21 @@ public class CustomTransformersFactory {
      * @return the beanlib CustomBeanTransformer.
      */
     public CustomBeanTransformerSpi createUnionCustomBeanTransformerForMerge(BeanTransformerSpi beanTransformer) {
-        int transformerCount = _mergeTransformersList.size();
+        int transformerCount = mergeTransformersList.size();
         if (transformerCount == 1) {
             // No additional custom transformer defined : just use the one
-            //
-            return instantiate(_mergeTransformersList.get(0), beanTransformer);
+            return instantiate(mergeTransformersList.get(0), beanTransformer);
         } else {
             // Create each transformer
-            //
             CustomBeanTransformerSpi[] customBeanTransformers = new CustomBeanTransformerSpi[transformerCount];
             for (int index = 0; index < transformerCount; index++) {
-                customBeanTransformers[index] = instantiate(_mergeTransformersList.get(index), beanTransformer);
+                customBeanTransformers[index] = instantiate(mergeTransformersList.get(index), beanTransformer);
             }
 
             return new UnionCustomBeanTransformer(customBeanTransformers);
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Get constructor for the argument class
      *
@@ -162,7 +136,6 @@ public class CustomTransformersFactory {
      */
     protected Constructor<CustomBeanTransformerSpi> getConstructorFor(Class<CustomBeanTransformerSpi> clazz) {
         // Constructor has a transformer argument
-        //
         Class<?>[] ctArg = { BeanTransformerSpi.class };
 
         try {
@@ -190,7 +163,6 @@ public class CustomTransformersFactory {
             return constructor.newInstance(initArgs);
         } catch (Exception e) {
             // Throw unrecoverable error on exception
-            //
             LOGGER.error("Transformer initialization error", e);
             throw new RuntimeException("Transformer initialization error", e);
         }

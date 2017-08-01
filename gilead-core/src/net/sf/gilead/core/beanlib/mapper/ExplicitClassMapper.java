@@ -36,25 +36,15 @@ public class ExplicitClassMapper implements ClassMapper {
     /**
      * The maps of the domain class to their target class correspondence.
      */
-    private Map<Class<?>, Class<?>> _domainToTargetMap = new HashMap<Class<?>, Class<?>>();
+    private Map<Class<?>, Class<?>> domainToTargetMap = new HashMap<Class<?>, Class<?>>();
 
-    private Map<Class<?>, Class<?>> _targetToDomainMap = new HashMap<Class<?>, Class<?>>();
+    private Map<Class<?>, Class<?>> targetToDomainMap = new HashMap<Class<?>, Class<?>>();
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Constructor
      */
     public ExplicitClassMapper() {}
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Add an association between source- and Clone-Class<?>, where source is the domain class that shall be cloned to
      * the given clone class, in order to be transferable via gwt to the client.
@@ -63,8 +53,8 @@ public class ExplicitClassMapper implements ClassMapper {
      * @param targetclass the class to be transferred to the gwt client
      */
     public void addAssociation(Class<?> sourceclass, Class<?> targetclass) {
-        _domainToTargetMap.put(sourceclass, targetclass);
-        _targetToDomainMap.put(targetclass, sourceclass);
+        domainToTargetMap.put(sourceclass, targetclass);
+        targetToDomainMap.put(targetclass, sourceclass);
     }
 
     /**
@@ -74,8 +64,8 @@ public class ExplicitClassMapper implements ClassMapper {
      * @param mappings map with sourcClass as key and targetClass as value
      */
     public void setAssociations(Map<Class<?>, Class<?>> mappings) {
-        _domainToTargetMap.clear();
-        _targetToDomainMap.clear();
+        domainToTargetMap.clear();
+        targetToDomainMap.clear();
         Iterator<Class<?>> iter = mappings.keySet().iterator();
 
         while (iter.hasNext()) {
@@ -86,29 +76,16 @@ public class ExplicitClassMapper implements ClassMapper {
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // IClassMapper implementation
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.beanlib.java5.ICloneMapper#getTargetClass(java.lang .Class<?>)
-     */
     @Override
     public Class<?> getTargetClass(Class<?> sourceClass) {
-        Class<?> result = _domainToTargetMap.get(sourceClass);
+        Class<?> result = domainToTargetMap.get(sourceClass);
         LOGGER.trace("Target class for " + sourceClass.getCanonicalName() + ": " + (result == null ? "null" : result.getCanonicalName()));
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.beanlib.java5.ICloneMapper#getTargetClass(java.lang .Class<?>)
-     */
     @Override
     public Class<?> getSourceClass(Class<?> targetClass) {
-        Class<?> result = _targetToDomainMap.get(targetClass);
+        Class<?> result = targetToDomainMap.get(targetClass);
         LOGGER.trace("Source class for " + targetClass.getCanonicalName() + ": " + (result == null ? "null" : result.getCanonicalName()));
         return result;
     }

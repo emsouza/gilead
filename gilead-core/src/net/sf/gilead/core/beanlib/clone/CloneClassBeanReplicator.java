@@ -36,22 +36,16 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloneClassBeanReplicator.class);
 
-    // ---
-    // Attributes
-    // ---
     /**
      * The class mapper (can be null)
      */
-    private ClassMapper _classMapper;
+    private ClassMapper classMapper;
 
     /**
      * Persistence util class
      */
-    private PersistenceUtil _persistenceUtil;
+    private PersistenceUtil persistenceUtil;
 
-    // ----
-    // Factory
-    // ----
     public static final Factory factory = new Factory();
 
     /**
@@ -72,51 +66,42 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
         return factory.newBeanReplicatable(beanTransformer);
     }
 
-    // ----
-    // Constructor
-    // ----
     protected CloneClassBeanReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
     }
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the Class Mapper
      */
     public ClassMapper getClassMapper() {
-        return _classMapper;
+        return classMapper;
     }
 
     /**
      * @param mapper the classMapper to set
      */
     public void setClassMapper(ClassMapper mapper) {
-        _classMapper = mapper;
+        classMapper = mapper;
     }
 
     /**
      * @return the persistence Util implementation to use
      */
     public PersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
+        return persistenceUtil;
     }
 
     /**
      * @param util the persistenceUtil to set
      */
     public void setPersistenceUtil(PersistenceUtil util) {
-        _persistenceUtil = util;
+        persistenceUtil = util;
     }
 
-    // ----
-    // Override
-    // ----
     @Override
     public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
         // Force persistence map computation (useful for subclass)
-        _persistenceUtil.isPersistentPojo(from);
+        persistenceUtil.isPersistentPojo(from);
 
         BeanlibCache.getFromBeanStack().push(from);
         T result = super.replicateBean(from, toClass);
@@ -129,14 +114,11 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass)
             throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException {
         // Class mapper indirection
-        //
-        if (_classMapper != null) {
+        if (classMapper != null) {
             // Get target class
-            //
-            Class<T> targetClass = (Class<T>) _classMapper.getTargetClass(from.getClass());
+            Class<T> targetClass = (Class<T>) classMapper.getTargetClass(from.getClass());
 
             // Keep target class only if not null
-            //
             if (targetClass != null) {
                 LOGGER.trace("Class mapper : from " + from.getClass() + " to " + targetClass);
                 toClass = targetClass;

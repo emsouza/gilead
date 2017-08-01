@@ -16,6 +16,7 @@ import java.io.InputStream;
  * @author bruno.marchesson
  */
 public class AdditionalCodeReader {
+
     /**
      * Read method
      *
@@ -27,7 +28,6 @@ public class AdditionalCodeReader {
         XStream xstream = new XStream(new DomDriver());
 
         // Alias
-        //
         xstream.alias("additionalCode", AdditionalCode.class);
         xstream.alias("attribute", Attribute.class);
         xstream.alias("constructor", Constructor.class);
@@ -35,7 +35,6 @@ public class AdditionalCodeReader {
         xstream.alias("parameter", Parameter.class);
 
         // Attributes declaration
-        //
         xstream.useAttributeFor(AdditionalCode.class, "suffix");
         xstream.useAttributeFor(AdditionalCode.class, "implementedInterface");
 
@@ -56,16 +55,11 @@ public class AdditionalCodeReader {
         xstream.useAttributeFor(Parameter.class, "name");
 
         // Read Additional code
-        //
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(filePath)) {
-
             return (AdditionalCode) xstream.fromXML(input);
-
         } catch (IOException e) {
-
             throw new FileNotFoundException(filePath);
-
         }
     }
 }

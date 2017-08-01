@@ -23,7 +23,7 @@ import net.sf.gilead.exception.ConvertorException;
  *
  * @author bruno.marchesson
  */
-public class JBossProxySerialization implements IProxySerialization {
+public class JBossProxySerialization implements ProxySerialization {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JBossProxySerialization.class);
 

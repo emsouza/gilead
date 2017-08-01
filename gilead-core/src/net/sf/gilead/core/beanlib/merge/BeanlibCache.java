@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Stack;
 
-import org.slf4j.LoggerFactory;
-
 /**
  * Thread local to store BeanLib additional parameters
  *
@@ -47,6 +45,13 @@ public class BeanlibCache {
     }
 
     /**
+     * @param proxyInfo the proxy informations to set
+     */
+    public static void removeProxyInformations() {
+        proxyInformations.remove();
+    }
+
+    /**
      * @return the from bean stack
      */
     public static Stack<Object> getFromBeanStack() {
@@ -74,9 +79,5 @@ public class BeanlibCache {
         proxyInformations.remove();
         fromBeanStack.remove();
         toBeanStack.remove();
-
-        LoggerFactory.getLogger(BeanlibCache.class).info("Clean proxyInformations " + (proxyInformations.get() != null ? "NOK" : "OK"));
-        LoggerFactory.getLogger(BeanlibCache.class).info("Clean fromBeanStack " + (fromBeanStack.get() != null ? "NOK" : "OK"));
-        LoggerFactory.getLogger(BeanlibCache.class).info("Clean toBeanStack " + (toBeanStack.get() != null ? "NOK" : "OK"));
     }
 }

@@ -8,99 +8,81 @@ import net.sf.gilead.proxy.xml.AdditionalCode;
 import net.sf.gilead.proxy.xml.AdditionalCodeReader;
 
 public class AdditionalCodeManager {
-	// ----
-	// Singleton
-	// ----
-	/**
-	 * Unique instance of the singleton
-	 */
-	private static AdditionalCodeManager _instance = null;
 
-	/**
-	 * @return the instance of singleton
-	 */
-	public static AdditionalCodeManager getInstance() {
-		if (_instance == null) {
-			_instance = new AdditionalCodeManager();
-		}
-		return _instance;
-	}
+    /**
+     * Unique instance of the singleton
+     */
+    private static AdditionalCodeManager INSTANCE = null;
 
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Map of additional code
-	 */
-	private Map<String, AdditionalCode> _additionalCodeMap;
+    /**
+     * @return the instance of singleton
+     */
+    public static AdditionalCodeManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new AdditionalCodeManager();
+        }
+        return INSTANCE;
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Constructor
-	 */
-	protected AdditionalCodeManager() {
-		_additionalCodeMap = new HashMap<String, AdditionalCode>();
+    /**
+     * Map of additional code
+     */
+    private Map<String, AdditionalCode> _additionalCodeMap;
 
-		// additional code
-		try {
-			// Java 1.4
-			AdditionalCode additionalCode = AdditionalCodeReader.readFromFile(ProxyManager.JAVA_14_LAZY_POJO);
-			_additionalCodeMap.put(ProxyManager.JAVA_14_LAZY_POJO, additionalCode);
+    /**
+     * Constructor
+     */
+    protected AdditionalCodeManager() {
+        _additionalCodeMap = new HashMap<String, AdditionalCode>();
 
-			// Java 5
-			additionalCode = AdditionalCodeReader.readFromFile(ProxyManager.JAVA_5_LAZY_POJO);
-			_additionalCodeMap.put(ProxyManager.JAVA_5_LAZY_POJO, additionalCode);
-		} catch (IOException ex) {
-			// Should not happen
-			//
-			throw new RuntimeException("Error reading proxy file", ex);
-		}
-	}
+        // additional code
+        try {
+            // Java 1.4
+            AdditionalCode additionalCode = AdditionalCodeReader.readFromFile(ProxyManager.JAVA_14_LAZY_POJO);
+            _additionalCodeMap.put(ProxyManager.JAVA_14_LAZY_POJO, additionalCode);
 
-	// -------------------------------------------------------------------------
-	//
-	// Public interface
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * @return the additional code associated with the argument className, or null if any
-	 */
-	public AdditionalCode getAdditionalCodeFor(String className) {
-		// Search for suffix
-		//
-		for (AdditionalCode additionalCode : _additionalCodeMap.values()) {
-			if (className.endsWith(additionalCode.getSuffix())) {
-				return additionalCode;
-			}
-		}
+            // Java 5
+            additionalCode = AdditionalCodeReader.readFromFile(ProxyManager.JAVA_5_LAZY_POJO);
+            _additionalCodeMap.put(ProxyManager.JAVA_5_LAZY_POJO, additionalCode);
+        } catch (IOException ex) {
+            // Should not happen
+            throw new RuntimeException("Error reading proxy file", ex);
+        }
+    }
 
-		// Suffix not found, so no additional code is associated to this class
-		//
-		return null;
-	}
+    /**
+     * @return the additional code associated with the argument className, or null if any
+     */
+    public AdditionalCode getAdditionalCodeFor(String className) {
+        // Search for suffix
+        for (AdditionalCode additionalCode : _additionalCodeMap.values()) {
+            if (className.endsWith(additionalCode.getSuffix())) {
+                return additionalCode;
+            }
+        }
 
-	/**
-	 * Compute the source class name from the proxy class name and the additional code
-	 * 
-	 * @param proxyName
-	 * @param additionalCode
-	 * @return
-	 */
-	public String getSourceClassName(String proxyName, AdditionalCode additionalCode) {
-		return proxyName.substring(0, proxyName.length() - additionalCode.getSuffix().length());
-	}
+        // Suffix not found, so no additional code is associated to this class
+        return null;
+    }
 
-	/**
-	 * Get additional code from the file name
-	 * 
-	 * @param suffix
-	 * @return
-	 */
-	public AdditionalCode getAdditionalCode(String fileName) {
-		return _additionalCodeMap.get(fileName);
-	}
+    /**
+     * Compute the source class name from the proxy class name and the additional code
+     * 
+     * @param proxyName
+     * @param additionalCode
+     * @return
+     */
+    public String getSourceClassName(String proxyName, AdditionalCode additionalCode) {
+        return proxyName.substring(0, proxyName.length() - additionalCode.getSuffix().length());
+    }
+
+    /**
+     * Get additional code from the file name
+     * 
+     * @param suffix
+     * @return
+     */
+    public AdditionalCode getAdditionalCode(String fileName) {
+        return _additionalCodeMap.get(fileName);
+    }
 }

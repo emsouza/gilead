@@ -28,12 +28,7 @@ import net.sf.gilead.pojo.base.ILightEntity;
  * @author bruno.marchesson
  */
 public abstract class LightEntity implements ILightEntity {
-    // -----
-    // Attributes
-    // -----
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = 1061336746068017740L;
 
     /**
@@ -48,11 +43,6 @@ public abstract class LightEntity implements ILightEntity {
      */
     protected Map<String, Boolean> _initializationMap;
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Constructor
      */
@@ -60,11 +50,6 @@ public abstract class LightEntity implements ILightEntity {
         super();
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Add proxy information
      */
@@ -77,10 +62,6 @@ public abstract class LightEntity implements ILightEntity {
         _proxyInformations.put(property, (Map<String, Serializable>) proxyInfo);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.pojo.base.ILightEntity#removeProxyInformation(java.lang .String)
-     */
     @Override
     public void removeProxyInformation(String property) {
         if (_proxyInformations != null) {
@@ -88,10 +69,6 @@ public abstract class LightEntity implements ILightEntity {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.pojo.base.ILightEntity#getProxyInformation(java.lang.String )
-     */
     @Override
     public Object getProxyInformation(String property) {
         if (_proxyInformations != null) {
@@ -101,10 +78,6 @@ public abstract class LightEntity implements ILightEntity {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.pojo.base.ILightEntity#getDebugString()
-     */
     @Override
     public String getDebugString() {
         if (_proxyInformations != null) {
@@ -114,10 +87,6 @@ public abstract class LightEntity implements ILightEntity {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.pojo.base.ILightEntity#isInitialized(java.lang.String)
-     */
     @Override
     public boolean isInitialized(String property) {
         if (_initializationMap == null) {
@@ -131,10 +100,6 @@ public abstract class LightEntity implements ILightEntity {
         return initialized.booleanValue();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.pojo.base.ILightEntity#setInitialized(java.lang.String, boolean)
-     */
     @Override
     public void setInitialized(String property, boolean initialized) {
         if (_initializationMap == null) {
@@ -143,10 +108,6 @@ public abstract class LightEntity implements ILightEntity {
         _initializationMap.put(property, initialized);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.pojo.gwt.IRequestParameter#getValue()
-     */
     @Override
     public Object getUnderlyingValue() {
         return this;

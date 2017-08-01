@@ -19,14 +19,11 @@ import net.sf.gilead.util.CollectionHelper;
  */
 public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
 
-    // ----
-    // Factory
-    // ----
     public static final Factory factory = new Factory();
 
     /**
      * Factory for {@link CloneClassBeanReplicator}
-     * 
+     *
      * @author bruno.marchesson
      */
     private static class Factory implements CollectionReplicatorSpi.Factory {
@@ -46,42 +43,30 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
         super(beanTransformer);
     }
 
-    // ----
-    // Attributes
-    // ----
     /**
      * Persistent util
      */
-    protected PersistenceUtil _persistenceUtil;
+    protected PersistenceUtil persistenceUtil;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the _persistenceUtil
      */
     public PersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
+        return persistenceUtil;
     }
 
     /**
      * @param util the _persistenceUtil to set
      */
     public void setPersistenceUtil(PersistenceUtil util) {
-        _persistenceUtil = util;
+        persistenceUtil = util;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     @Override
     @SuppressWarnings("unchecked")
     protected <T> T createToInstance(Object from, Class<T> toClass)
             throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException {
         // Unmodifiable collection handling
-        //
         if (CollectionHelper.isUnmodifiableCollection(from)) {
             from = CollectionHelper.getUnmodifiableCollection(from);
             toClass = (Class<T>) from.getClass();
@@ -94,8 +79,7 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
             throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException, InvocationTargetException {
         if (from instanceof Set) {
             // PersistentSet with LinkHashSet handling
-            //
-            Collection<?> underlyingSet = _persistenceUtil.getUnderlyingCollection(from);
+            Collection<?> underlyingSet = persistenceUtil.getUnderlyingCollection(from);
             if ((underlyingSet != null) && (underlyingSet instanceof LinkedHashSet)) {
                 return new LinkedHashSet<T>();
             }

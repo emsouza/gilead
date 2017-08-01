@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.proxy.xml;
 
@@ -8,230 +8,220 @@ import java.util.List;
 
 /**
  * Method description
- * 
+ *
  * @author bruno.marchesson
  */
 public class Method {
-	// ----
-	// Attributes
-	// ---
-	/**
-	 * Name of the method
-	 */
-	private String name;
 
-	/**
-	 * Visibility of the method
-	 */
-	private String visibility;
+    /**
+     * Name of the method
+     */
+    private String name;
 
-	/**
-	 * Return type of the method
-	 */
-	private String returnType;
+    /**
+     * Visibility of the method
+     */
+    private String visibility;
 
-	/**
-	 * Return collection type of the method
-	 */
-	private String returnCollectionType;
+    /**
+     * Return type of the method
+     */
+    private String returnType;
 
-	/**
-	 * The method Javadoc
-	 */
-	private String javadoc;
+    /**
+     * Return collection type of the method
+     */
+    private String returnCollectionType;
 
-	/**
-	 * Parameters list
-	 */
-	private List<Parameter> parameters;
+    /**
+     * The method Javadoc
+     */
+    private String javadoc;
 
-	/**
-	 * The method code
-	 */
-	private String code;
+    /**
+     * Parameters list
+     */
+    private List<Parameter> parameters;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * The method code
+     */
+    private String code;
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the visibility
-	 */
-	public String getVisibility() {
-		return visibility;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param visibility the visibility to set
-	 */
-	public void setVisibility(String visibility) {
-		this.visibility = visibility;
-	}
+    /**
+     * @return the visibility
+     */
+    public String getVisibility() {
+        return visibility;
+    }
 
-	/**
-	 * @return the returnType
-	 */
-	public String getReturnType() {
-		return returnType;
-	}
+    /**
+     * @param visibility the visibility to set
+     */
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
 
-	/**
-	 * @param returnType the returnType to set
-	 */
-	public void setReturnType(String returnType) {
-		this.returnType = returnType;
-	}
+    /**
+     * @return the returnType
+     */
+    public String getReturnType() {
+        return returnType;
+    }
 
-	/**
-	 * @return the returnCollectionType
-	 */
-	public String getReturnCollectionType() {
-		return returnCollectionType;
-	}
+    /**
+     * @param returnType the returnType to set
+     */
+    public void setReturnType(String returnType) {
+        this.returnType = returnType;
+    }
 
-	/**
-	 * @param returnCollectionType the returnCollectionType to set
-	 */
-	public void setReturnCollectionType(String returnCollectionType) {
-		this.returnCollectionType = returnCollectionType;
-	}
+    /**
+     * @return the returnCollectionType
+     */
+    public String getReturnCollectionType() {
+        return returnCollectionType;
+    }
 
-	/**
-	 * @return the javadoc
-	 */
-	public String getJavadoc() {
-		return javadoc;
-	}
+    /**
+     * @param returnCollectionType the returnCollectionType to set
+     */
+    public void setReturnCollectionType(String returnCollectionType) {
+        this.returnCollectionType = returnCollectionType;
+    }
 
-	/**
-	 * @param javadoc the javadoc to set
-	 */
-	public void setJavadoc(String javadoc) {
-		this.javadoc = javadoc;
-	}
+    /**
+     * @return the javadoc
+     */
+    public String getJavadoc() {
+        return javadoc;
+    }
 
-	/**
-	 * @return the parameters
-	 */
-	public List<Parameter> getParameters() {
-		return parameters;
-	}
+    /**
+     * @param javadoc the javadoc to set
+     */
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
+    }
 
-	/**
-	 * @param parameters the parameters to set
-	 */
-	public void setParameters(List<Parameter> parameters) {
-		this.parameters = parameters;
-	}
+    /**
+     * @return the parameters
+     */
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
 
-	/**
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
+    /**
+     * @param parameters the parameters to set
+     */
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
 
-	/**
-	 * @param code the code to set
-	 */
-	public void setCode(String code) {
-		this.code = code;
-	}
+    /**
+     * @return the code
+     */
+    public String getCode() {
+        return code;
+    }
 
-	/**
-	 * Add the argument parameter
-	 * 
-	 * @param parameter
-	 */
-	public void addParameter(Parameter parameter) {
-		if (parameters == null) {
-			parameters = new ArrayList<Parameter>();
-		}
-		parameters.add(parameter);
-	}
+    /**
+     * @param code the code to set
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	// ----
-	// Public interface
-	// ----
-	/**
-	 * Compute Java5 syntax signature
-	 */
-	public String computeJava5Signature() {
-		StringBuffer result = new StringBuffer();
+    /**
+     * Add the argument parameter
+     * 
+     * @param parameter
+     */
+    public void addParameter(Parameter parameter) {
+        if (parameters == null) {
+            parameters = new ArrayList<Parameter>();
+        }
+        parameters.add(parameter);
+    }
 
-		result.append(visibility);
-		result.append(" ");
-		result.append(returnType);
-		if (returnCollectionType != null) {
-			result.append('<');
-			result.append(returnCollectionType);
-			result.append('>');
-		}
-		result.append(" ");
-		result.append(name);
-		result.append("(");
+    /**
+     * Compute Java5 syntax signature
+     */
+    public String computeJava5Signature() {
+        StringBuffer result = new StringBuffer();
 
-		if ((parameters != null) && (parameters.isEmpty() == false)) {
-			// Add parameters
-			//
-			boolean firstParameter = true;
-			for (Parameter parameter : parameters) {
-				if (firstParameter == false) {
-					result.append(", ");
-				} else {
-					firstParameter = false;
-				}
+        result.append(visibility);
+        result.append(" ");
+        result.append(returnType);
+        if (returnCollectionType != null) {
+            result.append('<');
+            result.append(returnCollectionType);
+            result.append('>');
+        }
+        result.append(" ");
+        result.append(name);
+        result.append("(");
 
-				result.append(parameter.toJava5String());
-			}
-		}
-		result.append(")");
+        if ((parameters != null) && (parameters.isEmpty() == false)) {
+            // Add parameters
+            boolean firstParameter = true;
+            for (Parameter parameter : parameters) {
+                if (firstParameter == false) {
+                    result.append(", ");
+                } else {
+                    firstParameter = false;
+                }
 
-		return result.toString();
-	}
+                result.append(parameter.toJava5String());
+            }
+        }
+        result.append(")");
 
-	/**
-	 * Compute Java14 syntax signature
-	 */
-	public String computeJava14Signature() {
-		StringBuffer result = new StringBuffer();
+        return result.toString();
+    }
 
-		result.append(visibility);
-		result.append(" ");
-		result.append(returnType);
-		result.append(" ");
-		result.append(name);
-		result.append("(");
+    /**
+     * Compute Java14 syntax signature
+     */
+    public String computeJava14Signature() {
+        StringBuffer result = new StringBuffer();
 
-		if ((parameters != null) && (parameters.isEmpty() == false)) {
-			// Add parameters
-			//
-			boolean firstParameter = true;
-			for (Parameter parameter : parameters) {
-				if (firstParameter == false) {
-					result.append(", ");
-				} else {
-					firstParameter = false;
-				}
+        result.append(visibility);
+        result.append(" ");
+        result.append(returnType);
+        result.append(" ");
+        result.append(name);
+        result.append("(");
 
-				result.append(parameter.toJava14String());
-			}
-		}
-		result.append(")");
+        if ((parameters != null) && (parameters.isEmpty() == false)) {
+            // Add parameters
+            boolean firstParameter = true;
+            for (Parameter parameter : parameters) {
+                if (firstParameter == false) {
+                    result.append(", ");
+                } else {
+                    firstParameter = false;
+                }
 
-		return result.toString();
-	}
+                result.append(parameter.toJava14String());
+            }
+        }
+        result.append(")");
+
+        return result.toString();
+    }
 }

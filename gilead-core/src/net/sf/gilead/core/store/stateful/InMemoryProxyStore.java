@@ -22,36 +22,29 @@ import java.util.Map;
 
 /**
  * In Memory Proxy Information Store. This class stores POJO in a simple hashmap
- * 
+ *
  * @author bruno.marchesson
  */
 public class InMemoryProxyStore extends AbstractStatefulProxyStore {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * The store hashmap
-	 */
-	protected Map<String, Map<String, Serializable>> _map = new HashMap<String, Map<String, Serializable>>();
 
-	// -------------------------------------------------------------------------
-	//
-	// Abstract stateful proxy store implementation
-	//
-	// -------------------------------------------------------------------------
-	@Override
-	public void delete(String key) {
-		_map.remove(key);
-	}
+    /**
+     * The store hashmap
+     */
+    protected Map<String, Map<String, Serializable>> map = new HashMap<String, Map<String, Serializable>>();
 
-	@Override
-	public Map<String, Serializable> get(String key) {
-		return _map.get(key);
-	}
+    @Override
+    public void delete(String key) {
+        map.remove(key);
+    }
 
-	@Override
-	public void store(String key, Map<String, Serializable> proxyInformation) {
-		_map.put(key, proxyInformation);
-	}
+    @Override
+    public Map<String, Serializable> get(String key) {
+        return map.get(key);
+    }
+
+    @Override
+    public void store(String key, Map<String, Serializable> proxyInformation) {
+        map.put(key, proxyInformation);
+    }
 
 }

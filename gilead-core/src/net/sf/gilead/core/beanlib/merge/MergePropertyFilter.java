@@ -109,7 +109,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 	public boolean propagate(String propertyName, Object cloneBean, Method readerMethod, Object persistentBean, Method setterMethod) {
 		// Always reset proxy information on stack
 		//
-		BeanlibCache.setProxyInformations(null);
+		BeanlibCache.removeProxyInformations();
 
 		try {
 			// Precondition checking

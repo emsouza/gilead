@@ -20,7 +20,7 @@ import net.sf.gilead.pojo.gwt.SerializedParameter;
  *
  * @author bruno.marchesson
  */
-public class GwtProxySerialization extends GwtSerializer implements IProxySerialization {
+public class GwtProxySerialization extends GwtSerializer implements ProxySerialization {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(GwtProxySerialization.class);
 
@@ -30,7 +30,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
     /**
      * String serializer
      */
-    protected IProxySerialization _stringSerializer;
+    protected ProxySerialization _stringSerializer;
 
     // ----
     // Properties
@@ -38,14 +38,14 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
     /**
      * @return the String Serializer
      */
-    public IProxySerialization getStringSerializer() {
+    public ProxySerialization getStringSerializer() {
         return _stringSerializer;
     }
 
     /**
      * @param serializer the string serializer to set
      */
-    public void setStringSerializer(IProxySerialization serializer) {
+    public void setStringSerializer(ProxySerialization serializer) {
         _stringSerializer = serializer;
     }
 

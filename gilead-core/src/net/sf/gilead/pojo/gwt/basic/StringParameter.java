@@ -11,12 +11,7 @@ import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
  * @author bruno.marchesson
  */
 public class StringParameter implements IGwtSerializableParameter {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Serialization ID.
-     */
+
     private static final long serialVersionUID = 2165631776081297490L;
 
     /**
@@ -24,9 +19,6 @@ public class StringParameter implements IGwtSerializableParameter {
      */
     private String value;
 
-    // ----
-    // Getter and setter
-    // ----
     /**
      * Change value.
      */
@@ -42,9 +34,6 @@ public class StringParameter implements IGwtSerializableParameter {
         return this.value;
     }
 
-    // ----
-    // Constructor
-    // ----
     /**
      * Constructor.
      */

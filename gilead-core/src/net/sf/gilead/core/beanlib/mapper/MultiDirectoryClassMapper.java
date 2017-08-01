@@ -21,42 +21,42 @@ public class MultiDirectoryClassMapper implements ClassMapper {
     /**
      * Mapping from domain packages to target class packages
      */
-    private Map<String, String> _sourcePackageMap = new HashMap<String, String>();
+    private Map<String, String> sourcePackageMap = new HashMap<String, String>();
 
     /**
      * Reverse mapping from target packages to domain packages
      */
-    private Map<String, String> _targetPackageMap = new HashMap<String, String>();
+    private Map<String, String> targetPackageMap = new HashMap<String, String>();
 
     /**
      * The suffix for all target class names (e.g. "DTO")
      */
-    private String _targetSuffix = "";
+    private String targetSuffix = "";
 
     /**
      * The map of the clone and domain correspondance
      */
-    private Map<Class<?>, Class<?>> _associationMap;
+    private Map<Class<?>, Class<?>> associationMap;
 
     /**
      * Constructor
      */
     public MultiDirectoryClassMapper() {
-        _associationMap = new HashMap<Class<?>, Class<?>>();
+        associationMap = new HashMap<Class<?>, Class<?>>();
     }
 
     /**
      * @return the suffix of all target classes
      */
     public String getTargetSuffix() {
-        return _targetSuffix;
+        return targetSuffix;
     }
 
     /**
      * @param suffix the suffix of all target classes (e.g. "DTO")
      */
     public void setTargetSuffix(String suffix) {
-        _targetSuffix = suffix;
+        targetSuffix = suffix;
     }
 
     /**
@@ -67,14 +67,10 @@ public class MultiDirectoryClassMapper implements ClassMapper {
      */
 
     public void addMapping(Package source, Package target) {
-        _sourcePackageMap.put(source.getName(), target.getName());
-        _targetPackageMap.put(target.getName(), source.getName());
+        sourcePackageMap.put(source.getName(), target.getName());
+        targetPackageMap.put(target.getName(), source.getName());
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.beanlib.java5.ICloneMapper#getTargetClass(java.lang .Class<?>)
-     */
     @Override
     public Class<?> getTargetClass(Class<?> sourceClass) {
         if (sourceClass == null) {
@@ -99,10 +95,6 @@ public class MultiDirectoryClassMapper implements ClassMapper {
         return targetClass;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.beanlib.java5.ICloneMapper#getTargetClass(java.lang .Class<?>)
-     */
     @Override
     public Class<?> getSourceClass(Class<?> targetClass) {
         if (targetClass == null) {
@@ -130,51 +122,48 @@ public class MultiDirectoryClassMapper implements ClassMapper {
         return sourceClass;
     }
 
-    // ================================================================
-    // Implementation details - private and package(test)visible stuff
-
     void cacheAssociation(Class<?> targetClass, Class<?> sourceClass) {
-        _associationMap.put(targetClass, sourceClass);
-        _associationMap.put(sourceClass, targetClass);
+        associationMap.put(targetClass, sourceClass);
+        associationMap.put(sourceClass, targetClass);
     }
 
     Class<?> getCachedAssociation(Class<?> sourceClass) {
-        return _associationMap.get(sourceClass);
+        return associationMap.get(sourceClass);
     }
 
     private String computeTargetClassName(Class<?> sourceClass) {
         String sourcePackage = sourceClass.getPackage().getName();
-        String targetPackage = _sourcePackageMap.get(sourcePackage);
+        String targetPackage = sourcePackageMap.get(sourcePackage);
         if (targetPackage == null) {
             return null;
         }
 
         String strippedClassName = sourceClass.getCanonicalName().substring(sourcePackage.length());
         assert sourceClass.getCanonicalName().startsWith(strippedClassName);
-        String targetClassName = targetPackage + strippedClassName + _targetSuffix;
+        String targetClassName = targetPackage + strippedClassName + targetSuffix;
 
-        LOGGER.info("Source class name is " + sourceClass.getCanonicalName() + ", target class is " + targetClassName);
+        LOGGER.trace("Source class name is " + sourceClass.getCanonicalName() + ", target class is " + targetClassName);
         return targetClassName;
     }
 
     private String computeSourceClassName(Class<?> targetClass) {
         String targetClassName = targetClass.getCanonicalName();
-        if (!targetClassName.endsWith(_targetSuffix)) {
-            LOGGER.error("target class " + targetClassName + " does not end with expected suffix '" + _targetSuffix + "'");
+        if (!targetClassName.endsWith(targetSuffix)) {
+            LOGGER.error("target class " + targetClassName + " does not end with expected suffix '" + targetSuffix + "'");
             // might as well throw IllegalArgumentException
             return null;
         }
         String targetPackage = targetClass.getPackage().getName();
         String strippedTargetClassName = targetClassName.substring(targetPackage.length());
 
-        String sourcePackageName = _targetPackageMap.get(targetPackage);
+        String sourcePackageName = targetPackageMap.get(targetPackage);
         if (sourcePackageName == null) {
             return null;
         }
-        String strippedSourceClassName = strippedTargetClassName.substring(0, strippedTargetClassName.length() - _targetSuffix.length());
+        String strippedSourceClassName = strippedTargetClassName.substring(0, strippedTargetClassName.length() - targetSuffix.length());
         String sourceClassName = sourcePackageName + strippedSourceClassName;
 
-        LOGGER.info("Source class for target " + targetClassName + " is " + sourceClassName);
+        LOGGER.trace("Source class for target " + targetClassName + " is " + sourceClassName);
         return sourceClassName;
     }
 

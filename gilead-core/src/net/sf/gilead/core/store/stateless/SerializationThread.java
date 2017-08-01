@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.serialization.IProxySerialization;
+import net.sf.gilead.core.serialization.ProxySerialization;
 import net.sf.gilead.pojo.base.ILightEntity;
 
 /**
@@ -25,18 +25,15 @@ public class SerializationThread implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SerializationThread.class);
 
-    // ----
-    // Attribute
-    // -----
     /**
      * Serializer for proxy informations
      */
-    private IProxySerialization _proxySerializer;
+    private ProxySerialization proxySerializer;
 
     /**
      * Serialization item list
      */
-    private BlockingQueue<SerializationItem> _itemList;
+    private BlockingQueue<SerializationItem> itemList;
 
     /**
      * Running flag
@@ -46,15 +43,15 @@ public class SerializationThread implements Runnable {
     /**
      * @return the proxy serializer
      */
-    public IProxySerialization getProxySerializer() {
-        return _proxySerializer;
+    public ProxySerialization getProxySerializer() {
+        return proxySerializer;
     }
 
     /**
      * @param serializer the serializer to set
      */
-    public void setProxySerializer(IProxySerialization serializer) {
-        _proxySerializer = serializer;
+    public void setProxySerializer(ProxySerialization serializer) {
+        proxySerializer = serializer;
     }
 
     /**
@@ -64,24 +61,14 @@ public class SerializationThread implements Runnable {
         _running = false;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Constructor
      */
     public SerializationThread() {
-        _itemList = new LinkedBlockingQueue<SerializationItem>(10);
+        itemList = new LinkedBlockingQueue<SerializationItem>(10);
         _running = true;
     }
 
-    // ------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // ------------------------------------------------------------------------
     /**
      * Add serialization item
      */
@@ -93,7 +80,7 @@ public class SerializationThread implements Runnable {
         item.proxyInfo = proxyInfo;
 
         try {
-            _itemList.put(item);
+            itemList.put(item);
         } catch (InterruptedException e) {
             // No matter
         }
@@ -105,27 +92,23 @@ public class SerializationThread implements Runnable {
      * @return
      */
     public boolean isSerializationFinished() {
-        return _itemList.isEmpty();
+        return itemList.isEmpty();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
     @Override
     public void run() {
         while (_running) {
             try {
-                SerializationItem item = _itemList.poll(10, TimeUnit.MILLISECONDS);
+                SerializationItem item = itemList.poll(10, TimeUnit.MILLISECONDS);
                 if (item != null) {
                     if (item.proxyInfo == null) {
                         item.entity.addProxyInformation(item.propertyName, null);
                     } else {
                         Object serialized = item.proxyInfo;
-                        if (_proxySerializer != null) {
+                        if (proxySerializer != null) {
                             // Serialization needed
                             //
-                            _proxySerializer.serialize((HashMap<String, Serializable>) item.proxyInfo);
+                            proxySerializer.serialize((HashMap<String, Serializable>) item.proxyInfo);
                         }
                         item.entity.addProxyInformation(item.propertyName, serialized);
                     }
@@ -137,7 +120,6 @@ public class SerializationThread implements Runnable {
             }
         }
     }
-
 }
 
 /**
@@ -146,7 +128,10 @@ public class SerializationThread implements Runnable {
  * @author bruno.marchesson
  */
 class SerializationItem {
+
     public ILightEntity entity;
+
     public String propertyName;
+
     public Map<String, Serializable> proxyInfo;
 }

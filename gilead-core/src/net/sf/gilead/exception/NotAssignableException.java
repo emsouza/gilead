@@ -1,57 +1,46 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.exception;
 
 /**
  * Exception thrown when the target class from the class mapper is not assignable to the source one
- * 
+ *
  * @author bruno.marchesson
  */
 public class NotAssignableException extends RuntimeException {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Serialisation ID
-	 */
-	private static final long serialVersionUID = -6720555954758348687L;
 
-	/**
-	 * The source class
-	 */
-	private Class<?> sourceClass;
+    private static final long serialVersionUID = -6720555954758348687L;
 
-	/**
-	 * The target class
-	 */
-	private Class<?> targetClass;
+    /**
+     * The source class
+     */
+    private Class<?> sourceClass;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the sourceClass
-	 */
-	public Class<?> getSourceClass() {
-		return sourceClass;
-	}
+    /**
+     * The target class
+     */
+    private Class<?> targetClass;
 
-	/**
-	 * @return the targetClass
-	 */
-	public Class<?> getTargetClass() {
-		return targetClass;
-	}
+    /**
+     * @return the sourceClass
+     */
+    public Class<?> getSourceClass() {
+        return sourceClass;
+    }
 
-	// ----
-	// Constructor
-	// ----
-	/**
-	 * Constructor
-	 */
-	public NotAssignableException(Class<?> sourceClass, Class<?> targetClass) {
-		this.sourceClass = sourceClass;
-		this.targetClass = targetClass;
-	}
+    /**
+     * @return the targetClass
+     */
+    public Class<?> getTargetClass() {
+        return targetClass;
+    }
+
+    /**
+     * Constructor
+     */
+    public NotAssignableException(Class<?> sourceClass, Class<?> targetClass) {
+        this.sourceClass = sourceClass;
+        this.targetClass = targetClass;
+    }
 }

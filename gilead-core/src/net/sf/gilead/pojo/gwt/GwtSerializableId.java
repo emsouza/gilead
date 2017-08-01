@@ -1,91 +1,76 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.pojo.gwt;
 
 /**
  * GWT serializabe version of the SerializableId class.
- * 
+ *
  * @author bruno.marchesson
  */
 public class GwtSerializableId implements IGwtSerializableParameter {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Serialization ID
-	 */
-	private static final long serialVersionUID = 6651960007634836456L;
 
-	/**
-	 * The underlying id
-	 */
-	protected IGwtSerializableParameter id;
+    private static final long serialVersionUID = 6651960007634836456L;
 
-	/**
-	 * Hash code or value for non persistent and transient values
-	 */
-	protected String stringValue;
+    /**
+     * The underlying id
+     */
+    protected IGwtSerializableParameter id;
 
-	/**
-	 * The associated entity name
-	 */
-	protected String entityName;
+    /**
+     * Hash code or value for non persistent and transient values
+     */
+    protected String stringValue;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the id
-	 */
-	public IGwtSerializableParameter getId() {
-		return id;
-	}
+    /**
+     * The associated entity name
+     */
+    protected String entityName;
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(IGwtSerializableParameter id) {
-		this.id = id;
-	}
+    /**
+     * @return the id
+     */
+    public IGwtSerializableParameter getId() {
+        return id;
+    }
 
-	/**
-	 * @return the string value
-	 */
-	public String getStringValue() {
-		return stringValue;
-	}
+    /**
+     * @param id the id to set
+     */
+    public void setId(IGwtSerializableParameter id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param value the value to set
-	 */
-	public void setStringValue(String value) {
-		this.stringValue = value;
-	}
+    /**
+     * @return the string value
+     */
+    public String getStringValue() {
+        return stringValue;
+    }
 
-	/**
-	 * @return the entityName
-	 */
-	public String getEntityName() {
-		return entityName;
-	}
+    /**
+     * @param value the value to set
+     */
+    public void setStringValue(String value) {
+        this.stringValue = value;
+    }
 
-	/**
-	 * @param entityName the entityName to set
-	 */
-	public void setEntityName(String entityName) {
-		this.entityName = entityName;
-	}
+    /**
+     * @return the entityName
+     */
+    public String getEntityName() {
+        return entityName;
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// IRequestParameter fake implementation
-	//
-	// -------------------------------------------------------------------------
+    /**
+     * @param entityName the entityName to set
+     */
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
 
-	@Override
-	public Object getUnderlyingValue() {
-		return null;
-	}
-
+    @Override
+    public Object getUnderlyingValue() {
+        return null;
+    }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.serialization.IProxySerialization;
+import net.sf.gilead.core.serialization.ProxySerialization;
 import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.exception.ProxyStoreException;
 import net.sf.gilead.pojo.base.ILightEntity;
@@ -43,7 +43,7 @@ public class StatelessProxyStore implements ProxyStore {
     /**
      * Serializer for proxy informations
      */
-    private IProxySerialization _proxySerializer;
+    private ProxySerialization _proxySerializer;
 
     /**
      * Use separate serialization thread
@@ -61,14 +61,14 @@ public class StatelessProxyStore implements ProxyStore {
     /**
      * @return the proxy serializer
      */
-    public IProxySerialization getProxySerializer() {
+    public ProxySerialization getProxySerializer() {
         return _proxySerializer;
     }
 
     /**
      * @param serializer the serializer to set
      */
-    public void setProxySerializer(IProxySerialization serializer) {
+    public void setProxySerializer(ProxySerialization serializer) {
         _proxySerializer = serializer;
     }
 

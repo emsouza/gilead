@@ -223,8 +223,4 @@ public class LazyKiller {
         // Fill cloned map if needed
         LazyKiller.clonedMap.set(transformer.getClonedMap());
     }
-
-    public void info(String origem) {
-        LoggerFactory.getLogger(LazyKiller.class).info(origem + " cloneMap " + (clonedMap.get() != null ? "NOK" : "OK"));
-    }
 }

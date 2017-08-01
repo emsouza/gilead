@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.proxy.xml;
 
@@ -8,164 +8,154 @@ import java.util.List;
 
 /**
  * Constructor description
- * 
+ *
  * @author bruno.marchesson
  */
 public class Constructor {
-	// ----
-	// Attributes
-	// ---
-	/**
-	 * Visibility of the method
-	 */
-	private String visibility;
 
-	/**
-	 * The method Javadoc
-	 */
-	private String javadoc;
+    /**
+     * Visibility of the method
+     */
+    private String visibility;
 
-	/**
-	 * Parameters list
-	 */
-	private List<Parameter> parameters;
+    /**
+     * The method Javadoc
+     */
+    private String javadoc;
 
-	/**
-	 * The method code
-	 */
-	private String code;
+    /**
+     * Parameters list
+     */
+    private List<Parameter> parameters;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the visibility
-	 */
-	public String getVisibility() {
-		return visibility;
-	}
+    /**
+     * The method code
+     */
+    private String code;
 
-	/**
-	 * @param visibility the visibility to set
-	 */
-	public void setVisibility(String visibility) {
-		this.visibility = visibility;
-	}
+    /**
+     * @return the visibility
+     */
+    public String getVisibility() {
+        return visibility;
+    }
 
-	/**
-	 * @return the javadoc
-	 */
-	public String getJavadoc() {
-		return javadoc;
-	}
+    /**
+     * @param visibility the visibility to set
+     */
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
 
-	/**
-	 * @param javadoc the javadoc to set
-	 */
-	public void setJavadoc(String javadoc) {
-		this.javadoc = javadoc;
-	}
+    /**
+     * @return the javadoc
+     */
+    public String getJavadoc() {
+        return javadoc;
+    }
 
-	/**
-	 * @return the parameters
-	 */
-	public List<Parameter> getParameters() {
-		return parameters;
-	}
+    /**
+     * @param javadoc the javadoc to set
+     */
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
+    }
 
-	/**
-	 * @param parameters the parameters to set
-	 */
-	public void setParameters(List<Parameter> parameters) {
-		this.parameters = parameters;
-	}
+    /**
+     * @return the parameters
+     */
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
 
-	/**
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
+    /**
+     * @param parameters the parameters to set
+     */
+    public void setParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
+    }
 
-	/**
-	 * @param code the code to set
-	 */
-	public void setCode(String code) {
-		this.code = code;
-	}
+    /**
+     * @return the code
+     */
+    public String getCode() {
+        return code;
+    }
 
-	/**
-	 * Add the argument parameter
-	 * 
-	 * @param parameter
-	 */
-	public void addParameter(Parameter parameter) {
-		if (parameters == null) {
-			parameters = new ArrayList<Parameter>();
-		}
-		parameters.add(parameter);
-	}
+    /**
+     * @param code the code to set
+     */
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	// ----
-	// Public interface
-	// ----
-	/**
-	 * Compute Java5 syntax signature
-	 */
-	public String computeJava5Signature(String className) {
-		StringBuffer result = new StringBuffer();
+    /**
+     * Add the argument parameter
+     * 
+     * @param parameter
+     */
+    public void addParameter(Parameter parameter) {
+        if (parameters == null) {
+            parameters = new ArrayList<Parameter>();
+        }
+        parameters.add(parameter);
+    }
 
-		result.append(visibility);
-		result.append(" ");
-		result.append(className);
-		result.append("(");
+    /**
+     * Compute Java5 syntax signature
+     */
+    public String computeJava5Signature(String className) {
+        StringBuffer result = new StringBuffer();
 
-		if ((parameters != null) && (parameters.isEmpty() == false)) {
-			// Add parameters
-			//
-			boolean firstParameter = true;
-			for (Parameter parameter : parameters) {
-				if (firstParameter == false) {
-					result.append(", ");
-				} else {
-					firstParameter = false;
-				}
+        result.append(visibility);
+        result.append(" ");
+        result.append(className);
+        result.append("(");
 
-				result.append(parameter.toJava5String());
-			}
-		}
-		result.append(")");
+        if ((parameters != null) && (parameters.isEmpty() == false)) {
+            // Add parameters
+            boolean firstParameter = true;
+            for (Parameter parameter : parameters) {
+                if (firstParameter == false) {
+                    result.append(", ");
+                } else {
+                    firstParameter = false;
+                }
 
-		return result.toString();
-	}
+                result.append(parameter.toJava5String());
+            }
+        }
+        result.append(")");
 
-	/**
-	 * Compute Java14 syntax signature
-	 */
-	public String computeJava14Signature(String className) {
-		StringBuffer result = new StringBuffer();
+        return result.toString();
+    }
 
-		result.append(visibility);
-		result.append(" ");
-		result.append(className);
-		result.append("(");
+    /**
+     * Compute Java14 syntax signature
+     */
+    public String computeJava14Signature(String className) {
+        StringBuffer result = new StringBuffer();
 
-		if ((parameters != null) && (parameters.isEmpty() == false)) {
-			// Add parameters
-			//
-			boolean firstParameter = true;
-			for (Parameter parameter : parameters) {
-				if (firstParameter == false) {
-					result.append(", ");
-				} else {
-					firstParameter = false;
-				}
+        result.append(visibility);
+        result.append(" ");
+        result.append(className);
+        result.append("(");
 
-				result.append(parameter.toJava14String());
-			}
-		}
-		result.append(")");
+        if ((parameters != null) && (parameters.isEmpty() == false)) {
+            // Add parameters
+            boolean firstParameter = true;
+            for (Parameter parameter : parameters) {
+                if (firstParameter == false) {
+                    result.append(", ");
+                } else {
+                    firstParameter = false;
+                }
 
-		return result.toString();
-	}
+                result.append(parameter.toJava14String());
+            }
+        }
+        result.append(")");
+
+        return result.toString();
+    }
 }

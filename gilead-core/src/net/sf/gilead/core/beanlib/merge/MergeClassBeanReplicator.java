@@ -140,7 +140,7 @@ public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     @Override
     public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
         // Reset bean local
-        BeanlibCache.setProxyInformations(null);
+        BeanlibCache.removeProxyInformations();
 
         // Force persistence map computation (useful for subclass)
         _persistenceUtil.isPersistentPojo(from);

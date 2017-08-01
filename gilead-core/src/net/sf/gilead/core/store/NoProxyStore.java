@@ -22,63 +22,30 @@ import java.util.Map;
 /**
  * Empty proxy store. The proxy informations is not stored, so this store can be used for cloning entities only (trying
  * to merge them throws an exception).
- * 
+ *
  * @author bruno.marchesson
  */
 public class NoProxyStore implements ProxyStore {
-	// -------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Constructor
-	 */
-	public NoProxyStore() {}
 
-	// -------------------------------------------------------------------------
-	//
-	// IProxyStore implementation
-	//
-	// -------------------------------------------------------------------------
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.gilead.core.store.IProxyStore#storeProxyInformations(java.lang .Object, java.lang.String,
-	 * java.util.Map)
-	 */
-	@Override
-	public void storeProxyInformations(Object cloneBean, Object persistentBean, String property, Map<String, Serializable> proxyInformations) {
-		// Nothing to do
-		//
-	}
+    @Override
+    public void storeProxyInformations(Object cloneBean, Object persistentBean, String property, Map<String, Serializable> proxyInformations) {
+        // Nothing to do
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.gilead.core.store.IProxyStore#removeProxyInformations(java.lang .Object, java.lang.String)
-	 */
-	@Override
-	public void removeProxyInformations(Object pojo, String property) {
-		// Nothing to do
-		//
-	}
+    @Override
+    public void removeProxyInformations(Object pojo, String property) {
+        // Nothing to do
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.gilead.core.store.IProxyStore#getProxyInformations(java.lang.Object , java.lang.String)
-	 */
-	@Override
-	public Map<String, Serializable> getProxyInformations(Object pojo, String property) {
-		// Must no be called !
-		//
-		throw new RuntimeException("Cannot merge entities with NoProxyStore !");
-	}
+    @Override
+    public Map<String, Serializable> getProxyInformations(Object pojo, String property) {
+        // Must no be called !
+        throw new RuntimeException("Cannot merge entities with NoProxyStore !");
+    }
 
-	/**
-	 * Clean up the proxy store after a complete serialization process
-	 */
-	@Override
-	public void cleanUp() {
-		// Nothing to do
-		//
-	}
+    /**
+     * Clean up the proxy store after a complete serialization process
+     */
+    @Override
+    public void cleanUp() {}
 }

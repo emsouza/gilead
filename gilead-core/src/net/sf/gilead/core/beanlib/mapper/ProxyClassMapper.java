@@ -23,94 +23,75 @@ import net.sf.gilead.proxy.xml.AdditionalCode;
 
 /**
  * Class mapper for domain and proxy
- * 
+ *
  * @author bruno.marchesson
  */
 public class ProxyClassMapper implements ClassMapper {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * The associated persistence util
-	 */
-	protected PersistenceUtil _persistenceUtil;
 
-	/**
-	 * For newly created proxy, must we use Java5 or Java 1.4 generator
-	 */
-	protected boolean _java5 = true;
+    /**
+     * The associated persistence util
+     */
+    protected PersistenceUtil persistenceUtil;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the associated Persistence Util
-	 */
-	public PersistenceUtil getPersistenceUtil() {
-		return _persistenceUtil;
-	}
+    /**
+     * For newly created proxy, must we use Java5 or Java 1.4 generator
+     */
+    protected boolean java5 = true;
 
-	/**
-	 * @param persistenceUtil the persistenceUtil to set
-	 */
-	public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
-		_persistenceUtil = persistenceUtil;
-	}
+    /**
+     * @return the associated Persistence Util
+     */
+    public PersistenceUtil getPersistenceUtil() {
+        return persistenceUtil;
+    }
 
-	/**
-	 * @return is Java5 used for proxy generation ?
-	 */
-	public boolean isJava5() {
-		return _java5;
-	}
+    /**
+     * @param persistenceUtil the persistenceUtil to set
+     */
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
+    }
 
-	/**
-	 * @param java5 must Java5 be used for proxy generation ?
-	 */
-	public void setJava5(boolean java5) {
-		_java5 = java5;
-	}
+    /**
+     * @return is Java5 used for proxy generation ?
+     */
+    public boolean isJava5() {
+        return java5;
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// IClassMapper implementation
-	//
-	// -------------------------------------------------------------------------
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.gilead.core.beanlib.IClassMapper#getSourceClass(java.lang.Class)
-	 */
-	@Override
-	public Class<?> getSourceClass(Class<?> targetClass) {
-		return ProxyManager.getInstance().getSourceClass(targetClass);
-	}
+    /**
+     * @param java5 must Java5 be used for proxy generation ?
+     */
+    public void setJava5(boolean java5) {
+        this.java5 = java5;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.gilead.core.beanlib.IClassMapper#getTargetClass(java.lang.Class <?>)
-	 */
-	@Override
-	public Class<?> getTargetClass(Class<?> sourceClass) {
-		Class<?> proxyClass = ProxyManager.getInstance().getProxyClass(sourceClass);
+    @Override
+    public Class<?> getSourceClass(Class<?> targetClass) {
+        return ProxyManager.getInstance().getSourceClass(targetClass);
+    }
 
-		if (proxyClass == null) {
-			// Force proxy generation for persistent class
-			//
-			if (_persistenceUtil == null) {
-				throw new RuntimeException("Missing PersistenceUtil in ProxyClassMapper : please fill this member...");
-			}
-			if (_persistenceUtil.isPersistentClass(sourceClass)) {
-				AdditionalCode additionalCode;
-				if (_java5 == true) {
-					additionalCode = AdditionalCodeManager.getInstance().getAdditionalCode(ProxyManager.JAVA_5_LAZY_POJO);
-				} else {
-					additionalCode = AdditionalCodeManager.getInstance().getAdditionalCode(ProxyManager.JAVA_14_LAZY_POJO);
-				}
+    @Override
+    public Class<?> getTargetClass(Class<?> sourceClass) {
+        Class<?> proxyClass = ProxyManager.getInstance().getProxyClass(sourceClass);
 
-				proxyClass = ProxyManager.getInstance().generateProxyClass(sourceClass, additionalCode);
-			}
-		}
+        if (proxyClass == null) {
+            // Force proxy generation for persistent class
+            if (persistenceUtil == null) {
+                throw new RuntimeException("Missing PersistenceUtil in ProxyClassMapper : please fill this member...");
+            }
+            if (persistenceUtil.isPersistentClass(sourceClass)) {
+                AdditionalCode additionalCode;
+                if (java5 == true) {
+                    additionalCode = AdditionalCodeManager.getInstance().getAdditionalCode(ProxyManager.JAVA_5_LAZY_POJO);
+                } else {
+                    additionalCode = AdditionalCodeManager.getInstance().getAdditionalCode(ProxyManager.JAVA_14_LAZY_POJO);
+                }
 
-		return proxyClass;
-	}
+                proxyClass = ProxyManager.getInstance().generateProxyClass(sourceClass, additionalCode);
+            }
+        }
+
+        return proxyClass;
+    }
 }

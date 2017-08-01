@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.pojo.gwt.collection;
 
@@ -9,53 +9,42 @@ import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
 
 /**
  * Map parameter.
- * 
+ *
  * @author bruno.marchesson
  */
 public class MapParameter implements IGwtSerializableParameter {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Serialization ID.
-	 */
-	private static final long serialVersionUID = 2165631776081297490L;
 
-	/**
-	 * The underlying value.
-	 */
-	private Map<IGwtSerializableParameter, IGwtSerializableParameter> value;
+    private static final long serialVersionUID = 2165631776081297490L;
 
-	// ----
-	// Getter and Mapter
-	// ----
-	/**
-	 * Change value.
-	 */
-	public void setUnderlyingValue(Map<IGwtSerializableParameter, IGwtSerializableParameter> value) {
-		this.value = value;
-	}
+    /**
+     * The underlying value.
+     */
+    private Map<IGwtSerializableParameter, IGwtSerializableParameter> value;
 
-	/**
-	 * @return the undelying value
-	 */
-	@Override
-	public Object getUnderlyingValue() {
-		return this.value;
-	}
+    /**
+     * Change value.
+     */
+    public void setUnderlyingValue(Map<IGwtSerializableParameter, IGwtSerializableParameter> value) {
+        this.value = value;
+    }
 
-	// ----
-	// Constructor
-	// ----
-	/**
-	 * Constructor.
-	 */
-	public MapParameter(Map<IGwtSerializableParameter, IGwtSerializableParameter> value) {
-		this.value = value;
-	}
+    /**
+     * @return the undelying value
+     */
+    @Override
+    public Object getUnderlyingValue() {
+        return this.value;
+    }
 
-	/**
-	 * Empty constructor (needed by GWT)
-	 */
-	public MapParameter() {}
+    /**
+     * Constructor.
+     */
+    public MapParameter(Map<IGwtSerializableParameter, IGwtSerializableParameter> value) {
+        this.value = value;
+    }
+
+    /**
+     * Empty constructor (needed by GWT)
+     */
+    public MapParameter() {}
 }

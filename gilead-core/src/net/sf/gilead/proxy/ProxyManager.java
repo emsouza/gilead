@@ -52,7 +52,7 @@ public class ProxyManager {
 	/**
 	 * Proxy generator
 	 */
-	private IServerProxyGenerator _proxyGenerator;
+	private ServerProxyGenerator _proxyGenerator;
 
 	/**
 	 * Map of the generated proxy
@@ -75,14 +75,14 @@ public class ProxyManager {
 	/**
 	 * @return the proxy Generator
 	 */
-	public IServerProxyGenerator getProxyGenerator() {
+	public ServerProxyGenerator getProxyGenerator() {
 		return _proxyGenerator;
 	}
 
 	/**
 	 * @param generator the proxy Generator to set
 	 */
-	public void setProxyGenerator(IServerProxyGenerator generator) {
+	public void setProxyGenerator(ServerProxyGenerator generator) {
 		_proxyGenerator = generator;
 	}
 

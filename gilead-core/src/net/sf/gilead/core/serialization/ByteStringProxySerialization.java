@@ -22,30 +22,19 @@ import net.sf.gilead.exception.ConvertorException;
  *
  * @author bruno.marchesson
  */
-public class ByteStringProxySerialization implements IProxySerialization {
+public class ByteStringProxySerialization implements ProxySerialization {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ByteStringProxySerialization.class);
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.IProxySerialization#serializeToBytes (java.io.Serializable)
-     */
     @Override
     public Object serialize(Serializable serializable) {
         LOGGER.trace("Serialization of " + serializable);
         // Precondition checking
-        //
         if (serializable == null) {
             return null;
         }
 
         // Serialize using Java mechanism
-        //
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(out);
@@ -58,14 +47,9 @@ public class ByteStringProxySerialization implements IProxySerialization {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.IProxySerialization#unserializeFromBytes (byte[])
-     */
     @Override
     public Serializable unserialize(Object object) {
         // Precondition checking
-        //
         if (object == null) {
             return null;
         }
@@ -77,13 +61,11 @@ public class ByteStringProxySerialization implements IProxySerialization {
         LOGGER.trace("Unserialization of " + Arrays.toString(bytes));
 
         // Precondition checking
-        //
         if ((bytes == null) || (bytes.length == 0)) {
             return null;
         }
 
         // Convert back to Serializable
-        //
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(bytes);
             ObjectInputStream ois = new ObjectInputStream(in);
@@ -91,6 +73,5 @@ public class ByteStringProxySerialization implements IProxySerialization {
         } catch (Exception e) {
             throw new ConvertorException("Error converting Serializable", e);
         }
-
     }
 }

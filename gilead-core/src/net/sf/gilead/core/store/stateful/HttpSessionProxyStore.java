@@ -29,17 +29,12 @@ import net.sf.gilead.exception.ProxyStoreException;
  * @author bruno.marchesson
  */
 public class HttpSessionProxyStore extends AbstractStatefulProxyStore {
-    // ----
-    // Attributes
-    // ----
+
     /**
      * The storage thread local
      */
     private static ThreadLocal<HttpSession> _httpSession = new ThreadLocal<HttpSession>();
 
-    // ----
-    // Properties
-    // ----
     /**
      * Store the current HTTP session in the thread local
      */
@@ -47,11 +42,6 @@ public class HttpSessionProxyStore extends AbstractStatefulProxyStore {
         _httpSession.set(session);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Abstract methods implementation
-    //
-    // -------------------------------------------------------------------------
     @Override
     public void delete(String key) {
         getSession().removeAttribute(key);
@@ -68,11 +58,6 @@ public class HttpSessionProxyStore extends AbstractStatefulProxyStore {
         getSession().setAttribute(key, proxyInformation);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // ------------------------------------------------------------------------
     /**
      * @return the HTTP session stored in thread local
      */

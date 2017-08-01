@@ -88,7 +88,7 @@ public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
     protected Object replicate(Object from) {
         // Reset bean local
         //
-        BeanlibCache.setProxyInformations(null);
+        BeanlibCache.removeProxyInformations();
 
         return super.replicate(from);
     }
@@ -102,7 +102,7 @@ public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
         // Get and reset proxy informations if any
         //
         Map<String, Serializable> proxyInformations = BeanlibCache.getProxyInformations();
-        BeanlibCache.setProxyInformations(null);
+        BeanlibCache.removeProxyInformations();
 
         // Clone collection
         T collection = super.replicateCollection(from, toClass);

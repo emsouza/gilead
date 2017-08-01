@@ -30,7 +30,7 @@ public class SerializationManagerTest extends TestCase {
      * Test Java serialization
      */
     public void testByteStringProxySerialization() {
-        IProxySerialization proxySerialization = new ByteStringProxySerialization();
+        ProxySerialization proxySerialization = new ByteStringProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -40,7 +40,7 @@ public class SerializationManagerTest extends TestCase {
      * Test XStream serialization
      */
     public void testXStreamProxySerialization() {
-        IProxySerialization proxySerialization = new XStreamProxySerialization();
+        ProxySerialization proxySerialization = new XStreamProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -50,7 +50,7 @@ public class SerializationManagerTest extends TestCase {
      * Test JBoss serialization
      */
     public void testJBossProxySerialization() {
-        IProxySerialization proxySerialization = new JBossProxySerialization();
+        ProxySerialization proxySerialization = new JBossProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -60,7 +60,7 @@ public class SerializationManagerTest extends TestCase {
      * Test GWT serialization
      */
     public void testGwtProxySerialization() {
-        IProxySerialization proxySerialization = new GwtProxySerialization();
+        ProxySerialization proxySerialization = new GwtProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -74,7 +74,7 @@ public class SerializationManagerTest extends TestCase {
     /**
      * Test Integer convertor
      */
-    protected void testIntegerConversion(IProxySerialization proxySerialization) {
+    protected void testIntegerConversion(ProxySerialization proxySerialization) {
         // Integer conversion
         //
         Integer value = new Integer(1);
@@ -105,7 +105,7 @@ public class SerializationManagerTest extends TestCase {
     /**
      * Test Long convertor
      */
-    protected void testLongConversion(IProxySerialization proxySerialization) {
+    protected void testLongConversion(ProxySerialization proxySerialization) {
         // Long conversion
         //
         Long value = new Long(1);
@@ -137,7 +137,7 @@ public class SerializationManagerTest extends TestCase {
      * Test Map conversion
      */
     @SuppressWarnings("unchecked")
-    protected void testMapConversion(IProxySerialization proxySerialization) {
+    protected void testMapConversion(ProxySerialization proxySerialization) {
         // Map creation
         //
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();

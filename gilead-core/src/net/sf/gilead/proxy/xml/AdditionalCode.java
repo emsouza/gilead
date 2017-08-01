@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.proxy.xml;
 
@@ -10,139 +10,129 @@ import java.util.List;
  * @author bruno.marchesson
  */
 public class AdditionalCode {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Suffix for generated classes
-	 */
-	private String suffix;
 
-	/**
-	 * Implemented interface
-	 */
-	private String implementedInterface;
+    /**
+     * Suffix for generated classes
+     */
+    private String suffix;
 
-	/**
-	 * List of additional attributes
-	 */
-	private List<Attribute> attributes;
+    /**
+     * Implemented interface
+     */
+    private String implementedInterface;
 
-	/**
-	 * List of additional constructors
-	 */
-	private List<Constructor> constructors;
+    /**
+     * List of additional attributes
+     */
+    private List<Attribute> attributes;
 
-	/**
-	 * List of additional methods
-	 */
-	private List<Method> methods;
+    /**
+     * List of additional constructors
+     */
+    private List<Constructor> constructors;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the suffix
-	 */
-	public String getSuffix() {
-		return suffix;
-	}
+    /**
+     * List of additional methods
+     */
+    private List<Method> methods;
 
-	/**
-	 * @param suffix the suffix to set
-	 */
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
+    /**
+     * @return the suffix
+     */
+    public String getSuffix() {
+        return suffix;
+    }
 
-	/**
-	 * @return the implementedInterfaces
-	 */
-	public String getImplementedInterface() {
-		return implementedInterface;
-	}
+    /**
+     * @param suffix the suffix to set
+     */
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 
-	/**
-	 * @param implementedInterfaces the implementedInterfaces to set
-	 */
-	public void setImplementedInterface(String implementedInterface) {
-		this.implementedInterface = implementedInterface;
-	}
+    /**
+     * @return the implementedInterfaces
+     */
+    public String getImplementedInterface() {
+        return implementedInterface;
+    }
 
-	/**
-	 * @return the attributes
-	 */
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
+    /**
+     * @param implementedInterfaces the implementedInterfaces to set
+     */
+    public void setImplementedInterface(String implementedInterface) {
+        this.implementedInterface = implementedInterface;
+    }
 
-	/**
-	 * @param attributes the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+    /**
+     * @return the attributes
+     */
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	/**
-	 * @return
-	 */
-	public List<Constructor> getConstructors() {
-		return constructors;
-	}
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
-	/**
-	 * @param constructors
-	 */
-	public void setConstructors(List<Constructor> constructors) {
-		this.constructors = constructors;
-	}
+    /**
+     * @return
+     */
+    public List<Constructor> getConstructors() {
+        return constructors;
+    }
 
-	/**
-	 * @return the methods
-	 */
-	public List<Method> getMethods() {
-		return methods;
-	}
+    /**
+     * @param constructors
+     */
+    public void setConstructors(List<Constructor> constructors) {
+        this.constructors = constructors;
+    }
 
-	/**
-	 * @param methods the methods to set
-	 */
-	public void setMethods(List<Method> methods) {
-		this.methods = methods;
-	}
+    /**
+     * @return the methods
+     */
+    public List<Method> getMethods() {
+        return methods;
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Public interface
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Add a new attribute
-	 */
-	public void addAttribute(Attribute attribute) {
-		if (attributes == null) {
-			attributes = new ArrayList<Attribute>();
-		}
-		attributes.add(attribute);
-	}
+    /**
+     * @param methods the methods to set
+     */
+    public void setMethods(List<Method> methods) {
+        this.methods = methods;
+    }
 
-	/**
-	 * Add a new method
-	 */
-	public void addConstructor(Constructor constructor) {
-		if (constructors == null) {
-			constructors = new ArrayList<Constructor>();
-		}
-		constructors.add(constructor);
-	}
+    /**
+     * Add a new attribute
+     */
+    public void addAttribute(Attribute attribute) {
+        if (attributes == null) {
+            attributes = new ArrayList<Attribute>();
+        }
+        attributes.add(attribute);
+    }
 
-	/**
-	 * Add a new method
-	 */
-	public void addMethod(Method method) {
-		if (methods == null) {
-			methods = new ArrayList<Method>();
-		}
-		methods.add(method);
-	}
+    /**
+     * Add a new method
+     */
+    public void addConstructor(Constructor constructor) {
+        if (constructors == null) {
+            constructors = new ArrayList<Constructor>();
+        }
+        constructors.add(constructor);
+    }
+
+    /**
+     * Add a new method
+     */
+    public void addMethod(Method method) {
+        if (methods == null) {
+            methods = new ArrayList<Method>();
+        }
+        methods.add(method);
+    }
 }

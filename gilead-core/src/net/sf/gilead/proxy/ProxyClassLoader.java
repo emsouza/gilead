@@ -26,133 +26,102 @@ import net.sf.gilead.proxy.xml.AdditionalCode;
 
 /**
  * This wrapping class loader is used to generate proxy every time that a IProxy assignable class is loaded
- * 
+ *
  * @author bruno.marchesson
  */
 public class ProxyClassLoader extends URLClassLoader {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * The wrapped class loader
-	 */
-	private ClassLoader _wrappedClassLoader;
 
-	/**
-	 * Indicates if the wrapped classloader is an URL one or not
-	 */
-	private boolean _isUrlClassLoader;
+    /**
+     * The wrapped class loader
+     */
+    private ClassLoader _wrappedClassLoader;
 
-	// -------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Constructor
-	 */
-	public ProxyClassLoader(ClassLoader wrappedClassLoader) {
-		super(new URL[] {});
-		_wrappedClassLoader = wrappedClassLoader;
-		_isUrlClassLoader = (wrappedClassLoader instanceof URLClassLoader);
-	}
+    /**
+     * Indicates if the wrapped classloader is an URL one or not
+     */
+    private boolean _isUrlClassLoader;
 
-	// -------------------------------------------------------------------------
-	//
-	// URL Class loader overrides
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Find Resource simple override
-	 */
-	@Override
-	public URL findResource(String name) {
-		if (_isUrlClassLoader) {
-			return ((URLClassLoader) _wrappedClassLoader).findResource(name);
-		} else {
-			return super.findResource(name);
-		}
-	}
+    /**
+     * Constructor
+     */
+    public ProxyClassLoader(ClassLoader wrappedClassLoader) {
+        super(new URL[] {});
+        _wrappedClassLoader = wrappedClassLoader;
+        _isUrlClassLoader = (wrappedClassLoader instanceof URLClassLoader);
+    }
 
-	/**
-	 * Find Resources simple override
-	 */
-	@Override
-	public Enumeration<URL> findResources(String name) throws IOException {
-		if (_isUrlClassLoader) {
-			return ((URLClassLoader) _wrappedClassLoader).findResources(name);
-		} else {
-			return super.findResources(name);
-		}
-	}
+    /**
+     * Find Resource simple override
+     */
+    @Override
+    public URL findResource(String name) {
+        if (_isUrlClassLoader) {
+            return ((URLClassLoader) _wrappedClassLoader).findResource(name);
+        } else {
+            return super.findResource(name);
+        }
+    }
 
-	// protected Class<?> findClass(String name) throws ClassNotFoundException {
-	// if (_isUrlClassLoader)
-	// {
-	// return _wrappedClassLoader.loadClass(name);
-	// }
-	// else
-	// {
-	// return super.findClass(name);
-	// }
-	// }
+    /**
+     * Find Resources simple override
+     */
+    @Override
+    public Enumeration<URL> findResources(String name) throws IOException {
+        if (_isUrlClassLoader) {
+            return ((URLClassLoader) _wrappedClassLoader).findResources(name);
+        } else {
+            return super.findResources(name);
+        }
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Class loader overrides
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * @param name
-	 * @return
-	 * @see java.lang.ClassLoader#getResource(java.lang.String)
-	 */
-	@Override
-	public URL getResource(String name) {
-		return _wrappedClassLoader.getResource(name);
-	}
+    /**
+     * @param name
+     * @return
+     * @see java.lang.ClassLoader#getResource(java.lang.String)
+     */
+    @Override
+    public URL getResource(String name) {
+        return _wrappedClassLoader.getResource(name);
+    }
 
-	/**
-	 * @param name
-	 * @return
-	 * @see java.lang.ClassLoader#getResourceAsStream(java.lang.String)
-	 */
-	@Override
-	public InputStream getResourceAsStream(String name) {
-		return _wrappedClassLoader.getResourceAsStream(name);
-	}
+    /**
+     * @param name
+     * @return
+     * @see java.lang.ClassLoader#getResourceAsStream(java.lang.String)
+     */
+    @Override
+    public InputStream getResourceAsStream(String name) {
+        return _wrappedClassLoader.getResourceAsStream(name);
+    }
 
-	/**
-	 * @param name
-	 * @return
-	 * @throws IOException
-	 * @see java.lang.ClassLoader#getResources(java.lang.String)
-	 */
-	@Override
-	public Enumeration<URL> getResources(String name) throws IOException {
-		return _wrappedClassLoader.getResources(name);
-	}
+    /**
+     * @param name
+     * @return
+     * @throws IOException
+     * @see java.lang.ClassLoader#getResources(java.lang.String)
+     */
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        return _wrappedClassLoader.getResources(name);
+    }
 
-	/**
-	 * Load class wrapping
-	 */
-	@Override
-	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		System.out.println(name);
-		AdditionalCode additionalCode = AdditionalCodeManager.getInstance().getAdditionalCodeFor(name);
-		if (additionalCode != null) {
-			// Get source class name
-			//
-			String sourceClassName = AdditionalCodeManager.getInstance().getSourceClassName(name, additionalCode);
-			Class<?> sourceClass = _wrappedClassLoader.loadClass(sourceClassName);
+    /**
+     * Load class wrapping
+     */
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        System.out.println(name);
+        AdditionalCode additionalCode = AdditionalCodeManager.getInstance().getAdditionalCodeFor(name);
+        if (additionalCode != null) {
+            // Get source class name
+            String sourceClassName = AdditionalCodeManager.getInstance().getSourceClassName(name, additionalCode);
+            Class<?> sourceClass = _wrappedClassLoader.loadClass(sourceClassName);
 
-			// Generate proxy
-			//
-			return ProxyManager.getInstance().generateProxyClass(sourceClass, additionalCode);
-		} else {
-			// Load class
-			//
-			return _wrappedClassLoader.loadClass(name);
-		}
-	}
+            // Generate proxy
+            return ProxyManager.getInstance().generateProxyClass(sourceClass, additionalCode);
+        } else {
+            // Load class
+            return _wrappedClassLoader.loadClass(name);
+        }
+    }
 }

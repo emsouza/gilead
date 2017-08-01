@@ -1,108 +1,100 @@
 /**
- * 
+ *
  */
 package net.sf.gilead.proxy.xml;
 
 /**
  * Method parameters
- * 
+ *
  * @author bruno.marchesson
  */
 public class Parameter {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * Name of the parameter
-	 */
-	private String name;
 
-	/**
-	 * Type of the parameter
-	 */
-	private String type;
+    /**
+     * Name of the parameter
+     */
+    private String name;
 
-	/**
-	 * Type of the collection parameter
-	 */
-	private String collectionType;
+    /**
+     * Type of the parameter
+     */
+    private String type;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Type of the collection parameter
+     */
+    private String collectionType;
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @return the collectionType
-	 */
-	public String getCollectionType() {
-		return collectionType;
-	}
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * @param collectionType the collectionType to set
-	 */
-	public void setCollectionType(String collectionType) {
-		this.collectionType = collectionType;
-	}
+    /**
+     * @return the collectionType
+     */
+    public String getCollectionType() {
+        return collectionType;
+    }
 
-	// ----
-	// Public interface
-	// ----
-	/**
-	 * Convert the parameter to Java 14 syntax
-	 */
-	public String toJava14String() {
-		StringBuffer result = new StringBuffer();
+    /**
+     * @param collectionType the collectionType to set
+     */
+    public void setCollectionType(String collectionType) {
+        this.collectionType = collectionType;
+    }
 
-		result.append(type);
-		result.append(" ");
-		result.append(name);
+    /**
+     * Convert the parameter to Java 14 syntax
+     */
+    public String toJava14String() {
+        StringBuffer result = new StringBuffer();
 
-		return result.toString();
-	}
+        result.append(type);
+        result.append(" ");
+        result.append(name);
 
-	/**
-	 * Convert the parameter to Java 5 syntax
-	 */
-	public String toJava5String() {
-		StringBuffer result = new StringBuffer();
+        return result.toString();
+    }
 
-		result.append(type);
-		if (collectionType != null) {
-			result.append("<");
-			result.append(collectionType);
-			result.append(">");
-		}
-		result.append(" ");
-		result.append(name);
+    /**
+     * Convert the parameter to Java 5 syntax
+     */
+    public String toJava5String() {
+        StringBuffer result = new StringBuffer();
 
-		return result.toString();
-	}
+        result.append(type);
+        if (collectionType != null) {
+            result.append("<");
+            result.append(collectionType);
+            result.append(">");
+        }
+        result.append(" ");
+        result.append(name);
+
+        return result.toString();
+    }
 }

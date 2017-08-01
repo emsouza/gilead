@@ -24,52 +24,49 @@ import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 
 /**
  * StackTraceElement transformer. Used to clone an exception that contains a persistent POJO
- * 
+ *
  * @author BMARCHESSON
  */
 public class StackTraceElementCustomTransformer implements CustomBeanTransformerSpi {
-	// ----
-	// Attributes
-	// ----
-	private BeanTransformerSpi _beanTransformer;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param beanTransformer
-	 */
-	public StackTraceElementCustomTransformer(final BeanTransformerSpi beanTransformer) {
-		_beanTransformer = beanTransformer;
-	}
+    private BeanTransformerSpi beanTransformer;
 
-	/**
-	 * Filter method
-	 */
+    /**
+     * Constructor
+     *
+     * @param beanTransformer
+     */
+    public StackTraceElementCustomTransformer(final BeanTransformerSpi beanTransformer) {
+        this.beanTransformer = beanTransformer;
+    }
 
-	@Override
-	public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo info) {
-		return (toClass == StackTraceElement.class);
-	}
+    /**
+     * Filter method
+     */
+    @Override
+    public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo info) {
+        return (toClass == StackTraceElement.class);
+    }
 
-	/**
-	 * Transformation method
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T transform(Object in, Class<T> toClass, PropertyInfo info) {
-		Map<Object, Object> cloneMap = _beanTransformer.getClonedMap();
-		Object clone = cloneMap.get(in);
+    /**
+     * Transformation method
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T transform(Object in, Class<T> toClass, PropertyInfo info) {
+        Map<Object, Object> cloneMap = beanTransformer.getClonedMap();
+        Object clone = cloneMap.get(in);
 
-		if (clone != null) {
-			return (T) clone;
-		}
+        if (clone != null) {
+            return (T) clone;
+        }
 
-		StackTraceElement stackTraceElement = (StackTraceElement) in;
-		clone = new StackTraceElement(stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(),
-				stackTraceElement.getLineNumber());
+        StackTraceElement stackTraceElement = (StackTraceElement) in;
+        clone = new StackTraceElement(stackTraceElement.getClassName(), stackTraceElement.getMethodName(), stackTraceElement.getFileName(),
+                stackTraceElement.getLineNumber());
 
-		cloneMap.put(in, clone);
+        cloneMap.put(in, clone);
 
-		return (T) clone;
-	}
+        return (T) clone;
+    }
 }

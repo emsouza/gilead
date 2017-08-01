@@ -40,30 +40,19 @@ import net.sf.gilead.proxy.xml.Method;
  *
  * @author bruno.marchesson
  */
-public class JavassistProxyGenerator implements IServerProxyGenerator {
+public class JavassistProxyGenerator implements ServerProxyGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JavassistProxyGenerator.class);
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.proxy.IServerProxyGenerator#generateProxyFor(java.lang. Class)
-     */
     @Override
     public Class<?> generateProxyFor(Class<?> superClass, AdditionalCode additionalCode) {
         try {
             // Compute proxy class name
-            //
             String sourceClassName = superClass.getName();
             String proxyClassName = sourceClassName + additionalCode.getSuffix();
-            LOGGER.info("Generating server proxy " + proxyClassName + " for class " + sourceClassName);
+            LOGGER.trace("Generating server proxy " + proxyClassName + " for class " + sourceClassName);
 
             // Create proxy class
-            //
             ClassPool pool = ClassPool.getDefault();
 
             // TOMCAT and JBOSS classloader handling
@@ -72,32 +61,23 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
             CtClass proxyClass = pool.makeClass(proxyClassName);
 
             // Add proxy inheritance
-            //
             proxyClass.setSuperclass(pool.get(sourceClassName));
 
             // Add ILightEntity inheritance
-            //
             if (additionalCode.getImplementedInterface() != null) {
                 proxyClass.addInterface(pool.get(additionalCode.getImplementedInterface()));
             }
 
             // generate Proxy
-            //
             generateProxy(proxyClass, additionalCode);
 
             // Generate class
-            //
             return proxyClass.toClass(superClass.getClassLoader(), superClass.getProtectionDomain());
         } catch (Exception ex) {
             throw new ProxyException("Proxy generation failure for " + superClass.getName(), ex);
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Generates ILightEntity classes and methods
      *
@@ -105,7 +85,6 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
      */
     private void generateProxy(CtClass proxyClass, AdditionalCode additionalCode) throws CannotCompileException {
         // Generate attributes if needed
-        //
         if (additionalCode.getAttributes() != null) {
             for (Attribute attribute : additionalCode.getAttributes()) {
                 generateAttribute(proxyClass, attribute);
@@ -113,7 +92,6 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
         }
 
         // Generate constructors if needed
-        //
         if (additionalCode.getConstructors() != null) {
             for (Constructor constructor : additionalCode.getConstructors()) {
                 generateConstructor(proxyClass, constructor);
@@ -121,7 +99,6 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
         }
 
         // Generate methods if needed
-        //
         if (additionalCode.getMethods() != null) {
             for (Method method : additionalCode.getMethods()) {
                 generateMethod(proxyClass, method);
@@ -150,13 +127,11 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
      */
     private void generateMethod(CtClass proxyClass, Method method) throws CannotCompileException {
         // Source code
-        //
         StringBuffer sourceCode = new StringBuffer();
         sourceCode.append(method.computeJava14Signature());
         sourceCode.append(method.getCode());
 
         // Add method body
-        //
         CtMethod ctMethod = CtNewMethod.make(sourceCode.toString(), proxyClass);
         proxyClass.addMethod(ctMethod);
     }
@@ -170,13 +145,11 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
      */
     private void generateConstructor(CtClass proxyClass, Constructor constructor) throws CannotCompileException {
         // Source code
-        //
         StringBuffer sourceCode = new StringBuffer();
         sourceCode.append(constructor.computeJava14Signature(ClassUtils.getShortClassName(proxyClass.getName())));
         sourceCode.append(constructor.getCode());
 
         // Add method body
-        //
         CtConstructor ctConstructor = CtNewConstructor.make(sourceCode.toString(), proxyClass);
         proxyClass.addConstructor(ctConstructor);
     }

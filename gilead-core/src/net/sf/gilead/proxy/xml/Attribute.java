@@ -11,9 +11,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author bruno.marchesson
  */
 public class Attribute {
-    // ----
-    // Attributes
-    // ---
+
     /**
      * Name of the attribute
      */
@@ -44,9 +42,6 @@ public class Attribute {
      */
     private String javadoc;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the name
      */
@@ -131,9 +126,6 @@ public class Attribute {
         this.defaultValue = defaultValue;
     }
 
-    // ----
-    // Public interface
-    // ----
     /**
      * Convert Attribute to Java5 syntax
      */
