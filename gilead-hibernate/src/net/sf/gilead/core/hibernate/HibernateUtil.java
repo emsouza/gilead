@@ -1581,8 +1581,8 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private List<String> getEntityNamesFor(Class<?> clazz) {
         List<String> entityNames = new ArrayList<String>();
-        Map<String, ClassMetadata> allMetadata = _sessionFactory.getAllClassMetadata();
-        for (ClassMetadata classMetadata : allMetadata.values()) {
+        Map<String, EntityPersister> allMetadata = _sessionFactory.getMetamodel().entityPersisters();
+        for (EntityPersister classMetadata : allMetadata.values()) {
             if (clazz.equals(classMetadata.getMappedClass())) {
                 entityNames.add(classMetadata.getEntityName());
             }
