@@ -1,7 +1,7 @@
 /**
  *
  */
-package net.sf.gilead.core.hibernate;
+package net.sf.gilead.core.hibernate.exception;
 
 /**
  * Exception send if the entity cannot be created back.

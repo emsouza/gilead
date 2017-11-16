@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.hibernate.exception.UnableToCreateEntityException;
 import net.sf.gilead.core.serialization.SerializableId;
 import net.sf.gilead.exception.ComponentTypeException;
 import net.sf.gilead.exception.NotPersistentObjectException;
