@@ -1,15 +1,12 @@
 package net.sf.gilead.core;
 
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import net.sf.gilead.configuration.ConfigurationHelper;
 import net.sf.gilead.core.beanlib.mapper.DirectoryClassMapper;
-import net.sf.gilead.core.beanlib.mapper.ProxyClassMapper;
 import net.sf.gilead.core.hibernate.HibernateUtil;
-import net.sf.gilead.core.serialization.JBossProxySerialization;
 import net.sf.gilead.core.store.stateful.InMemoryProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 import net.sf.gilead.gwt.GwtConfigurationHelper;
@@ -300,46 +297,6 @@ public class TestHelper {
     }
 
     /**
-     * Init bean manager for dynamic proxy mode
-     *
-     * @throws FileNotFoundException
-     */
-    public static PersistentBeanManager initProxyBeanManager() throws FileNotFoundException {
-        HibernateContext.setContext(HibernateContext.Context.proxy);
-
-        // force init
-        PersistentBeanManager.getInstance().setPersistenceUtil(null);
-
-        return GwtConfigurationHelper.initGwtProxyBeanManager(new HibernateUtil(HibernateContext.getSessionFactory(), null));
-    }
-
-    /**
-     * Init bean manager for dynamic proxy mode
-     *
-     * @throws FileNotFoundException
-     */
-    public static PersistentBeanManager initProxy14BeanManager() throws FileNotFoundException {
-        HibernateContext.setContext(HibernateContext.Context.proxy);
-
-        HibernateUtil persistenceUtil = new HibernateUtil();
-        persistenceUtil.setSessionFactory(HibernateContext.getSessionFactory());
-
-        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
-        beanManager.setPersistenceUtil(persistenceUtil);
-
-        StatelessProxyStore proxyStore = new StatelessProxyStore();
-        proxyStore.setProxySerializer(new JBossProxySerialization());
-        beanManager.setProxyStore(proxyStore);
-
-        ProxyClassMapper classMapper = new ProxyClassMapper();
-        classMapper.setPersistenceUtil(persistenceUtil);
-        classMapper.setJava5(false);
-        beanManager.setClassMapper(classMapper);
-
-        return beanManager;
-    }
-
-    /**
      * Init bean manager for Java5 support mode
      */
     public static PersistentBeanManager initJava5SupportBeanManager() {
@@ -396,9 +353,6 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.User();
-        } else if (context == Context.proxy) {
-            // dynamic proxy
-            return new net.sf.gilead.test.domain.proxy.User();
         } else if (context == Context.java5) {
             // Java5
             return new net.sf.gilead.test.domain.java5.User();
@@ -426,9 +380,6 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Employee();
-        } else if (context == Context.proxy) {
-            // dynamic proxy
-            return new net.sf.gilead.test.domain.proxy.Employee();
         } else if (context == Context.java5) {
             // Java5
             return new net.sf.gilead.test.domain.java5.Employee();
@@ -456,9 +407,6 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Message();
-        } else if (context == Context.proxy) {
-            // dynamic proxy
-            return new net.sf.gilead.test.domain.proxy.Message();
         } else if (context == Context.java5) {
             // Java5
             return new net.sf.gilead.test.domain.java5.Message();
@@ -486,9 +434,6 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Group();
-        } else if (context == Context.proxy) {
-            // dynamic proxy
-            return new net.sf.gilead.test.domain.proxy.Group();
         } else if (context == Context.java5) {
             // Java5
             return new net.sf.gilead.test.domain.java5.Group();
@@ -516,9 +461,6 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Address();
-        } else if (context == Context.proxy) {
-            // dynamic proxy
-            return new net.sf.gilead.test.domain.proxy.Address();
         } else if (context == Context.java5) {
             // Java5
             return new net.sf.gilead.test.domain.java5.Address();

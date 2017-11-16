@@ -26,7 +26,6 @@ public class HibernateContext {
         legacy,
         gwt,
         java5,
-        proxy,
         annotated
     }
 
@@ -57,11 +56,6 @@ public class HibernateContext {
      * The Java5 configuration file
      */
     private static final String JAVA5_CONFIGURATION_FILE = "java5/hibernate.cfg.xml";
-
-    /**
-     * The Proxy configuration file
-     */
-    private static final String PROXY_CONFIGURATION_FILE = "proxy/hibernate.cfg.xml";
 
     /**
      * The Java5 annotated (ServerOnly, ReadOnly) configuration file
@@ -144,8 +138,6 @@ public class HibernateContext {
             return GWT_CONFIGURATION_FILE;
         } else if (_context == Context.legacy) {
             return LEGACY_CONFIGURATION_FILE;
-        } else if (_context == Context.proxy) {
-            return PROXY_CONFIGURATION_FILE;
         } else if (_context == Context.java5) {
             return JAVA5_CONFIGURATION_FILE;
         } else // if (_context == Context.annotated)
