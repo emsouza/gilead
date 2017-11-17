@@ -102,7 +102,7 @@ public class UserDTO extends LightEntity implements IUser {
     }
 
     /**
-     * @param messageList the message List to set
+     * @param message the message List to set
      */
     @Override
     public void setMessageList(Set<IMessage> messageList) {

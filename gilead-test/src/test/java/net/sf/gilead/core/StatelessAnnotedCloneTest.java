@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core;
 
 import net.sf.gilead.test.domain.annotated.User;
@@ -13,28 +10,26 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class StatelessAnnotedCloneTest extends CloneTest {
+
     /**
      * Test setup
      */
     @Override
     protected void setUp() throws Exception {
         // Init bean manager
-        //
-        _beanManager = TestHelper.initJava5AnnotatedBeanManager();
+        beanManager = TestHelper.initJava5AnnotatedBeanManager();
 
         // Init domain and clone classes
-        //
-        _domainMessageClass = net.sf.gilead.test.domain.annotated.Message.class;
-        _domainUserClass = net.sf.gilead.test.domain.annotated.User.class;
-        _domainEmployeeClass = net.sf.gilead.test.domain.annotated.Employee.class;
+        domainMessageClass = net.sf.gilead.test.domain.annotated.Message.class;
+        domainUserClass = net.sf.gilead.test.domain.annotated.User.class;
+        domainEmployeeClass = net.sf.gilead.test.domain.annotated.Employee.class;
 
-        _cloneMessageClass = _domainMessageClass;
-        _cloneUserClass = _domainUserClass;
-        _cloneEmployeeClass = _domainEmployeeClass;
+        cloneMessageClass = domainMessageClass;
+        cloneUserClass = domainUserClass;
+        cloneEmployeeClass = domainEmployeeClass;
 
-        _testComponentType = false;
+        testComponentType = false;
         // Call base setup
-        //
         super.setUp();
     }
 

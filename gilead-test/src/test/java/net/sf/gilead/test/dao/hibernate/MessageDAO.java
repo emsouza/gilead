@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package net.sf.gilead.test.dao.hibernate;
 
 import java.util.List;
@@ -36,23 +34,19 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("from Message order by date desc");
             query.setMaxResults(1);
 
             // Execute query
-            //
             IMessage message = (IMessage) query.uniqueResult();
             transaction.commit();
             return message;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -69,23 +63,19 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("from Message order by date desc");
 
             // Execute query
-            //
             List<IMessage> result = query.list();
             transaction.commit();
 
             return result;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -101,31 +91,26 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             StringBuffer hqlQuery = new StringBuffer();
             hqlQuery.append("from Message message");
             hqlQuery.append(" inner join fetch message.author");
             hqlQuery.append(" where message.id = :id");
 
             // Fill query
-            //
             Query query = session.createQuery(hqlQuery.toString());
             query.setInteger("id", id);
 
             // Execute query
-            //
             IMessage message = (IMessage) query.uniqueResult();
 
             transaction.commit();
             return message;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -142,17 +127,14 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Save message
-            //
             session.saveOrUpdate(message);
             transaction.commit();
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -169,17 +151,14 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Delete message
-            //
             session.delete(message);
             transaction.commit();
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -196,19 +175,16 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Lock message
-            //
             if (message.getId() > 0) {
                 session.lock(message, LockMode.UPGRADE);
             }
             transaction.commit();
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -224,23 +200,19 @@ public class MessageDAO implements IMessageDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("select count(*) from Message");
 
             // Execute query
-            //
             int result = ((Long) query.uniqueResult()).intValue();
             transaction.commit();
 
             return result;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }

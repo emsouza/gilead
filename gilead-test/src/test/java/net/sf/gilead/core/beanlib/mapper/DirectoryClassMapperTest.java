@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.core.beanlib.mapper;
 
 import junit.framework.TestCase;
@@ -17,7 +14,6 @@ public class DirectoryClassMapperTest extends TestCase {
      */
     public final void testNominalCase() {
         // Test mapper
-        //
         DirectoryClassMapper classMapper = new DirectoryClassMapper();
         classMapper.setRootDomainPackage("net.sf.gilead.core.beanlib.mapper.domain1");
         classMapper.setRootClonePackage("net.sf.gilead.core.beanlib.mapper.dto1");
@@ -27,12 +23,10 @@ public class DirectoryClassMapperTest extends TestCase {
         Class targetClass = net.sf.gilead.core.beanlib.mapper.dto1.DomainClass1DTO.class;
 
         // Test Domain -> DTO mapping
-        //
         assertEquals(targetClass, classMapper.getTargetClass(sourceClass));
         assertNull(classMapper.getTargetClass(targetClass));
 
         // Test DTO -> Domain class
-        //
         assertEquals(sourceClass, classMapper.getSourceClass(targetClass));
         assertNull(classMapper.getSourceClass(sourceClass));
     }
@@ -42,7 +36,6 @@ public class DirectoryClassMapperTest extends TestCase {
      */
     public final void testNestedPackages() {
         // Test mapper
-        //
         DirectoryClassMapper classMapper = new DirectoryClassMapper();
         classMapper.setRootDomainPackage("net.sf.gilead.core.beanlib.mapper.domain1");
         classMapper.setRootClonePackage("net.sf.gilead.core.beanlib.mapper.domain1.dto");
@@ -52,12 +45,10 @@ public class DirectoryClassMapperTest extends TestCase {
         Class targetClass = net.sf.gilead.core.beanlib.mapper.domain1.dto.DomainClass1DTO.class;
 
         // Test Domain -> DTO mapping
-        //
         assertEquals(targetClass, classMapper.getTargetClass(sourceClass));
         assertNull(classMapper.getTargetClass(targetClass));
 
         // Test DTO -> Domain class
-        //
         assertEquals(sourceClass, classMapper.getSourceClass(targetClass));
         assertNull(classMapper.getSourceClass(sourceClass));
     }

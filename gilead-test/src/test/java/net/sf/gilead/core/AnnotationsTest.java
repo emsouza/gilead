@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core;
 
 import java.util.Date;
@@ -21,68 +18,49 @@ import net.sf.gilead.test.domain.annotated.User;
  * @author bruno.marchesson
  */
 public class AnnotationsTest extends TestCase {
-    // ----
-    // Attributes
-    // ----
+
     /**
      * Hibernate lazy manager
      */
-    protected PersistentBeanManager _beanManager;
+    protected PersistentBeanManager beanManager;
 
-    // -------------------------------------------------------------------------
-    //
-    // Test initialisation
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test init
      */
     @Override
     protected void setUp() throws Exception {
-        _beanManager = TestHelper.initJava5AnnotatedBeanManager();
+        beanManager = TestHelper.initJava5AnnotatedBeanManager();
 
         // Init db if needed
-        //
         if (TestHelper.isInitialized() == false) {
             TestHelper.initializeDB();
         }
     }
 
-    // --------------------------------------------------------------------------
-    //
-    // Test methods
-    //
-    // ---------------------------------------------------------------------------
     /**
      * Test clone and merge of ReadOnly attributes
      */
     public void testReadOnlyCloneAndMergeUser() {
         // Get UserDAO
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
         assertNotNull(userDAO);
 
         // Load user
-        //
         User user = (User) userDAO.loadUser(userDAO.searchUserAndMessagesByLogin("junit").getId());
         assertNotNull(user);
         assertNotNull(user.getPassword());
 
         // Clone user
-        //
-        User cloneUser = (User) _beanManager.clone(user);
+        User cloneUser = (User) beanManager.clone(user);
 
         // Test cloned user
-        //
         assertNotNull(cloneUser);
         assertNull(cloneUser.getPassword());
 
         // Merge user
-        //
-        User mergeUser = (User) _beanManager.merge(cloneUser);
+        User mergeUser = (User) beanManager.merge(cloneUser);
 
         // Test merged user
-        //
         assertNotNull(mergeUser);
         assertNotNull(mergeUser.getPassword());
         assertEquals(user.getPassword(), mergeUser.getPassword());
@@ -93,18 +71,15 @@ public class AnnotationsTest extends TestCase {
      */
     public void testReadOnlyAndServerOnlyCloneAndMergeMessage() {
         // Init access manager
-        //
         TestAccessManager accessManager = new TestAccessManager();
         accessManager.setRole(Role.user);
         AnnotationsManager.setAccessManager(accessManager);
 
         // Get MessageDAO
-        //
         IMessageDAO messageDAO = DAOFactory.getMessageDAO();
         assertNotNull(messageDAO);
 
         // Load message
-        //
         Message message = (Message) messageDAO.loadDetailedMessage(TestHelper.getExistingMessageId());
         message.setComment("myComment");
         messageDAO.saveMessage(message);
@@ -114,11 +89,9 @@ public class AnnotationsTest extends TestCase {
         assertNotNull(message.getComment()); // readOnly
 
         // Clone message
-        //
-        Message cloneMessage = (Message) _beanManager.clone(message);
+        Message cloneMessage = (Message) beanManager.clone(message);
 
         // Test cloned Message
-        //
         assertNotNull(cloneMessage);
         assertNull(cloneMessage.getVersion()); // serverOnly
         assertNotNull(cloneMessage.getComment()); // readOnly
@@ -126,11 +99,9 @@ public class AnnotationsTest extends TestCase {
         cloneMessage.setComment("modified");
 
         // Merge Message
-        //
-        Message mergeMessage = (Message) _beanManager.merge(cloneMessage);
+        Message mergeMessage = (Message) beanManager.merge(cloneMessage);
 
         // Test merged Message
-        //
         assertNotNull(mergeMessage);
         assertNotNull(mergeMessage.getVersion()); // serverOnly
         assertNotNull(mergeMessage.getComment());
@@ -142,13 +113,11 @@ public class AnnotationsTest extends TestCase {
      */
     public void testAnnotationsOnTransientMessage() {
         // Init access manager
-        //
         TestAccessManager accessManager = new TestAccessManager();
         accessManager.setRole(Role.user);
         AnnotationsManager.setAccessManager(accessManager);
 
         // Create message
-        //
         Message message = new Message();
         message.setMessage("test");
         message.setDate(new Date());
@@ -156,11 +125,9 @@ public class AnnotationsTest extends TestCase {
         message.setComment("myComment");
 
         // Clone message
-        //
-        Message cloneMessage = (Message) _beanManager.clone(message);
+        Message cloneMessage = (Message) beanManager.clone(message);
 
         // Test cloned message
-        //
         assertNotNull(cloneMessage);
         assertNull(cloneMessage.getVersion()); // serverOnly
         assertNotNull(cloneMessage.getComment()); // readOnly
@@ -168,11 +135,9 @@ public class AnnotationsTest extends TestCase {
         cloneMessage.setComment("modified");
 
         // Merge Message
-        //
-        Message mergeMessage = (Message) _beanManager.merge(cloneMessage);
+        Message mergeMessage = (Message) beanManager.merge(cloneMessage);
 
         // Test merged Message
-        //
         assertNotNull(mergeMessage);
         assertNull(mergeMessage.getVersion()); // serverOnly
         assertNotNull(mergeMessage.getComment()); // readOnly

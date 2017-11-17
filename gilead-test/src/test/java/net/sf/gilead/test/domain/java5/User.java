@@ -122,7 +122,7 @@ public class User implements Serializable, IUser {
     }
 
     /**
-     * @return the messageList
+     * @return the message
      */
     @Override
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class)
@@ -133,7 +133,7 @@ public class User implements Serializable, IUser {
     }
 
     /**
-     * @param messageList the messageList to set
+     * @param message the message to set
      */
     @Override
     public void setMessageList(Set<IMessage> messageList) {

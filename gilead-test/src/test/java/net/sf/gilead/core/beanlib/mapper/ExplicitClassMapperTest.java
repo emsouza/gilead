@@ -8,19 +8,12 @@ import junit.framework.TestCase;
  * @author Olaf Kock, Florian Siebert
  */
 public class ExplicitClassMapperTest extends TestCase {
-    // ----
-    // Attributes
-    // ----
+
     /**
      * The mapper to test
      */
     private ExplicitClassMapper mapper;
 
-    // -------------------------------------------------------------------------
-    //
-    // Test init
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test initialization
      */
@@ -32,11 +25,6 @@ public class ExplicitClassMapperTest extends TestCase {
         mapper.addAssociation(Boolean.class, String.class);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Test methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test Source -> Clone mapping
      */

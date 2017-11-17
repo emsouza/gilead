@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.core;
 
 import net.sf.gilead.test.domain.interfaces.IMessage;
@@ -12,31 +9,29 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class Java5SupportCloneTest extends CloneTest {
+
     /**
      * Test setup
      */
     @Override
     protected void setUp() throws Exception {
         // Init bean manager
-        //
-        _beanManager = TestHelper.initJava5SupportBeanManager();
+        beanManager = TestHelper.initJava5SupportBeanManager();
 
         // Init domain and clone classes
-        //
-        _domainMessageClass = net.sf.gilead.test.domain.java5.Message.class;
-        _domainUserClass = net.sf.gilead.test.domain.java5.User.class;
-        _domainEmployeeClass = net.sf.gilead.test.domain.java5.Employee.class;
+        domainMessageClass = net.sf.gilead.test.domain.java5.Message.class;
+        domainUserClass = net.sf.gilead.test.domain.java5.User.class;
+        domainEmployeeClass = net.sf.gilead.test.domain.java5.Employee.class;
 
-        _cloneMessageClass = net.sf.gilead.test.domain.dto.MessageDTO.class;
-        _cloneUserClass = net.sf.gilead.test.domain.dto.UserDTO.class;
-        _cloneEmployeeClass = net.sf.gilead.test.domain.dto.EmployeeDTO.class;
+        cloneMessageClass = net.sf.gilead.test.domain.dto.MessageDTO.class;
+        cloneUserClass = net.sf.gilead.test.domain.dto.UserDTO.class;
+        cloneEmployeeClass = net.sf.gilead.test.domain.dto.EmployeeDTO.class;
 
         // Do not test component type : nested many to one in embeddable
         // class does not seem to be handled properly
-        _testComponentType = false;
+        testComponentType = false;
 
         // Call base setup
-        //
         super.setUp();
     }
 

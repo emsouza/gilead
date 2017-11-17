@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import net.sf.gilead.configuration.ConfigurationHelper;
+import net.sf.gilead.configuration.GwtConfigurationHelper;
 import net.sf.gilead.core.beanlib.mapper.DirectoryClassMapper;
 import net.sf.gilead.core.hibernate.HibernateUtil;
 import net.sf.gilead.core.store.stateful.InMemoryProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
-import net.sf.gilead.gwt.GwtConfigurationHelper;
 import net.sf.gilead.test.DAOFactory;
 import net.sf.gilead.test.HibernateContext;
 import net.sf.gilead.test.HibernateContext.Context;
@@ -25,9 +25,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class TestHelper {
-    // ----
-    // Constant
-    // ----
+
     /**
      * The guest login
      */
@@ -53,11 +51,6 @@ public class TestHelper {
      */
     public final static String GUEST_GROUP = "guests";
 
-    // -------------------------------------------------------------------------
-    //
-    // Static helper
-    //
-    // -------------------------------------------------------------------------
     /**
      * Check that the database is initialized
      *
@@ -72,7 +65,6 @@ public class TestHelper {
      */
     public static void initializeDB() {
         // Create guest & test group
-        //
         IGroup guestGroup = createGroup();
         guestGroup.setName(GUEST_GROUP);
 
@@ -80,7 +72,6 @@ public class TestHelper {
         testGroup.setName(TEST_GROUP);
 
         // Create guest user (no password)
-        //
         IUser guestUser = createUser();
         guestUser.setLogin(GUEST_LOGIN);
         guestUser.setFirstName("No");
@@ -106,7 +97,6 @@ public class TestHelper {
         DAOFactory.getUserDAO().saveUser(guestUser);
 
         // Create JUnit user
-        //
         IUser junitUser = createUser();
         junitUser.setLogin(JUNIT_LOGIN);
         junitUser.setPassword("junit");
@@ -132,7 +122,6 @@ public class TestHelper {
         DAOFactory.getUserDAO().saveUser(junitUser);
 
         // Create Employee user
-        //
         IEmployee employee = createEmployee();
         employee.setLogin(EMPLOYEE_LOGIN);
         employee.setPassword("employee");
@@ -173,7 +162,6 @@ public class TestHelper {
      */
     public static void initializeLotOfData(int messageCount) {
         // Create volumetry
-        //
         IUser bigUser = createUser();
         bigUser.setLogin(JUNIT_LOGIN);
         bigUser.setFirstName("Performance");
@@ -207,14 +195,12 @@ public class TestHelper {
      */
     public static Serializable getExistingUserId() {
         // Load user list
-        //
         List<IUser> userList = DAOFactory.getUserDAO().loadAll();
 
         if ((userList == null) || (userList.isEmpty() == true)) {
             return null;
         } else {
             // Return first element
-            //
             return userList.get(0).getId();
         }
     }
@@ -224,23 +210,16 @@ public class TestHelper {
      */
     public static Integer getExistingMessageId() {
         // Load user list
-        //
         List<IMessage> messageList = DAOFactory.getMessageDAO().loadAllMessage();
 
         if ((messageList == null) || (messageList.isEmpty() == true)) {
             return null;
         } else {
             // Return first element
-            //
             return messageList.get(0).getId();
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Bean manager initialisation
-    //
-    // -------------------------------------------------------------------------
     /**
      * Init bean manager for stateless mode
      */
@@ -330,11 +309,6 @@ public class TestHelper {
         return ConfigurationHelper.initStatelessBeanManager(new HibernateUtil(HibernateContext.getSessionFactory(), null));
     }
 
-    // --------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // --------------------------------------------------------------------------
     /**
      * Create a new user (depends on the server configuration)
      */

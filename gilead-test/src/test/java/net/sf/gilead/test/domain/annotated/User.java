@@ -125,7 +125,7 @@ public class User extends LightEntity implements IUser {
     }
 
     /**
-     * @return the messageList
+     * @return the message
      */
     @Override
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class)
@@ -136,7 +136,7 @@ public class User extends LightEntity implements IUser {
     }
 
     /**
-     * @param messageList the messageList to set
+     * @param message the message to set
      */
     @Override
     public void setMessageList(Set<IMessage> messageList) {

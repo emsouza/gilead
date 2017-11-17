@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.performance;
 
 import net.sf.gilead.core.TestHelper;
@@ -11,17 +8,16 @@ import net.sf.gilead.core.TestHelper;
  * @author bruno.marchesson
  */
 public class StatefulPerformanceTest extends PerformanceTest {
+
     /**
      * Test setup
      */
     @Override
     protected void setUp() throws Exception {
         // Init bean manager
-        //
-        _beanManager = TestHelper.initStatefulBeanManager();
+        beanManager = TestHelper.initStatefulBeanManager();
 
         // Call base setup
-        //
         super.setUp();
     }
 }

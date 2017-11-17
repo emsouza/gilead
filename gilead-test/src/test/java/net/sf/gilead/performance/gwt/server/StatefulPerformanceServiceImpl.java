@@ -15,54 +15,32 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class StatefulPerformanceServiceImpl extends PersistentRemoteService implements PerformanceService {
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = -707833353923499944L;
 
-    // -------------------------------------------------------------------------
-    //
-    // Service init
-    //
-    // -------------------------------------------------------------------------
     @Override
     public void init() throws ServletException {
         super.init();
 
         // Init Hibernate context
-        //
         setBeanManager(TestHelper.initStatefulBeanManager());
 
         // Init DB if needed
-        //
         if (TestHelper.isInitialized() == false) {
             TestHelper.initializeDB();
         }
         if (TestHelper.isLotOfDataCreated() == false) {
             TestHelper.initializeLotOfData(100);
         }
-
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Service methods
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.performance.gwt.PerformanceService#loadUserAndMessages()
-     */
     @Override
     public IUser loadUserAndMessages() {
         // Get UserDAO
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
 
         // Load user
-        //
         IUser user = userDAO.searchUserAndMessagesByLogin(TestHelper.JUNIT_LOGIN);
         return user;
     }
-
 }

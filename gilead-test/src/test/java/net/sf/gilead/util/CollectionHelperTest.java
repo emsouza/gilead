@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.util;
 
 import java.util.ArrayList;
@@ -21,7 +18,7 @@ public class CollectionHelperTest extends TestCase {
      */
     @SuppressWarnings("unchecked")
     public final void testIsUnmodifiableCollection() {
-        List<Object> testList = new ArrayList<Object>();
+        List<Object> testList = new ArrayList<>();
         assertFalse(CollectionHelper.isUnmodifiableCollection(testList));
 
         List<Object> unmodifiable = Collections.unmodifiableList(testList);
@@ -30,5 +27,4 @@ public class CollectionHelperTest extends TestCase {
         List<Object> retrieved = (List<Object>) CollectionHelper.getUnmodifiableCollection(unmodifiable);
         assertEquals(testList, retrieved);
     }
-
 }

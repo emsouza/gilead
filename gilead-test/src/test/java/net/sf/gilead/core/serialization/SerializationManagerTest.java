@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.serialization;
 
 import java.io.Serializable;
@@ -21,16 +18,11 @@ public class SerializationManagerTest extends TestCase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SerializationManagerTest.class);
 
-    // -------------------------------------------------------------------------
-    //
-    // Public test methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test Java serialization
      */
     public void testByteStringProxySerialization() {
-        ProxySerialization proxySerialization = new ByteStringProxySerialization();
+        IProxySerialization proxySerialization = new ByteStringProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -40,7 +32,7 @@ public class SerializationManagerTest extends TestCase {
      * Test XStream serialization
      */
     public void testXStreamProxySerialization() {
-        ProxySerialization proxySerialization = new XStreamProxySerialization();
+        IProxySerialization proxySerialization = new XStreamProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -50,7 +42,7 @@ public class SerializationManagerTest extends TestCase {
      * Test JBoss serialization
      */
     public void testJBossProxySerialization() {
-        ProxySerialization proxySerialization = new JBossProxySerialization();
+        IProxySerialization proxySerialization = new JBossProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
@@ -60,23 +52,17 @@ public class SerializationManagerTest extends TestCase {
      * Test GWT serialization
      */
     public void testGwtProxySerialization() {
-        ProxySerialization proxySerialization = new GwtProxySerialization();
+        IProxySerialization proxySerialization = new GwtProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal Test methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test Integer convertor
      */
-    protected void testIntegerConversion(ProxySerialization proxySerialization) {
+    protected void testIntegerConversion(IProxySerialization proxySerialization) {
         // Integer conversion
-        //
         Integer value = new Integer(1);
         long start = System.nanoTime();
         Object serialized = proxySerialization.serialize(value);
@@ -89,7 +75,6 @@ public class SerializationManagerTest extends TestCase {
         LOGGER.info("Integer serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
 
         // int conversion
-        //
         int intValue = 1;
         start = System.nanoTime();
         serialized = proxySerialization.serialize(intValue);
@@ -105,9 +90,8 @@ public class SerializationManagerTest extends TestCase {
     /**
      * Test Long convertor
      */
-    protected void testLongConversion(ProxySerialization proxySerialization) {
+    protected void testLongConversion(IProxySerialization proxySerialization) {
         // Long conversion
-        //
         Long value = new Long(1);
         long start = System.nanoTime();
         Object serialized = proxySerialization.serialize(value);
@@ -120,7 +104,6 @@ public class SerializationManagerTest extends TestCase {
         LOGGER.info("Long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
 
         // long conversion
-        //
         long longValue = 1;
         start = System.nanoTime();
         serialized = proxySerialization.serialize(longValue);
@@ -137,20 +120,18 @@ public class SerializationManagerTest extends TestCase {
      * Test Map conversion
      */
     @SuppressWarnings("unchecked")
-    protected void testMapConversion(ProxySerialization proxySerialization) {
+    protected void testMapConversion(IProxySerialization proxySerialization) {
         // Map creation
-        //
-        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+        HashMap<String, Serializable> map = new HashMap<>();
         map.put("id", 1);
         map.put("initialized", true);
-        ArrayList<Integer> idList = new ArrayList<Integer>();
+        ArrayList<Integer> idList = new ArrayList<>();
         idList.add(2);
         idList.add(3);
         idList.add(4);
         map.put("idList", idList);
 
         // Test conversion
-        //
         long start = System.nanoTime();
         Object serialized = proxySerialization.serialize(map);
         long serialization = System.nanoTime();
@@ -162,7 +143,6 @@ public class SerializationManagerTest extends TestCase {
         LOGGER.info("Map serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
 
         // Map checking
-        //
         assertNotNull(unserialized);
         assertEquals(map.size(), unserialized.size());
         assertNotNull(unserialized.get("idList"));

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.core;
 
 import net.sf.gilead.test.domain.interfaces.IMessage;
@@ -12,27 +9,25 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class StatefulCloneTest extends CloneTest {
+
     /**
      * Test setup
      */
     @Override
     protected void setUp() throws Exception {
         // Init bean manager
-        //
-        _beanManager = TestHelper.initStatefulBeanManager();
+        beanManager = TestHelper.initStatefulBeanManager();
 
         // Init domain and clone classes
-        //
-        _domainMessageClass = net.sf.gilead.test.domain.stateful.Message.class;
-        _domainUserClass = net.sf.gilead.test.domain.stateful.User.class;
-        _domainEmployeeClass = net.sf.gilead.test.domain.stateful.Employee.class;
+        domainMessageClass = net.sf.gilead.test.domain.stateful.Message.class;
+        domainUserClass = net.sf.gilead.test.domain.stateful.User.class;
+        domainEmployeeClass = net.sf.gilead.test.domain.stateful.Employee.class;
 
-        _cloneMessageClass = _domainMessageClass;
-        _cloneUserClass = _domainUserClass;
-        _cloneEmployeeClass = _domainEmployeeClass;
+        cloneMessageClass = domainMessageClass;
+        cloneUserClass = domainUserClass;
+        cloneEmployeeClass = domainEmployeeClass;
 
         // Call base setup
-        //
         super.setUp();
     }
 

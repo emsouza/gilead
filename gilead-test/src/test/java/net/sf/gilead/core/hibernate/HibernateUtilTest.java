@@ -1,5 +1,7 @@
 package net.sf.gilead.core.hibernate;
 
+import org.hibernate.SessionFactory;
+
 import junit.framework.TestCase;
 import net.sf.gilead.core.TestHelper;
 import net.sf.gilead.exception.NotPersistentObjectException;
@@ -17,19 +19,13 @@ import net.sf.gilead.test.domain.misc.Configuration;
 import net.sf.gilead.test.domain.stateless.Message;
 import net.sf.gilead.test.domain.stateless.User;
 
-import org.hibernate.SessionFactory;
-
 /**
  * Hibernate Helper test case
  * 
  * @author bruno.marchesson
  */
 public class HibernateUtilTest extends TestCase {
-    // -------------------------------------------------------------------------
-    //
-    // Test init
-    //
-    // -------------------------------------------------------------------------
+
     /**
      * Test initialisation
      */
@@ -44,33 +40,24 @@ public class HibernateUtilTest extends TestCase {
         HibernateUtil.getInstance().setSessionFactory(factory);
 
         // Init db if needed
-        //
         if (TestHelper.isInitialized() == false) {
             TestHelper.initializeDB();
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Test methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test ID retrieving
      */
     public final void testGetIdObject() {
         // Get test user
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
         IUser user = userDAO.loadUser(Integer.valueOf(1));
         assertNotNull(user);
 
         // Test ID retrieving
-        //
         assertEquals(user.getId(), HibernateUtil.getInstance().getId(user));
 
         // Error test on transient object
-        //
         user = new User();
         try {
             HibernateUtil.getInstance().getId(user);
@@ -78,7 +65,6 @@ public class HibernateUtilTest extends TestCase {
         } catch (TransientObjectException ex) { /* expected behavior */}
 
         // Error test on non Hibernate object
-        //
         Configuration configuration = new Configuration();
         try {
             HibernateUtil.getInstance().getId(configuration);
@@ -92,22 +78,18 @@ public class HibernateUtilTest extends TestCase {
      */
     public final void testIsPersistentPojo() {
         // Get test user
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
         IUser user = userDAO.loadUser(Integer.valueOf(1));
         assertNotNull(user);
 
         // Test ID retrieving
-        //
         assertTrue(HibernateUtil.getInstance().isPersistentPojo(user));
 
         // Test on transient object
-        //
         IMessage message = new Message();
         assertFalse(HibernateUtil.getInstance().isPersistentPojo(message));
 
         // Error test on non Hibernate object
-        //
         Configuration configuration = new Configuration();
         assertFalse(HibernateUtil.getInstance().isPersistentPojo(configuration));
     }
@@ -126,14 +108,12 @@ public class HibernateUtilTest extends TestCase {
      */
     public void testSimpleAssociationLoad() {
         // Load test message
-        //
         IMessageDAO messageDAO = DAOFactory.getMessageDAO();
         IMessage message = messageDAO.loadLastMessage();
         assertNotNull(message);
         assertFalse(HibernateUtil.getInstance().isInitialized(message.getAuthor()));
 
         // Test 'author' loading
-        //
         IMessage loadedMessage = (IMessage) HibernateUtil.getInstance().loadAssociation(message.getClass(), message.getId(), "author");
         assertNotNull(loadedMessage);
         assertTrue(HibernateUtil.getInstance().isInitialized(loadedMessage.getAuthor()));

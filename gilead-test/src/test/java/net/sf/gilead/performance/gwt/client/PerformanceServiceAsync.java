@@ -1,11 +1,8 @@
-/**
- * 
- */
 package net.sf.gilead.performance.gwt.client;
 
-import net.sf.gilead.test.domain.interfaces.IUser;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import net.sf.gilead.test.domain.interfaces.IUser;
 
 /**
  * Performance remote service implementation
@@ -23,5 +20,4 @@ public interface PerformanceServiceAsync {
      * @generated generated method with asynchronous callback parameter to be used on the client side
      */
     void loadUserAndMessages(AsyncCallback<IUser> callback);
-
 }

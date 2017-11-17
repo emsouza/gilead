@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package net.sf.gilead.test.dao.hibernate;
 
 import java.util.List;

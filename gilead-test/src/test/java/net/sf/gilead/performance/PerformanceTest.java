@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.performance;
 
 import java.util.List;
@@ -22,26 +19,18 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  */
 public abstract class PerformanceTest extends TestCase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceTest.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    // ----
-    // Attributes
-    // ----
     /**
      * Persistent lazy manager
      */
-    protected PersistentBeanManager _beanManager;
+    protected PersistentBeanManager beanManager;
 
     /**
      * Indicates if merge is needed
      */
-    protected boolean _merge = true;
+    protected boolean merge = true;
 
-    // -------------------------------------------------------------------------
-    //
-    // Test initialisation
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test init
      */
@@ -50,7 +39,6 @@ public abstract class PerformanceTest extends TestCase {
         super.setUp();
 
         // Init db if needed
-        //
         if (TestHelper.isInitialized() == false) {
             TestHelper.initializeDB();
         }
@@ -59,45 +47,35 @@ public abstract class PerformanceTest extends TestCase {
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Test methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Test clone of a loaded user and associated messages
      */
     public void testPerformanceOnCloneAndMergeUserAndMessages() {
         // Get UserDAO
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
         assertNotNull(userDAO);
 
         // Load user
-        //
         IUser user = userDAO.searchUserAndMessagesByLogin(TestHelper.JUNIT_LOGIN);
         assertNotNull(user);
         assertNotNull(user.getMessageList());
         assertFalse(user.getMessageList().isEmpty());
 
         // Clone user
-        //
         long start = System.currentTimeMillis();
-        IUser cloneUser = (IUser) _beanManager.clone(user);
+        IUser cloneUser = (IUser) beanManager.clone(user);
         long end = System.currentTimeMillis();
         assertNotNull(cloneUser);
 
-        LOGGER.info(getClass().getSimpleName() + " / Clone user took " + (end - start) + " ms.");
+        LOGGER.debug(getClass().getSimpleName() + " / Clone user took " + (end - start) + " ms.");
 
-        if (_merge) {
+        if (merge) {
             // Merge user
-            //
             start = System.currentTimeMillis();
-            IUser mergeUser = (IUser) _beanManager.merge(cloneUser);
-            LOGGER.info(getClass().getSimpleName() + " / Merge user took " + (System.currentTimeMillis() - start) + " ms.");
+            IUser mergeUser = (IUser) beanManager.merge(cloneUser);
+            LOGGER.debug(getClass().getSimpleName() + " / Merge user took " + (System.currentTimeMillis() - start) + " ms.");
 
             // Test merged user
-            //
             assertNotNull(mergeUser);
         }
     }
@@ -107,32 +85,27 @@ public abstract class PerformanceTest extends TestCase {
      */
     public void testPerformanceOnCloneAndMergeAllUserAndMessages() {
         // Get UserDAO
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
         assertNotNull(userDAO);
 
         // Load users
-        //
         List<IUser> userList = userDAO.loadAllUserAndMessages();
 
         // Clone user
-        //
         long start = System.currentTimeMillis();
-        List<IUser> cloneUserList = (List<IUser>) _beanManager.clone(userList);
+        List<IUser> cloneUserList = (List<IUser>) beanManager.clone(userList);
         long end = System.currentTimeMillis();
         assertNotNull(cloneUserList);
 
-        LOGGER.info(getClass().getSimpleName() + " / Clone user list took " + (end - start) + " ms.");
+        LOGGER.debug(getClass().getSimpleName() + " / Clone user list took " + (end - start) + " ms.");
 
-        if (_merge) {
+        if (merge) {
             // Merge user
-            //
             start = System.currentTimeMillis();
-            List<IUser> mergeUserList = (List<IUser>) _beanManager.merge(cloneUserList);
-            LOGGER.info(getClass().getSimpleName() + " / Merge user list took " + (System.currentTimeMillis() - start) + " ms.");
+            List<IUser> mergeUserList = (List<IUser>) beanManager.merge(cloneUserList);
+            LOGGER.debug(getClass().getSimpleName() + " / Merge user list took " + (System.currentTimeMillis() - start) + " ms.");
 
             // Test merged user
-            //
             assertNotNull(mergeUserList);
         }
     }
@@ -142,23 +115,20 @@ public abstract class PerformanceTest extends TestCase {
      */
     public void testLongRunningPerformanceOnClone() {
         // Get UserDAO
-        //
         IUserDAO userDAO = DAOFactory.getUserDAO();
         assertNotNull(userDAO);
 
         // Load users
-        //
         List<IUser> userList = userDAO.loadAllUserAndMessages();
 
         // Clone user
-        //
         for (int index = 0; index < 10; index++) {
             long start = System.currentTimeMillis();
-            List<IUser> cloneUserList = (List<IUser>) _beanManager.clone(userList);
+            List<IUser> cloneUserList = (List<IUser>) beanManager.clone(userList);
             long end = System.currentTimeMillis();
             assertNotNull(cloneUserList);
 
-            LOGGER.info(getClass().getSimpleName() + " / Clone user list took " + (end - start) + " ms.");
+            LOGGER.debug(getClass().getSimpleName() + " / [CGLIB check disabled] Clone user list took " + (end - start) + " ms.");
         }
     }
 }

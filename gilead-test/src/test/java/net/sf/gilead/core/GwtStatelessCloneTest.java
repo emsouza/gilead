@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.core;
 
 import net.sf.gilead.test.domain.interfaces.IMessage;
@@ -12,27 +9,25 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class GwtStatelessCloneTest extends CloneTest {
+
     /**
      * Test setup
      */
     @Override
     protected void setUp() throws Exception {
         // Init bean manager
-        //
-        _beanManager = TestHelper.initGwtStatelessBeanManager();
+        beanManager = TestHelper.initGwtStatelessBeanManager();
 
         // Init domain and clone classes
-        //
-        _domainMessageClass = net.sf.gilead.test.domain.gwt.Message.class;
-        _domainUserClass = net.sf.gilead.test.domain.gwt.User.class;
-        _domainEmployeeClass = net.sf.gilead.test.domain.gwt.Employee.class;
+        domainMessageClass = net.sf.gilead.test.domain.gwt.Message.class;
+        domainUserClass = net.sf.gilead.test.domain.gwt.User.class;
+        domainEmployeeClass = net.sf.gilead.test.domain.gwt.Employee.class;
 
-        _cloneMessageClass = _domainMessageClass;
-        _cloneUserClass = _domainUserClass;
-        _cloneEmployeeClass = _domainEmployeeClass;
+        cloneMessageClass = domainMessageClass;
+        cloneUserClass = domainUserClass;
+        cloneEmployeeClass = domainEmployeeClass;
 
         // Call base setup
-        //
         super.setUp();
     }
 

@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package net.sf.gilead.test;
 
 import org.hibernate.SessionFactory;
@@ -62,9 +60,6 @@ public class HibernateContext {
      */
     private static final String ANNOTATED_CONFIGURATION_FILE = "annotated/hibernate.cfg.xml";
 
-    // ----
-    // Attributes
-    // ----
     /**
      * Current configuration
      */
@@ -75,9 +70,6 @@ public class HibernateContext {
      */
     private static SessionFactory _sessionFactory;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the application context
      */

@@ -150,7 +150,7 @@ public class User implements Serializable, IUser {
     }
 
     /**
-     * @param messageList the message List to set
+     * @param message the message List to set
      */
     @Override
     public void setMessageList(Set<IMessage> messageList) {

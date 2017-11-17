@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.wrapper;
 
 import java.util.Collections;
@@ -16,76 +13,68 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class WrappingClass {
-    // ----
-    // Enum (for test)
-    // ----
+
     public enum ErrorCode {
         ok,
         warning,
         error,
     }
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The associated user
      */
-    protected IUser _user;
+    protected IUser user;
 
     /**
      * The associated message list
      */
-    protected List<IMessage> _messageList;
+    protected List<IMessage> message;
 
     /**
      * The error code
      */
-    protected ErrorCode _errorCode;
+    protected ErrorCode errorCode;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the user
      */
     public IUser getUser() {
-        return _user;
+        return user;
     }
 
     /**
      * @param user the user to set
      */
     public void setUser(IUser user) {
-        _user = user;
+        this.user = user;
     }
 
     /**
-     * @return the messageList
+     * @return the message
      */
     public List<IMessage> getMessageList() {
         // test unmodifiable set
-        return Collections.unmodifiableList(_messageList);
+        return Collections.unmodifiableList(message);
     }
 
     /**
-     * @param list the messageList to set
+     * @param list the message to set
      */
-    public void setMessageList(List<IMessage> list) {
-        _messageList = list;
+    public void setMessageList(List<IMessage> message) {
+        this.message = message;
     }
 
     /**
      * @return the error code
      */
     public ErrorCode getErrorCode() {
-        return _errorCode;
+        return errorCode;
     }
 
     /**
      * @param error_code the error code to set
      */
-    public void setErrorCode(ErrorCode error_code) {
-        _errorCode = error_code;
+    public void setErrorCode(ErrorCode errorCode) {
+        this.errorCode = errorCode;
     }
 }

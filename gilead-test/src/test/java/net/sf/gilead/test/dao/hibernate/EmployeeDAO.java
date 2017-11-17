@@ -31,24 +31,20 @@ public class EmployeeDAO implements IEmployeeDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("from Employee employee where employee.id=:id");
             query.setInteger("id", id);
 
             // Execute query
-            //
             IEmployee employee = (IEmployee) query.uniqueResult();
             transaction.commit();
 
             return employee;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -63,31 +59,26 @@ public class EmployeeDAO implements IEmployeeDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             StringBuffer hqlQuery = new StringBuffer();
             hqlQuery.append("from Employee employee");
             hqlQuery.append(" left join fetch employee.messageList");
             hqlQuery.append(" where employee.login=:login");
 
             // Fill query
-            //
             Query query = session.createQuery(hqlQuery.toString());
             query.setString("login", login);
 
             // Execute query
-            //
             IEmployee employee = (IEmployee) query.uniqueResult();
             transaction.commit();
 
             return employee;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }

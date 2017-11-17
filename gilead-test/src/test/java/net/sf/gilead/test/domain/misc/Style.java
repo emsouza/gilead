@@ -89,7 +89,8 @@ public class Style {
          * An example of how to use this : List<Something> list = ... Collections.sort(list, SortDir.ASC.comparator(new
          * Comparator() { public int compare(Object o1, Object o2) { return ... } });
          *
-         * @return a Comparator that wraps the specific comparator that orders the results acording to the sort direction
+         * @return a Comparator that wraps the specific comparator that orders the results acording to the sort
+         *         direction
          */
         public abstract <X> Comparator<X> comparator(Comparator<X> c);
     }

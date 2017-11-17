@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.core.wrapper;
 
 import net.sf.gilead.test.domain.interfaces.IMessage;
@@ -12,28 +9,23 @@ import net.sf.gilead.test.domain.interfaces.IMessage;
  * @author bruno.marchesson
  */
 public class WrappingArrayClass {
-    // ----
-    // Attributes
-    // ----
+
     /**
      * The associated message array
      */
-    protected IMessage[] _messages;
+    protected IMessage[] messages;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the messages
      */
     public IMessage[] getMessages() {
-        return _messages;
+        return messages;
     }
 
     /**
-     * @param list the messageList to set
+     * @param list the messages to set
      */
-    public void setMessages(IMessage[] array) {
-        _messages = array;
+    public void setMessages(IMessage[] messages) {
+        this.messages = messages;
     }
 }

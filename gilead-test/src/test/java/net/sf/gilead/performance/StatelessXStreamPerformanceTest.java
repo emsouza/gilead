@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.performance;
 
 import net.sf.gilead.core.TestHelper;
@@ -13,19 +10,18 @@ import net.sf.gilead.core.store.stateless.StatelessProxyStore;
  * @author bruno.marchesson
  */
 public class StatelessXStreamPerformanceTest extends PerformanceTest {
+
     /**
      * Test setup
      */
     @Override
     protected void setUp() throws Exception {
         // Init bean manager
-        //
-        _beanManager = TestHelper.initLegacyStatelessBeanManager();
+        beanManager = TestHelper.initLegacyStatelessBeanManager();
 
-        ((StatelessProxyStore) _beanManager.getProxyStore()).setProxySerializer(new XStreamProxySerialization());
+        ((StatelessProxyStore) beanManager.getProxyStore()).setProxySerializer(new XStreamProxySerialization());
 
         // Call base setup
-        //
         super.setUp();
     }
 }

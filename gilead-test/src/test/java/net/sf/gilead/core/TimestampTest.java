@@ -9,28 +9,21 @@ import net.sf.gilead.test.dao.IMessageDAO;
 import net.sf.gilead.test.domain.interfaces.IMessage;
 
 public class TimestampTest extends TestCase {
-    // -------------------------------------------------------------------------
-    //
-    // Test methods
-    //
-    // -------------------------------------------------------------------------
+
     /**
      * Test timestamp conversion
      */
     public void testTimestampConversion() {
 
         // Hibernate lazy manager
-        //
         PersistentBeanManager beanManager = TestHelper.initStatelessBeanManager();
 
         // Initialize DB if needed
-        //
         if (TestHelper.isInitialized() == false) {
             TestHelper.initializeDB();
         }
 
         // Test data
-        //
         IMessageDAO messageDAO = DAOFactory.getMessageDAO();
         IMessage message = messageDAO.loadLastMessage();
         assertNotNull(message);
@@ -42,11 +35,9 @@ public class TimestampTest extends TestCase {
         message.setDate(date);
 
         // Clone
-        //
         IMessage cloneMessage = (IMessage) beanManager.clone(message);
 
         // Clone verification
-        //
         assertNotNull(cloneMessage);
         assertNotNull(cloneMessage.getDate());
         assertTrue(cloneMessage.getDate() instanceof Date);
@@ -62,11 +53,9 @@ public class TimestampTest extends TestCase {
         assertFalse(message.getAuthor() == cloneMessage.getAuthor());
 
         // Merge
-        //
         IMessage mergedMessage = (IMessage) beanManager.merge(cloneMessage);
 
         // Merge verification
-        //
         assertNotNull(mergedMessage);
         assertNotNull(mergedMessage.getDate());
         assertTrue(mergedMessage.getDate() instanceof Date);

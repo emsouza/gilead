@@ -1,12 +1,9 @@
-/**
- * 
- */
 package net.sf.gilead.core.loading.gwt.client;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import net.sf.gilead.test.domain.gwt.Message;
 import net.sf.gilead.test.domain.gwt.User;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Service for server side initialization (unit test purpose)
@@ -34,5 +31,4 @@ public interface StatelessInitServiceAsync {
      * @generated generated method with asynchronous callback parameter to be used on the client side
      */
     void loadTestUser(AsyncCallback<User> callback);
-
 }

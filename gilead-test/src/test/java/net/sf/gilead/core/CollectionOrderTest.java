@@ -1,13 +1,13 @@
 package net.sf.gilead.core;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import junit.framework.TestCase;
 import net.sf.gilead.test.HibernateContext;
 import net.sf.gilead.test.domain.misc.Page;
 import net.sf.gilead.test.domain.misc.Photo;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 /**
  * Test case for checking collection order handling
@@ -15,11 +15,7 @@ import org.hibernate.Transaction;
  * @author bruno.marchesson
  */
 public class CollectionOrderTest extends TestCase {
-    // -------------------------------------------------------------------------
-    //
-    // Test methods
-    //
-    // -------------------------------------------------------------------------
+
     /**
      * Test change order
      */
@@ -27,12 +23,10 @@ public class CollectionOrderTest extends TestCase {
         PersistentBeanManager beanManager = TestHelper.initStatelessBeanManager();
 
         // Create test page
-        //
         Page testPage = createTestPage("Test page");
         testPage = loadPage(testPage.getName());
 
         // Clone test page
-        //
         Page clonePage = (Page) beanManager.clone(testPage);
 
         // clone page checking
@@ -40,7 +34,6 @@ public class CollectionOrderTest extends TestCase {
         assertNotNull(clonePage.getPhotoList());
 
         // Change order (clea
-        //
         Photo photo1 = clonePage.getPhotoList().get(0);
         Photo photo2 = clonePage.getPhotoList().get(1);
         Photo photo3 = clonePage.getPhotoList().get(2);
@@ -50,7 +43,6 @@ public class CollectionOrderTest extends TestCase {
         clonePage.addPhoto(photo1);
 
         // Merge test page
-        //
         Page mergePage = (Page) beanManager.merge(clonePage);
 
         // merge page checking
@@ -61,7 +53,6 @@ public class CollectionOrderTest extends TestCase {
         assertEquals(photo1.getUrl(), mergePage.getPhotoList().get(2).getUrl());
 
         // Test ordering after save
-        //
         savePage(mergePage);
         Page loadPage = loadPage(mergePage.getName());
 
@@ -81,12 +72,10 @@ public class CollectionOrderTest extends TestCase {
         PersistentBeanManager beanManager = TestHelper.initStatelessBeanManager();
 
         // Create test page
-        //
         Page testPage = createTestPage("Test page 2");
         testPage = loadPage(testPage.getName());
 
         // Clone test page
-        //
         Page clonePage = (Page) beanManager.clone(testPage);
 
         // clone page checking
@@ -94,7 +83,6 @@ public class CollectionOrderTest extends TestCase {
         assertNotNull(clonePage.getPhotoList());
 
         // Change order
-        //
         Photo photo1 = clonePage.getPhotoList().get(0);
         Photo photo2 = clonePage.getPhotoList().get(1);
         Photo photo3 = clonePage.getPhotoList().get(2);
@@ -103,7 +91,6 @@ public class CollectionOrderTest extends TestCase {
         clonePage.getPhotoList().set(2, photo1);
 
         // Merge test page
-        //
         Page mergePage = (Page) beanManager.merge(clonePage);
 
         // merge page checking
@@ -114,7 +101,6 @@ public class CollectionOrderTest extends TestCase {
         assertEquals(photo1.getUrl(), mergePage.getPhotoList().get(2).getUrl());
 
         // Test ordering after save
-        //
         savePage(mergePage);
         assertNotNull(mergePage);
         Page loadPage = loadPage(mergePage.getName());
@@ -128,11 +114,6 @@ public class CollectionOrderTest extends TestCase {
 
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Create a test page
      */
@@ -168,18 +149,15 @@ public class CollectionOrderTest extends TestCase {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Save user
-            //
             session.saveOrUpdate(page);
             transaction.commit();
 
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -193,24 +171,20 @@ public class CollectionOrderTest extends TestCase {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             StringBuffer hqlQuery = new StringBuffer();
             hqlQuery.append("select distinct page");
             hqlQuery.append(" from Page page");
             hqlQuery.append(" where page.name=:name");
 
             // Fill query
-            //
             Query query = session.createQuery(hqlQuery.toString());
             query.setString("name", pageName);
 
             // Execute query
-            //
             Page page = (Page) query.uniqueResult();
             page.getPhotoList().size();
             session.evict(page);
@@ -219,7 +193,6 @@ public class CollectionOrderTest extends TestCase {
             return page;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }

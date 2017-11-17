@@ -33,7 +33,7 @@ public class ConfigurationHelper {
      */
     public static PersistentBeanManager initLegacyStatelessBeanManager(IPersistenceUtil persistenceUtil) {
         if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
-            PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
+            PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
             beanManager.setPersistenceUtil(persistenceUtil);
 
             StatelessProxyStore proxyStore = new StatelessProxyStore();
@@ -54,7 +54,7 @@ public class ConfigurationHelper {
             HttpSessionProxyStore proxyStore = new HttpSessionProxyStore();
             proxyStore.setPersistenceUtil(persistenceUtil);
 
-            PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
+            PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
             beanManager.setPersistenceUtil(persistenceUtil);
             beanManager.setProxyStore(proxyStore);
             beanManager.setClassMapper(null);
