@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.sf.gilead.gwt;
 
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -37,86 +21,61 @@ import net.sf.gilead.core.beanlib.mapper.ProxyClassMapper;
  * @author bruno.marchesson
  */
 public abstract class PersistentRemoteService extends RemoteServiceServlet {
-    // ----
-    // Attribute
-    // ----
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = 7432874379586734765L;
 
     /**
      * The Hibernate lazy manager
      */
-    protected PersistentBeanManager _beanManager;
+    protected PersistentBeanManager beanManager;
 
-    // ----
-    // Properties
-    // ----
-    /**
-     * @return the Persistent Bean Manager
-     */
-    public PersistentBeanManager getBeanManager() {
-        return _beanManager;
-    }
-
-    /**
-     * @param manager the Hibernate Bean Manager to set
-     */
-    public void setBeanManager(PersistentBeanManager manager) {
-        _beanManager = manager;
-    }
-
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Empty constructor
      */
     public PersistentRemoteService() {
         // Default Hibernate Lazy Manager
-        //
-        _beanManager = PersistentBeanManager.getInstance();
+        beanManager = PersistentBeanManager.getInstance();
     }
 
     /**
      * Base constructor
      */
-    public PersistentRemoteService(PersistentBeanManager lazyManager) {
-        _beanManager = lazyManager;
+    public PersistentRemoteService(PersistentBeanManager beanManager) {
+        this.beanManager = beanManager;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Hibernate Java 1.4 POJO methods
-    //
-    // -------------------------------------------------------------------------
+    /**
+     * @return the Persistent Bean Manager
+     */
+    public PersistentBeanManager getBeanManager() {
+        return beanManager;
+    }
+
+    /**
+     * @param manager the Hibernate Bean Manager to set
+     */
+    public void setBeanManager(PersistentBeanManager beanManager) {
+        this.beanManager = beanManager;
+    }
+
     /**
      * Clone and store (if needed) the hibernate POJO
      */
     public Object clone(Object hibernatePojo) {
-        return _beanManager.clone(hibernatePojo);
+        return beanManager.clone(hibernatePojo);
     }
 
     /**
      * Retrieve and populate Hibernate pojo with gwt pojo values
      */
     public Object merge(Object gwtPojo) {
-        return _beanManager.merge(gwtPojo);
+        return beanManager.merge(gwtPojo);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Remote service servlet override
-    //
-    // -------------------------------------------------------------------------
     @Override
     protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL, String strongName) {
         // Init proxy class loader if in proxy mode
-        //
-        if ((_beanManager != null) && (_beanManager.getClassMapper() instanceof ProxyClassMapper)) {
+        if ((beanManager != null) && (beanManager.getClassMapper() instanceof ProxyClassMapper)) {
             GileadRPCHelper.initClassLoader();
         }
         return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
@@ -130,8 +89,7 @@ public abstract class PersistentRemoteService extends RemoteServiceServlet {
         super.init();
 
         // Init proxy class loader if in proxy mode
-        //
-        if ((_beanManager != null) && (_beanManager.getClassMapper() instanceof ProxyClassMapper)) {
+        if ((beanManager != null) && (beanManager.getClassMapper() instanceof ProxyClassMapper)) {
             GileadRPCHelper.initClassLoader();
         }
     }
@@ -140,13 +98,12 @@ public abstract class PersistentRemoteService extends RemoteServiceServlet {
      * Override of the RemoteServletService main method
      */
     @Override
+    @SuppressWarnings("null")
     public String processCall(String payload) throws SerializationException {
         // Normal processing
-        //
         RPCRequest rpcRequest = null;
         try {
             // Decode request
-            //
             rpcRequest = RPC.decodeRequest(payload, this.getClass(), this);
 
             if (rpcRequest == null) {
@@ -154,14 +111,12 @@ public abstract class PersistentRemoteService extends RemoteServiceServlet {
             }
 
             // Invoke method
-            //
-            GileadRPCHelper.parseInputParameters(rpcRequest, _beanManager, getThreadLocalRequest().getSession());
+            GileadRPCHelper.parseInputParameters(rpcRequest, beanManager, getThreadLocalRequest().getSession());
             Object returnValue = rpcRequest.getMethod().invoke(this, rpcRequest.getParameters());
 
-            returnValue = GileadRPCHelper.parseReturnValue(returnValue, _beanManager);
+            returnValue = GileadRPCHelper.parseReturnValue(returnValue, beanManager);
 
             // Encode response
-            //
             return RPC.encodeResponseForSuccess(rpcRequest.getMethod(), returnValue, rpcRequest.getSerializationPolicy());
         } catch (IllegalArgumentException e) {
             SecurityException securityException = new SecurityException("Blocked attempt to invoke method " + rpcRequest.getMethod());
@@ -174,12 +129,12 @@ public abstract class PersistentRemoteService extends RemoteServiceServlet {
             throw securityException;
         } catch (InvocationTargetException e) {
             // Clone exception if needed
-            Exception exception = (Exception) GileadRPCHelper.parseReturnValue(e.getCause(), _beanManager);
+            Exception exception = (Exception) GileadRPCHelper.parseReturnValue(e.getCause(), beanManager);
 
             return RPC.encodeResponseForFailure(rpcRequest.getMethod(), exception, rpcRequest.getSerializationPolicy());
         } catch (IncompatibleRemoteServiceException ex) {
             // Clone exception if needed
-            Exception exception = (Exception) GileadRPCHelper.parseReturnValue(ex, _beanManager);
+            Exception exception = (Exception) GileadRPCHelper.parseReturnValue(ex, beanManager);
             return RPC.encodeResponseForFailure(null, exception, rpcRequest.getSerializationPolicy());
         }
     }

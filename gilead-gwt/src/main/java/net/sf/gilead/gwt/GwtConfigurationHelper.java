@@ -1,9 +1,6 @@
-/**
- * 
- */
 package net.sf.gilead.gwt;
 
-import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.core.beanlib.mapper.ProxyClassMapper;
 import net.sf.gilead.core.serialization.GwtProxySerialization;
@@ -13,38 +10,39 @@ import net.sf.gilead.core.store.stateless.StatelessProxyStore;
  * @author bruno.marchesson
  */
 public class GwtConfigurationHelper {
-	/**
-	 * Init bean manager for stateless mode for GWT
-	 */
-	public static PersistentBeanManager initGwtStatelessBeanManager(PersistenceUtil persistenceUtil) {
-		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
-			PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
-			beanManager.setPersistenceUtil(persistenceUtil);
 
-			StatelessProxyStore proxyStore = new StatelessProxyStore();
-			proxyStore.setProxySerializer(new GwtProxySerialization());
-			beanManager.setProxyStore(proxyStore);
+    /**
+     * Init bean manager for stateless mode for GWT
+     */
+    public static PersistentBeanManager initGwtStatelessBeanManager(IPersistenceUtil persistenceUtil) {
+        if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
+            PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
+            beanManager.setPersistenceUtil(persistenceUtil);
 
-			beanManager.setClassMapper(null);
-		}
+            StatelessProxyStore proxyStore = new StatelessProxyStore();
+            proxyStore.setProxySerializer(new GwtProxySerialization());
+            beanManager.setProxyStore(proxyStore);
 
-		return PersistentBeanManager.getInstance();
-	}
+            beanManager.setClassMapper(null);
+        }
 
-	public static PersistentBeanManager initGwtProxyBeanManager(PersistenceUtil persistenceUtil) {
-		if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
-			PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
-			beanManager.setPersistenceUtil(persistenceUtil);
+        return PersistentBeanManager.getInstance();
+    }
 
-			StatelessProxyStore proxyStore = new StatelessProxyStore();
-			proxyStore.setProxySerializer(new GwtProxySerialization());
-			beanManager.setProxyStore(proxyStore);
+    public static PersistentBeanManager initGwtProxyBeanManager(IPersistenceUtil persistenceUtil) {
+        if (PersistentBeanManager.getInstance().getPersistenceUtil() == null) {
+            PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
+            beanManager.setPersistenceUtil(persistenceUtil);
 
-			ProxyClassMapper classMapper = new ProxyClassMapper();
-			classMapper.setPersistenceUtil(persistenceUtil);
-			beanManager.setClassMapper(classMapper);
-		}
+            StatelessProxyStore proxyStore = new StatelessProxyStore();
+            proxyStore.setProxySerializer(new GwtProxySerialization());
+            beanManager.setProxyStore(proxyStore);
 
-		return PersistentBeanManager.getInstance();
-	}
+            ProxyClassMapper classMapper = new ProxyClassMapper();
+            classMapper.setPersistenceUtil(persistenceUtil);
+            beanManager.setClassMapper(classMapper);
+        }
+
+        return PersistentBeanManager.getInstance();
+    }
 }

@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.gwt;
 
 import com.google.gwt.user.server.rpc.RPCRequest;
@@ -27,14 +24,10 @@ public class GileadRPCHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GileadRPCHelper.class);
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Proxy class loader initialisation
      */
+    @SuppressWarnings("resource")
     public static void initClassLoader() {
         // Set Proxy class loader (privileged code needed)
         //
@@ -42,9 +35,7 @@ public class GileadRPCHelper {
         if (contextClassLoader instanceof ProxyClassLoader == false) {
             LOGGER.info("Setting proxy class loader for thread " + Thread.currentThread());
 
-            // initialize AdditionalCodeManager before changing class loader to
-            // prevent stack overflow
-            //
+            // initialize AdditionalCodeManager before changing class loader to prevent stack overflow
             AdditionalCodeManager.getInstance();
 
             Thread.currentThread().setContextClassLoader(new ProxyClassLoader(contextClassLoader));
@@ -60,17 +51,14 @@ public class GileadRPCHelper {
      */
     public static void parseInputParameters(Object[] parameters, PersistentBeanManager beanManager, HttpSession session) {
         // Init classloader for proxy mode
-        //
         if (beanManager.getClassMapper() instanceof ProxyClassMapper) {
             initClassLoader();
         }
 
         // Set HTTP session of Pojo store in thread local
-        //
         HttpSessionProxyStore.setHttpSession(session);
 
         // Merge parameters if needed
-        //
         if (parameters != null) {
             long start = System.currentTimeMillis();
             for (int index = 0; index < parameters.length; index++) {
@@ -97,14 +85,12 @@ public class GileadRPCHelper {
      */
     public static void parseInputParameters(RPCRequest rpcRequest, PersistentBeanManager beanManager, HttpSession session) {
         // Extract object parameters
-        //
         Object[] parameters = null;
         if ((rpcRequest != null) && (rpcRequest.getParameters() != null)) {
             parameters = rpcRequest.getParameters();
         }
 
         // Parse input parameters
-        //
         parseInputParameters(parameters, beanManager, session);
     }
 
@@ -117,7 +103,6 @@ public class GileadRPCHelper {
      */
     public static final Object parseReturnValue(Object returnValue, PersistentBeanManager beanManager) {
         // Clone if needed
-        //
         if (returnValue != null) {
             long start = System.currentTimeMillis();
             try {

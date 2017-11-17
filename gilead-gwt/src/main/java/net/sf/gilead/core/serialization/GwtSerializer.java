@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.serialization;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -48,11 +45,6 @@ public class GwtSerializer {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(GwtSerializer.class);
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Converts a serializable type to GWT supported encapsulation.
      *
@@ -60,7 +52,6 @@ public class GwtSerializer {
      */
     public IGwtSerializableParameter convertToGwt(Serializable serializable) throws SerializationException {
         // Precondition checking
-        //
         if (serializable == null) {
             return null;
         }
@@ -68,7 +59,6 @@ public class GwtSerializer {
         LOGGER.trace("Converting " + serializable + " to GWT supported type");
 
         // Type checking
-        //
         if (serializable instanceof List) {
             return convertListToGwt(serializable);
         } else if (serializable instanceof Set) {
@@ -77,7 +67,6 @@ public class GwtSerializer {
             return convertMapToGwt(serializable);
         } else {
             // Basic type ?
-            //
             return convertBasicToGwt(serializable);
         }
     }
@@ -89,13 +78,11 @@ public class GwtSerializer {
     public Serializable convertFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
         LOGGER.trace("Converting " + parameter + " from GWT back to serializable type");
         // Precondition checking
-        //
         if (parameter == null) {
             return null;
         }
 
         // Type checking
-        //
         if (parameter instanceof ListParameter) {
             return convertListFromGwt(parameter);
         } else if (parameter instanceof SetParameter) {
@@ -104,28 +91,20 @@ public class GwtSerializer {
             return convertMapFromGwt(parameter);
         } else {
             // Basic type ?
-            //
             return convertBasicFromGwt(parameter);
         }
     }
 
-    // ------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // ------------------------------------------------------------------------
     /**
      * Convert the argument object to GWT serialzable IRequestParameter
      */
     protected IGwtSerializableParameter convertBasicToGwt(Serializable object) throws SerializationException {
         // Precondition checking
-        //
         if (object == null) {
             return null;
         }
 
         // Check basic parameters (most current first)
-        //
         if (object instanceof IGwtSerializableParameter) {
             return (IGwtSerializableParameter) object;
         }
@@ -159,9 +138,7 @@ public class GwtSerializer {
         if (object instanceof Byte) {
             return new ByteParameter((Byte) object);
         }
-
         // else : unsupported type
-        //
         throw new SerializationException("Unsupported type : " + object.getClass());
     }
 
@@ -173,7 +150,6 @@ public class GwtSerializer {
      */
     protected Serializable convertBasicFromGwt(IGwtSerializableParameter parameter) {
         // Just use the underlying value
-        //
         return (Serializable) parameter.getUnderlyingValue();
     }
 
@@ -183,28 +159,23 @@ public class GwtSerializer {
     @SuppressWarnings("unchecked")
     protected IGwtSerializableParameter convertListToGwt(Serializable object) throws SerializationException {
         // Precondition checking
-        //
         Collection<Serializable> objectList = (Collection<Serializable>) object;
         if ((objectList == null) || (objectList.isEmpty())) {
             return null;
         }
 
         // Create underlying list
-        //
         List<IGwtSerializableParameter> serializableCollection = null;
         if (object instanceof ArrayList) {
-            serializableCollection = new ArrayList<IGwtSerializableParameter>(objectList.size());
+            serializableCollection = new ArrayList<>(objectList.size());
         } else if (object instanceof LinkedList) {
-            serializableCollection = new LinkedList<IGwtSerializableParameter>();
-        }
-        // else : unsupported GWT list
-        //
-        else {
+            serializableCollection = new LinkedList<>();
+        } else {
+            // else : unsupported GWT list
             throw new SerializationException("Unsupported collection type : " + object.getClass());
         }
 
         // Copy list contents
-        //
         for (Serializable item : objectList) {
             serializableCollection.add(convertToGwt(item));
         }
@@ -220,28 +191,23 @@ public class GwtSerializer {
     @SuppressWarnings("unchecked")
     protected Serializable convertListFromGwt(IGwtSerializableParameter object) throws SerializationException {
         // Precondition checking
-        //
         Collection<IGwtSerializableParameter> objectList = (Collection<IGwtSerializableParameter>) object.getUnderlyingValue();
         if ((objectList == null) || (objectList.isEmpty())) {
             return null;
         }
 
         // Create underlying list
-        //
         List<Serializable> serializableCollection = null;
         if (objectList instanceof ArrayList) {
-            serializableCollection = new ArrayList<Serializable>(objectList.size());
+            serializableCollection = new ArrayList<>(objectList.size());
         } else if (objectList instanceof LinkedList) {
-            serializableCollection = new LinkedList<Serializable>();
-        }
-        // else : unsupported GWT list
-        //
-        else {
+            serializableCollection = new LinkedList<>();
+        } else {
+            // else : unsupported GWT list
             throw new SerializationException("Unsupported collection type : " + objectList.getClass());
         }
 
         // Copy list contents
-        //
         for (IGwtSerializableParameter item : objectList) {
             serializableCollection.add(convertFromGwt(item));
         }
@@ -255,30 +221,25 @@ public class GwtSerializer {
     @SuppressWarnings("unchecked")
     protected IGwtSerializableParameter convertSetToGwt(Serializable object) throws SerializationException {
         // Precondition checking
-        //
         Collection<Serializable> objectList = (Collection<Serializable>) object;
         if ((objectList == null) || (objectList.isEmpty())) {
             return null;
         }
 
         // Create underlying list
-        //
         Set<IGwtSerializableParameter> serializableCollection = null;
         if (object instanceof HashSet) {
-            serializableCollection = new HashSet<IGwtSerializableParameter>(objectList.size());
+            serializableCollection = new HashSet<>(objectList.size());
         } else if (object instanceof LinkedHashSet) {
-            serializableCollection = new LinkedHashSet<IGwtSerializableParameter>(objectList.size());
+            serializableCollection = new LinkedHashSet<>(objectList.size());
         } else if (object instanceof TreeSet) {
-            serializableCollection = new TreeSet<IGwtSerializableParameter>();
-        }
-        // else : unsupported GWT set
-        //
-        else {
+            serializableCollection = new TreeSet<>();
+        } else {
+            // else : unsupported GWT set
             throw new SerializationException("Unsupported collection type : " + object.getClass());
         }
 
         // Copy list contents
-        //
         for (Serializable item : objectList) {
             serializableCollection.add(convertToGwt(item));
         }
@@ -292,30 +253,25 @@ public class GwtSerializer {
     @SuppressWarnings("unchecked")
     protected Serializable convertSetFromGwt(IGwtSerializableParameter object) throws SerializationException {
         // Precondition checking
-        //
         Collection<IGwtSerializableParameter> objectList = (Collection<IGwtSerializableParameter>) object.getUnderlyingValue();
         if ((objectList == null) || (objectList.isEmpty())) {
             return null;
         }
 
         // Create serializable set
-        //
         Set<Serializable> serializableCollection = null;
         if (objectList instanceof HashSet) {
-            serializableCollection = new HashSet<Serializable>(objectList.size());
+            serializableCollection = new HashSet<>(objectList.size());
         } else if (objectList instanceof LinkedHashSet) {
-            serializableCollection = new LinkedHashSet<Serializable>(objectList.size());
+            serializableCollection = new LinkedHashSet<>(objectList.size());
         } else if (objectList instanceof TreeSet) {
-            serializableCollection = new TreeSet<Serializable>();
-        }
-        // else : unsupported GWT set
-        //
-        else {
+            serializableCollection = new TreeSet<>();
+        } else {
+            // else : unsupported GWT set
             throw new SerializationException("Unsupported collection type : " + objectList.getClass());
         }
 
         // Copy list contents
-        //
         for (IGwtSerializableParameter item : objectList) {
             serializableCollection.add(convertFromGwt(item));
         }
@@ -329,30 +285,25 @@ public class GwtSerializer {
     @SuppressWarnings("unchecked")
     protected IGwtSerializableParameter convertMapToGwt(Serializable object) throws SerializationException {
         // Precondition checking
-        //
         Map<Serializable, Serializable> objectMap = (Map<Serializable, Serializable>) object;
         if ((objectMap == null) || (objectMap.isEmpty())) {
             return null;
         }
 
         // Create underlying list
-        //
         Map<IGwtSerializableParameter, IGwtSerializableParameter> serializableCollection = null;
         if (object instanceof HashMap) {
-            serializableCollection = new HashMap<IGwtSerializableParameter, IGwtSerializableParameter>(objectMap.size());
+            serializableCollection = new HashMap<>(objectMap.size());
         } else if (object instanceof LinkedHashMap) {
-            serializableCollection = new LinkedHashMap<IGwtSerializableParameter, IGwtSerializableParameter>(objectMap.size());
+            serializableCollection = new LinkedHashMap<>(objectMap.size());
         } else if (object instanceof TreeMap) {
-            serializableCollection = new TreeMap<IGwtSerializableParameter, IGwtSerializableParameter>();
-        }
-        // else : unsupported GWT map
-        //
-        else {
+            serializableCollection = new TreeMap<>();
+        } else {
+            // else : unsupported GWT map
             throw new SerializationException("Unsupported collection type : " + object.getClass());
         }
 
         // Copy map contents
-        //
         for (Map.Entry<Serializable, Serializable> item : objectMap.entrySet()) {
             serializableCollection.put(convertToGwt(item.getKey()), convertToGwt(item.getValue()));
         }
@@ -366,7 +317,6 @@ public class GwtSerializer {
     @SuppressWarnings("unchecked")
     protected Serializable convertMapFromGwt(IGwtSerializableParameter object) throws SerializationException {
         // Precondition checking
-        //
         Map<IGwtSerializableParameter, IGwtSerializableParameter> objectMap = (Map<IGwtSerializableParameter, IGwtSerializableParameter>) object
                 .getUnderlyingValue();
         if ((objectMap == null) || (objectMap.isEmpty())) {
@@ -374,23 +324,19 @@ public class GwtSerializer {
         }
 
         // Create underlying list
-        //
         Map<Serializable, Serializable> serializableCollection = null;
         if (objectMap instanceof HashMap) {
-            serializableCollection = new HashMap<Serializable, Serializable>(objectMap.size());
+            serializableCollection = new HashMap<>(objectMap.size());
         } else if (objectMap instanceof LinkedHashMap) {
-            serializableCollection = new LinkedHashMap<Serializable, Serializable>(objectMap.size());
+            serializableCollection = new LinkedHashMap<>(objectMap.size());
         } else if (objectMap instanceof TreeMap) {
-            serializableCollection = new TreeMap<Serializable, Serializable>();
-        }
-        // else : unsupported GWT map
-        //
-        else {
+            serializableCollection = new TreeMap<>();
+        } else {
+            // else : unsupported GWT map
             throw new SerializationException("Unsupported collection type : " + object.getClass());
         }
 
         // Copy map contents
-        //
         for (Map.Entry<IGwtSerializableParameter, IGwtSerializableParameter> item : objectMap.entrySet()) {
             serializableCollection.put(convertFromGwt(item.getKey()), convertFromGwt(item.getValue()));
         }

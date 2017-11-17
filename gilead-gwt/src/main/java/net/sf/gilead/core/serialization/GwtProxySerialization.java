@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.serialization;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -20,38 +17,29 @@ import net.sf.gilead.pojo.gwt.SerializedParameter;
  *
  * @author bruno.marchesson
  */
-public class GwtProxySerialization extends GwtSerializer implements ProxySerialization {
+public class GwtProxySerialization extends GwtSerializer implements IProxySerialization {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(GwtProxySerialization.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * String serializer
      */
-    protected ProxySerialization _stringSerializer;
+    protected IProxySerialization _stringSerializer;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the String Serializer
      */
-    public ProxySerialization getStringSerializer() {
+    public IProxySerialization getStringSerializer() {
         return _stringSerializer;
     }
 
     /**
      * @param serializer the string serializer to set
      */
-    public void setStringSerializer(ProxySerialization serializer) {
+    public void setStringSerializer(IProxySerialization serializer) {
         _stringSerializer = serializer;
     }
 
-    // ----
-    // Constructor
-    // ----
     /**
      * Constructor
      */
@@ -59,25 +47,14 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         _stringSerializer = new JBossProxySerialization();
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // IProxySerialization implementation
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.IProxySerialization#serialize(java.io .Serializable)
-     */
     @Override
     public Object serialize(Serializable serializable) {
         // Precondition checking
-        //
         if (serializable == null) {
             return null;
         }
 
         // Convert to GWT
-        //
         try {
             return convertToGwt(serializable);
         } catch (SerializationException ex) {
@@ -86,20 +63,14 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.IProxySerialization#unserialize(java .lang.Object)
-     */
     @Override
     public Serializable unserialize(Object serialized) {
         // Precondition checking
-        //
         if (serialized == null) {
             return null;
         }
 
         // Convert from GWT
-        //
         try {
             return convertFromGwt((IGwtSerializableParameter) serialized);
         } catch (SerializationException ex) {
@@ -108,19 +79,9 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    // ------------------------------------------------------------------------
-    //
-    // Overridden methods
-    //
-    // ------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertBasicToGwt(java .io.Serializable)
-     */
     @Override
     protected IGwtSerializableParameter convertBasicToGwt(Serializable object) throws SerializationException {
         // SerializableId handling
-        //
         if (object instanceof SerializableId) {
             SerializableId serializableId = (SerializableId) object;
             GwtSerializableId gwtSerializableId = new GwtSerializableId();
@@ -135,7 +96,6 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
 
         // Basic case
-        //
         try {
             return super.convertBasicToGwt(object);
         } catch (SerializationException ex) {
@@ -144,20 +104,13 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertBasicFromGwt(net
-     * .sf.gilead.gwt.client.parameters.IRequestParameter)
-     */
     @Override
     protected Serializable convertBasicFromGwt(IGwtSerializableParameter parameter) {
         // Serialized case
-        //
         if (parameter instanceof SerializedParameter) {
             return _stringSerializer.unserialize(parameter.getUnderlyingValue());
         } else if (parameter instanceof GwtSerializableId) {
             // Re-create serializable Id
-            //
             GwtSerializableId gwtSerializableId = (GwtSerializableId) parameter;
             SerializableId serializableId = new SerializableId();
             serializableId.setEntityName(gwtSerializableId.getEntityName());
@@ -172,10 +125,6 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertListToGwt(java. io.Serializable)
-     */
     @Override
     protected IGwtSerializableParameter convertListToGwt(Serializable object) throws SerializationException {
         try {
@@ -186,11 +135,6 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertListFromGwt(net
-     * .sf.gilead.gwt.client.parameters.IRequestParameter)
-     */
     @Override
     protected Serializable convertListFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
         if (parameter instanceof SerializedParameter) {
@@ -200,10 +144,6 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertSetToGwt(java.io .Serializable)
-     */
     @Override
     protected IGwtSerializableParameter convertSetToGwt(Serializable object) throws SerializationException {
         try {
@@ -214,11 +154,6 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertSetFromGwt(net.
-     * sf.gilead.gwt.client.parameters.IRequestParameter)
-     */
     @Override
     protected Serializable convertSetFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
         if (parameter instanceof SerializedParameter) {
@@ -228,10 +163,6 @@ public class GwtProxySerialization extends GwtSerializer implements ProxySeriali
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.serialization.GwtSerializer#convertMapToGwt(java.io .Serializable)
-     */
     @Override
     protected IGwtSerializableParameter convertMapToGwt(Serializable object) throws SerializationException {
         try {
