@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.hibernate.exception;
 
 /**

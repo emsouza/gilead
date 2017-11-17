@@ -45,7 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate.UnEnhancer;
-import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.hibernate.exception.UnableToCreateEntityException;
 import net.sf.gilead.core.serialization.SerializableId;
 import net.sf.gilead.exception.ComponentTypeException;
@@ -61,13 +61,10 @@ import net.sf.gilead.util.IntrospectionHelper;
  *
  * @author BMARCHESSON
  */
-public class HibernateUtil implements PersistenceUtil {
+public class HibernateUtil implements IPersistenceUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateUtil.class);
 
-    // ----
-    // Serialized proxy informations map constants
-    // ----
     /**
      * Proxy id
      */
@@ -109,48 +106,77 @@ public class HibernateUtil implements PersistenceUtil {
     /**
      * The pseudo unique instance of the singleton
      */
-    private static HibernateUtil _instance = null;
+    private static HibernateUtil instance = null;
 
     /**
      * The Hibernate session factory
      */
-    private SessionFactoryImpl _sessionFactory;
+    private SessionFactoryImpl sessionFactory;
 
     /**
      * The persistance map, with persistance status of all classes including persistent component classes
      */
-    private Map<Class<?>, Boolean> _persistenceMap;
+    private Map<Class<?>, Boolean> persistenceMap;
 
     /**
      * The unenhancement map, used for performance purpose
      */
-    private Map<Class<?>, Class<?>> _unehancementMap;
+    private Map<Class<?>, Class<?>> unehancementMap;
 
     /**
      * The current opened session
      */
-    private ThreadLocal<HibernateSession> _session;
+    private ThreadLocal<HibernateSession> sessionThread;
 
     private Session session;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the unique instance of the singleton
      */
     public static HibernateUtil getInstance() {
-        if (_instance == null) {
-            _instance = new HibernateUtil();
+        if (instance == null) {
+            instance = new HibernateUtil();
         }
-        return _instance;
+        return instance;
+    }
+
+    /**
+     * Empty constructor
+     */
+    public HibernateUtil() {
+        this(null, null);
+    }
+
+    public HibernateUtil(Session session) {
+        this(null, session);
+    }
+
+    /**
+     * Complete constructor
+     */
+    public HibernateUtil(SessionFactory sessionFactory, Session session) {
+        setSessionFactory(sessionFactory);
+        this.session = session;
+        sessionThread = new ThreadLocal<>();
+        persistenceMap = Collections.synchronizedMap(new HashMap<Class<?>, Boolean>());
+        unehancementMap = Collections.synchronizedMap(new HashMap<Class<?>, Class<?>>());
+
+        // Filling persistence map with primitive types
+        persistenceMap.put(Byte.class, false);
+        persistenceMap.put(Short.class, false);
+        persistenceMap.put(Integer.class, false);
+        persistenceMap.put(Long.class, false);
+        persistenceMap.put(Float.class, false);
+        persistenceMap.put(Double.class, false);
+        persistenceMap.put(Boolean.class, false);
+        persistenceMap.put(String.class, false);
     }
 
     /**
      * @return the hibernate session Factory
      */
     public SessionFactory getSessionFactory() {
-        return _sessionFactory;
+        return sessionFactory;
     }
 
     /**
@@ -165,112 +191,50 @@ public class HibernateUtil implements PersistenceUtil {
                 throw new IllegalArgumentException("Cannot find Hibernate session factory implementation !");
             }
         }
-        _sessionFactory = (SessionFactoryImpl) sessionFactory;
+        this.sessionFactory = (SessionFactoryImpl) sessionFactory;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
-    /**
-     * Complete constructor
-     */
-    public HibernateUtil(SessionFactory sessionFactory, Session session) {
-        setSessionFactory(sessionFactory);
-        this.session = session;
-        _session = new ThreadLocal<HibernateSession>();
-        _persistenceMap = Collections.synchronizedMap(new HashMap<Class<?>, Boolean>());
-        _unehancementMap = Collections.synchronizedMap(new HashMap<Class<?>, Class<?>>());
-
-        // Filling persistence map with primitive types
-        _persistenceMap.put(Byte.class, false);
-        _persistenceMap.put(Short.class, false);
-        _persistenceMap.put(Integer.class, false);
-        _persistenceMap.put(Long.class, false);
-        _persistenceMap.put(Float.class, false);
-        _persistenceMap.put(Double.class, false);
-        _persistenceMap.put(Boolean.class, false);
-        _persistenceMap.put(String.class, false);
-    }
-
-    /**
-     * Empty constructor
-     */
-    public HibernateUtil() {
-        this(null, null);
-    }
-
-    public HibernateUtil(Session session) {
-        this(null, session);
-
-    }
-
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#getId(java.lang.Object)
-     */
     @Override
     public Serializable getId(Object pojo) {
         return getId(pojo, getPersistentClass(pojo));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#getId(java.lang.Object, java.lang.Class)
-     */
     @Override
     public Serializable getId(Object pojo, Class<?> hibernateClass) {
         // Precondition checking
-        //
-        if (_sessionFactory == null) {
+        if (sessionFactory == null) {
             throw new NullPointerException("No Hibernate Session Factory defined !");
         }
 
         // Persistence checking
-        //
         if (isPersistentClass(hibernateClass) == false) {
             // Not an hibernate Class !
-            //
             LOGGER.trace(hibernateClass + " is not persistent");
-
             throw new NotPersistentObjectException(pojo);
         }
 
         // Retrieve Class<?> hibernate metadata
-        //
-        ClassMetadata hibernateMetadata = _sessionFactory.getClassMetadata(getEntityName(hibernateClass, pojo));
+        ClassMetadata hibernateMetadata = sessionFactory.getClassMetadata(getEntityName(hibernateClass, pojo));
         if (hibernateMetadata == null) {
             // Component class (persistent but not metadata) : no associated id
             // So must be considered as transient
-            //
             throw new ComponentTypeException(pojo);
         }
 
         // Retrieve ID
-        //
         Serializable id = null;
         Class<?> pojoClass = getPersistentClass(pojo);
         if (hibernateClass.equals(pojoClass)) {
             // Same class for pojo and hibernate class
-            //
             if (pojo instanceof HibernateProxy) {
                 // To prevent LazyInitialisationException
-                //
                 id = ((HibernateProxy) pojo).getHibernateLazyInitializer().getIdentifier();
             } else {
                 // Otherwise : use metada
-                //
                 id = hibernateMetadata.getIdentifier(pojo, null);
             }
         } else {
             // DTO case : invoke the method with the same name
-            //
             String property = hibernateMetadata.getIdentifierPropertyName();
 
             try {
@@ -290,28 +254,20 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Post condition checking
-        //
         if (isUnsavedValue(pojo, id, hibernateClass)) {
             throw new TransientObjectException(pojo);
         }
         return id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#isHibernatePojo(java.lang .Object)
-     */
     @Override
     public boolean isPersistentPojo(Object pojo) {
         // Precondition checking
-        //
         if (pojo == null) {
             return false;
         }
 
-        // Try to get the ID : if an exception is thrown
-        // the pojo is not persistent...
-        //
+        // Try to get the ID : if an exception is thrown the pojo is not persistent...
         try {
             getId(pojo);
             return true;
@@ -322,85 +278,61 @@ public class HibernateUtil implements PersistenceUtil {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#isHibernateClass(java.lang .Class)
-     */
     @Override
     public boolean isPersistentClass(Class<?> clazz) {
         // Precondition checking
-        //
-        if (_sessionFactory == null) {
+        if (sessionFactory == null) {
             throw new NullPointerException("No Hibernate Session Factory defined !");
         }
 
         // Check proxy (based on beanlib Unenhancer class)
-        //
         clazz = getUnenhancedClass(clazz);
 
         // Look into the persistence map
-        //
-        synchronized (_persistenceMap) {
-            Boolean persistent = _persistenceMap.get(clazz);
+        synchronized (persistenceMap) {
+            Boolean persistent = persistenceMap.get(clazz);
             if (persistent != null) {
                 return persistent.booleanValue();
             }
         }
 
         // First clall for this Class<?> : compute persistence class
-        //
         computePersistenceForClass(clazz);
-        return _persistenceMap.get(clazz).booleanValue();
+        return persistenceMap.get(clazz).booleanValue();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#getPersistentClass(java .lang.Class)
-     */
     @Override
     public Class<?> getUnenhancedClass(Class<?> clazz) {
         // Map checking
-        //
-        Class<?> unenhancedClass = _unehancementMap.get(clazz);
+        Class<?> unenhancedClass = unehancementMap.get(clazz);
         if (unenhancedClass == null) {
             // Based on beanlib unEnhancer class
-            //
             unenhancedClass = UnEnhancer.unenhanceClass(clazz);
-            _unehancementMap.put(clazz, unenhancedClass);
+            unehancementMap.put(clazz, unenhancedClass);
         }
         return unenhancedClass;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#isEnhanced(java.lang.Class)
-     */
     @Override
     public boolean isEnhanced(Class<?> clazz) {
         // Compare class to unenhanced class
-        //
         return (clazz != getUnenhancedClass(clazz));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#openSession()
-     */
     @Override
+    @SuppressWarnings("resource")
     public void openSession() {
         // Precondition checking
-        //
-        if (_sessionFactory == null) {
+        if (sessionFactory == null) {
             throw new NullPointerException("No Hibernate Session Factory defined !");
         }
 
         // Open a the existing session
-        //
         Session session = this.session;
         boolean created = false;
         try {
             if (session == null || !session.isConnected()) {
-                session = _sessionFactory.openSession();
+                session = sessionFactory.openSession();
                 created = true;
             }
         } catch (HibernateException ex) {
@@ -408,56 +340,39 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Store the session in ThreadLocal
-        //
-        _session.set(new HibernateSession(session, created));
+        sessionThread.set(new HibernateSession(session, created));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.hibernate.IPersistenceUtil#closeSession(java.lang.Object)
-     */
     @Override
     public void closeCurrentSession() {
-        HibernateSession hSession = _session.get();
+        HibernateSession hSession = sessionThread.get();
         if (hSession != null) {
             // Only close session that we created
             if (hSession.created == true) {
                 hSession.session.close();
             }
-            _session.remove();
+            sessionThread.remove();
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#load(java.io.Serializable, java.lang.Class)
-     */
     @Override
     public Object load(Serializable id, Class<?> persistentClass) {
         // Unenhance persistent class if needed
-        //
         persistentClass = getUnenhancedClass(persistentClass);
 
         // Load the entity
-        //
         return getSession().get(persistentClass, id);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#serializeEntityProxy(java.lang.Object )
-     */
     @Override
     public Map<String, Serializable> serializeEntityProxy(Object proxy) {
         // Precondition checking
-        //
         if (proxy == null) {
             return null;
         }
 
         // Serialize needed proxy informations
-        //
-        Map<String, Serializable> result = new HashMap<String, Serializable>();
+        Map<String, Serializable> result = new HashMap<>();
         result.put(CLASS_NAME, getUnenhancedClass(proxy.getClass()).getName());
         result.put(ID, getId(proxy));
 
@@ -470,27 +385,19 @@ public class HibernateUtil implements PersistenceUtil {
     @Override
     public Object createEntityProxy(Map<String, Serializable> proxyInformations) {
         // Get needed proxy inforamtions
-        //
         Serializable id = proxyInformations.get(ID);
         String entityName = (String) proxyInformations.get(CLASS_NAME);
 
         // Create the associated proxy
-        //
         return getSession().load(entityName, id);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#serializePersistentCollection(java .lang.Object)
-     */
     @Override
     public Map<String, Serializable> serializePersistentCollection(Collection<?> persistentCollection) {
         // Create serialization map
-        //
-        Map<String, Serializable> result = new HashMap<String, Serializable>();
+        Map<String, Serializable> result = new HashMap<>();
 
         // Get parameters
-        //
         AbstractPersistentCollection collection = (AbstractPersistentCollection) persistentCollection;
         result.put(CLASS_NAME, collection.getClass().getName());
         Collection<?> underlying = getUnderlyingCollection(persistentCollection);
@@ -501,49 +408,35 @@ public class HibernateUtil implements PersistenceUtil {
         result.put(KEY, collection.getKey());
 
         // Store ids
-        //
         if (isInitialized(collection) == true) {
             result.put(ID_LIST, createIdList((Collection<?>) collection));
         }
-
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#serializePersistentMap(java.util.Map)
-     */
     @Override
     public Map<String, Serializable> serializePersistentMap(Map<?, ?> persistentMap) {
         // Create serialization map
-        //
-        Map<String, Serializable> result = new HashMap<String, Serializable>();
+        Map<String, Serializable> result = new HashMap<>();
 
         // Get parameters
-        //
         AbstractPersistentCollection collection = (AbstractPersistentCollection) persistentMap;
         result.put(CLASS_NAME, collection.getClass().getName());
         result.put(ROLE, collection.getRole());
         result.put(KEY, collection.getKey());
 
         // Store ids
-        //
         if (isInitialized(collection) == true) {
             // Store keys
-            //
             ArrayList<SerializableId> keyList = createIdList(persistentMap.keySet());
             if (keyList != null) {
                 result.put(ID_LIST, keyList);
 
                 // Store values (only if keys are persistents)
-                //
                 ArrayList<SerializableId> valueList = createIdList(persistentMap.values());
-                if (keyList != null) {
-                    result.put(VALUE_LIST, valueList);
-                }
+                result.put(VALUE_LIST, valueList);
             }
         }
-
         return result;
     }
 
@@ -555,20 +448,18 @@ public class HibernateUtil implements PersistenceUtil {
      * @return
      */
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Map<?, ?> createPersistentMap(Object parent, Map<String, Serializable> proxyInformations, Map<?, ?> underlyingMap) {
         // Create original map
-        //
         Map<?, ?> originalMap = createOriginalMap(proxyInformations, underlyingMap);
 
         // Create collection for the class name
-        //
         String className = (String) proxyInformations.get(CLASS_NAME);
 
         SessionImplementor session = (SessionImplementor) getSession();
         PersistentCollection collection = null;
         if (PersistentMap.class.getName().equals(className)) {
             // Persistent map creation
-            //
             if (originalMap == null) {
                 collection = new PersistentMap(session);
             } else {
@@ -576,7 +467,6 @@ public class HibernateUtil implements PersistenceUtil {
             }
         } else if (PersistentSortedMap.class.getName().equals(className)) {
             // Persistent map creation
-            //
             if (originalMap == null) {
                 collection = new PersistentSortedMap(session);
             } else {
@@ -587,25 +477,21 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Fill with serialized parameters
-        //
         String role = (String) proxyInformations.get(ROLE);
-        CollectionPersister collectionPersister = _sessionFactory.getCollectionPersister(role);
+        CollectionPersister collectionPersister = sessionFactory.getCollectionPersister(role);
 
         Serializable snapshot = null;
         if (originalMap != null) {
             // Create snapshot
-            //
             snapshot = collection.getSnapshot(collectionPersister);
         }
 
         collection.setSnapshot(proxyInformations.get(KEY), role, snapshot);
 
         // Owner
-        //
         collection.setOwner(parent);
 
         // Update persistent collection
-        //
         if (areDifferent(originalMap, underlyingMap)) {
             if (originalMap != null) {
                 ((Map) collection).clear();
@@ -619,7 +505,6 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Associated the collection to the persistence context
-        //
         if (isInitialized(proxyInformations) == true) {
             session.getPersistenceContext().addInitializedDetachedCollection(collectionPersister, collection);
         } else {
@@ -637,22 +522,19 @@ public class HibernateUtil implements PersistenceUtil {
      * @return
      */
     @Override
-    public Collection<?> createPersistentCollection(Object parent, Map<String, Serializable> proxyInformations,
-            Collection<?> underlyingCollection) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Collection<?> createPersistentCollection(Object parent, Map<String, Serializable> proxyInformations, Collection<?> underlyingCollection) {
         try {
             // Re-create original collection
-            //
             Collection<?> originalCollection = createOriginalCollection(proxyInformations, underlyingCollection);
 
             // Create Persistent collection for the class name
-            //
             String className = (String) proxyInformations.get(CLASS_NAME);
 
             SessionImplementor session = (SessionImplementor) getSession();
             PersistentCollection collection = null;
             if (PersistentBag.class.getName().equals(className)) {
                 // Persistent bag creation
-                //
                 if (originalCollection == null) {
                     collection = new PersistentBag(session);
                 } else {
@@ -660,7 +542,6 @@ public class HibernateUtil implements PersistenceUtil {
                 }
             } else if (PersistentList.class.getName().equals(className)) {
                 // Persistent list creation
-                //
                 if (originalCollection == null) {
                     collection = new PersistentList(session);
                 } else {
@@ -668,7 +549,6 @@ public class HibernateUtil implements PersistenceUtil {
                 }
             } else if (PersistentSet.class.getName().equals(className)) {
                 // Persistent set creation
-                //
                 if (originalCollection == null) {
                     collection = new PersistentSet(session);
                 } else {
@@ -676,7 +556,6 @@ public class HibernateUtil implements PersistenceUtil {
                 }
             } else if (PersistentSortedSet.class.getName().equals(className)) {
                 // Persistent sorted set creation
-                //
                 if (originalCollection == null) {
                     collection = new PersistentSortedSet(session);
                 } else {
@@ -687,9 +566,8 @@ public class HibernateUtil implements PersistenceUtil {
             }
 
             // Fill with serialized parameters
-            //
             String role = (String) proxyInformations.get(ROLE);
-            CollectionPersister collectionPersister = _sessionFactory.getCollectionPersister(role);
+            CollectionPersister collectionPersister = sessionFactory.getCollectionPersister(role);
 
             Serializable snapshot = null;
             if (originalCollection != null) {
@@ -701,11 +579,9 @@ public class HibernateUtil implements PersistenceUtil {
             collection.setSnapshot(proxyInformations.get(KEY), role, snapshot);
 
             // Owner
-            //
             collection.setOwner(parent);
 
             // Update persistent collection
-            //
             if (areDifferent(originalCollection, underlyingCollection)) {
                 if (originalCollection != null) {
                     ((Collection) collection).removeAll(originalCollection);
@@ -721,7 +597,6 @@ public class HibernateUtil implements PersistenceUtil {
             }
 
             // Associated the collection to the persistence context
-            //
             if (isInitialized(proxyInformations) == true) {
                 session.getPersistenceContext().addInitializedDetachedCollection(collectionPersister, collection);
             } else {
@@ -730,9 +605,7 @@ public class HibernateUtil implements PersistenceUtil {
 
             return (Collection<?>) collection;
         } catch (UnableToCreateEntityException ex) {
-            // unable to re-create persistent collection (embeddable items) :
-            // load it
-            //
+            // unable to re-create persistent collection (embeddable items) : load it
             LOGGER.warn("Unable to re-create persistent collection of not persistent items, loading it...");
 
             String role = proxyInformations.get(ROLE).toString();
@@ -744,14 +617,12 @@ public class HibernateUtil implements PersistenceUtil {
 
             return collection;
         }
-
     }
 
     private Collection<?> loadPersistentCollection(Object entity, String collectionName) {
         Object loaded = loadAssociation(entity.getClass(), getId(entity), collectionName);
 
         // Get getter for the property
-        //
         Object association = null;
         try {
             Method reader = IntrospectionHelper.getReaderMethodForProperty(entity.getClass(), collectionName);
@@ -759,36 +630,24 @@ public class HibernateUtil implements PersistenceUtil {
         } catch (Exception ex) {
             throw new RuntimeException("Error during lazy loading invocation !", ex);
         }
-
         return (Collection<?>) association;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#isPersistentCollection(java.lang. Class)
-     */
     @Override
     public boolean isPersistentCollection(Class<?> collectionClass) {
         return (PersistentCollection.class.isAssignableFrom(collectionClass));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#getUnderlyingCollection(java.util .Collection)
-     */
     @Override
     public Collection<?> getUnderlyingCollection(Collection<?> collection) {
         // Precondition checking
-        //
         if ((collection == null) || (isPersistentCollection(collection.getClass()) == false)) {
             return collection;
         }
 
         // Persistent collection handling
-        //
         if (collection instanceof PersistentSet) {
             // Get the 'set' attribute
-            //
             try {
                 Field setField = PersistentSet.class.getDeclaredField("set");
                 setField.setAccessible(true);
@@ -799,7 +658,6 @@ public class HibernateUtil implements PersistenceUtil {
             }
         } else if (collection instanceof PersistentList) {
             // Get the 'list' attribute
-            //
             try {
                 Field setField = PersistentList.class.getDeclaredField("list");
                 setField.setAccessible(true);
@@ -810,7 +668,6 @@ public class HibernateUtil implements PersistenceUtil {
             }
         } else if (collection instanceof PersistentBag) {
             // Get the 'bag' attribute
-            //
             try {
                 Field setField = PersistentBag.class.getDeclaredField("bag");
                 setField.setAccessible(true);
@@ -826,19 +683,11 @@ public class HibernateUtil implements PersistenceUtil {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#isPersistentCollection(java.lang. Class)
-     */
     @Override
     public boolean isPersistentMap(Class<?> collectionClass) {
         return (PersistentMap.class.isAssignableFrom(collectionClass));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#isProxy(java.lang.Object)
-     */
     @Override
     public boolean isInitialized(Object proxy) {
         return Hibernate.isInitialized(proxy);
@@ -849,6 +698,7 @@ public class HibernateUtil implements PersistenceUtil {
      */
     @Override
     public void flushIfNeeded() {
+        @SuppressWarnings("resource")
         Session session = getCurrentSession();
         if (session != null) {
             LOGGER.trace("Flushing session !");
@@ -856,23 +706,15 @@ public class HibernateUtil implements PersistenceUtil {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#initialize(java.lang.Object)
-     */
     @Override
     public void initialize(Object proxy) {
         Hibernate.initialize(proxy);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#loadAssociation(java.lang.Class, java.io.Serializable, java.lang.String)
-     */
     @Override
+    @SuppressWarnings("resource")
     public Object loadAssociation(Class<?> parentClass, Serializable parentId, String propertyName) {
         // Create query
-        //
         StringBuilder queryString = new StringBuilder();
         queryString.append("SELECT item FROM ");
         queryString.append(parentClass.getSimpleName());
@@ -882,32 +724,24 @@ public class HibernateUtil implements PersistenceUtil {
         LOGGER.trace("Query is '" + queryString.toString() + "'");
 
         // Fill query
-        //
         Session session = getSession();
         Query query = session.createQuery(queryString.toString());
         query.setParameter("id", parentId);
 
         // Execute query
-        //
         return query.uniqueResult();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#executeQuery(java.lang.String, java.util.List)
-     */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "resource" })
     public List<Object> executeQuery(String query, List<Object> parameters) {
         LOGGER.trace("Executing query '" + query + "'");
 
         // Fill query
-        //
         Session session = getSession();
         Query hqlQuery = session.createQuery(query);
 
         // Fill parameters
-        //
         if (parameters != null) {
             for (int index = 0; index < parameters.size(); index++) {
                 hqlQuery.setParameter(index, parameters.get(index));
@@ -915,26 +749,19 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Execute query
-        //
         return hqlQuery.list();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.IPersistenceUtil#executeQuery(java.lang.String, java.util.Map)
-     */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "resource" })
     public List<Object> executeQuery(String query, Map<String, Object> parameters) {
         LOGGER.trace("Executing query '" + query + "'");
 
         // Fill query
-        //
         Session session = getSession();
         Query hqlQuery = session.createQuery(query);
 
         // Fill parameters
-        //
         if (parameters != null) {
             for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
                 hqlQuery.setParameter(parameter.getKey(), parameter.getValue());
@@ -942,36 +769,25 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Execute query
-        //
         return hqlQuery.list();
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Compute embedded persistence (Component, UserType) for argument class
      */
     private void computePersistenceForClass(Class<?> clazz) {
         // Precondition checking
-        //
-        synchronized (_persistenceMap) {
-            if (_persistenceMap.get(clazz) != null) {
+        synchronized (persistenceMap) {
+            if (persistenceMap.get(clazz) != null) {
                 // already computed
-                //
                 return;
             }
         }
 
         // Get associated metadata
-        //
         List<String> entityNames = getEntityNamesFor(clazz);
         if ((entityNames == null) || (entityNames.isEmpty() == true)) {
-            // Not persistent : check implemented interfaces (they can be
-            // declared as persistent !!)
-            //
+            // Not persistent : check implemented interfaces (they can be declared as persistent !!)
             Class<?>[] interfaces = clazz.getInterfaces();
             if (interfaces != null) {
                 for (Class<?> interface1 : interfaces) {
@@ -984,19 +800,16 @@ public class HibernateUtil implements PersistenceUtil {
             }
 
             // Not persistent and no persistent interface!
-            //
             markClassAsPersistent(clazz, false);
             return;
         }
 
         // Persistent class
-        //
         markClassAsPersistent(clazz, true);
 
         // Look for component classes
-        //
         for (String entityName : entityNames) {
-            Type[] types = _sessionFactory.getClassMetadata(entityName).getPropertyTypes();
+            Type[] types = sessionFactory.getClassMetadata(entityName).getPropertyTypes();
             for (Type type : types) {
                 LOGGER.trace("Scanning type " + type.getName() + " from " + clazz);
                 computePersistentForType(type);
@@ -1016,15 +829,13 @@ public class HibernateUtil implements PersistenceUtil {
         } else {
             LOGGER.trace("Marking " + clazz + " as not persistent");
         }
-        synchronized (_persistenceMap) {
+        synchronized (persistenceMap) {
             // Debug check
-            //
-            if (_persistenceMap.get(clazz) == null) {
-                _persistenceMap.put(clazz, persistent);
+            if (persistenceMap.get(clazz) == null) {
+                persistenceMap.put(clazz, persistent);
             } else {
                 // Check persistence information
-                //
-                if (persistent != _persistenceMap.get(clazz).booleanValue()) {
+                if (persistent != persistenceMap.get(clazz).booleanValue()) {
                     throw new RuntimeException("Invalid persistence state for " + clazz);
                 }
             }
@@ -1038,11 +849,9 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private void computePersistentForType(Type type) {
         // Precondition checking
-        //
-        synchronized (_persistenceMap) {
-            if (_persistenceMap.get(type.getReturnedClass()) != null) {
+        synchronized (persistenceMap) {
+            if (persistenceMap.get(type.getReturnedClass()) != null) {
                 // already computed
-                //
                 return;
             }
         }
@@ -1051,7 +860,6 @@ public class HibernateUtil implements PersistenceUtil {
 
         if (type.isComponentType()) {
             // Add the Class to the persistent map
-            //
             LOGGER.trace("Type " + type.getName() + " is component type");
 
             markClassAsPersistent(type.getReturnedClass(), true);
@@ -1062,15 +870,13 @@ public class HibernateUtil implements PersistenceUtil {
             }
         } else if (IUserType.class.isAssignableFrom(type.getReturnedClass())) {
             // Add the Class to the persistent map
-            //
             LOGGER.trace("Type " + type.getName() + " is user type");
 
             markClassAsPersistent(type.getReturnedClass(), true);
         } else if (type.isCollectionType()) {
             // Collection handling
-            //
             LOGGER.trace("Type " + type.getName() + " is collection type");
-            computePersistentForType(((CollectionType) type).getElementType(_sessionFactory));
+            computePersistentForType(((CollectionType) type).getElementType(sessionFactory));
         } else if (type.isEntityType()) {
             LOGGER.trace("Type " + type.getName() + " is entity type");
             computePersistenceForClass(type.getReturnedClass());
@@ -1083,16 +889,16 @@ public class HibernateUtil implements PersistenceUtil {
      * @param collection
      * @return
      */
-    private ArrayList<SerializableId> createIdList(Collection collection) {
+    private ArrayList<SerializableId> createIdList(@SuppressWarnings("rawtypes") Collection collection) {
         // Precondition checking
-        //
         if (collection == null) {
             return null;
         }
 
         int size = collection.size();
-        ArrayList<SerializableId> idList = new ArrayList<SerializableId>(size);
+        ArrayList<SerializableId> idList = new ArrayList<>(size);
 
+        @SuppressWarnings("unchecked")
         Iterator<Object> iterator = collection.iterator();
         while (iterator.hasNext()) {
             Object item = iterator.next();
@@ -1136,6 +942,7 @@ public class HibernateUtil implements PersistenceUtil {
      * @param item
      * @return the generated SerializableId
      */
+    @SuppressWarnings("rawtypes")
     private SerializableId serializeNotPersistentEntity(Object item) {
         SerializableId result = new SerializableId();
         Class<?> itemClass = item.getClass();
@@ -1164,14 +971,12 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private boolean isUnsavedValue(Object pojo, Serializable id, Class<?> persistentClass) {
         // Precondition checking
-        //
         if (id == null) {
             return true;
         }
 
         // Get unsaved value from entity metamodel
-        //
-        EntityPersister entityPersister = _sessionFactory.getEntityPersister(getEntityName(persistentClass, pojo));
+        EntityPersister entityPersister = sessionFactory.getEntityPersister(getEntityName(persistentClass, pojo));
         EntityMetamodel metamodel = entityPersister.getEntityMetamodel();
         IdentifierProperty idProperty = metamodel.getIdentifierProperty();
         Boolean result = idProperty.getUnsavedValue().isUnsaved(id);
@@ -1199,7 +1004,6 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Just return the class
-        //
         return pojo.getClass();
     }
 
@@ -1209,10 +1013,10 @@ public class HibernateUtil implements PersistenceUtil {
      * @param proxyInformations
      * @param underlyingCollection
      */
+    @SuppressWarnings("unchecked")
     private <T> Collection<T> createOriginalCollection(Map<String, Serializable> proxyInformations, Collection<T> collection) {
         try {
             // Create base collection
-            //
             Class<?> collectionClass;
             if (collection == null) {
                 // collection have been nullified on client side
@@ -1229,15 +1033,12 @@ public class HibernateUtil implements PersistenceUtil {
             Collection<T> original = (Collection<T>) collectionClass.newInstance();
 
             // Fill original collection
-            //
             ArrayList<SerializableId> idList = (ArrayList<SerializableId>) proxyInformations.get(ID_LIST);
             if (idList != null) {
                 // Create map(ID -> entity)
-                //
                 Map<Serializable, T> collectionMap = createCollectionMap(collection);
 
                 // Fill snapshot
-                //
                 for (SerializableId sid : idList) {
                     original.add(createOriginalEntity(sid, collectionMap));
                 }
@@ -1257,6 +1058,7 @@ public class HibernateUtil implements PersistenceUtil {
      * @param proxyInformations
      * @param underlyingCollection
      */
+    @SuppressWarnings("unchecked")
     private <K, V> Map<K, V> createOriginalMap(Map<String, Serializable> proxyInformations, Map<K, V> map) {
         try {
             ArrayList<SerializableId> keyList = (ArrayList<SerializableId>) proxyInformations.get(ID_LIST);
@@ -1264,20 +1066,18 @@ public class HibernateUtil implements PersistenceUtil {
                 ArrayList<SerializableId> valueList = (ArrayList<SerializableId>) proxyInformations.get(VALUE_LIST);
 
                 // Create maps(ID -> entity)
-                //
                 Map<Serializable, K> keyMap = null;
                 Map<Serializable, V> valueMap = null;
                 if (map != null) {
                     keyMap = createCollectionMap(map.keySet());
                     valueMap = createCollectionMap(map.values());
                 } else {
-                    keyMap = new HashMap<Serializable, K>();
-                    valueMap = new HashMap<Serializable, V>();
+                    keyMap = new HashMap<>();
+                    valueMap = new HashMap<>();
                 }
 
                 // Fill snapshot map
-                //
-                Map<K, V> snapshot = new HashMap<K, V>();
+                Map<K, V> snapshot = new HashMap<>();
                 for (SerializableId sid : keyList) {
                     snapshot.put(createOriginalEntity(sid, keyMap), createOriginalEntity(valueList.get(keyList.indexOf(sid)), valueMap));
                 }
@@ -1298,9 +1098,9 @@ public class HibernateUtil implements PersistenceUtil {
      * @param coll2
      * @return
      */
+    @SuppressWarnings("rawtypes")
     private boolean areDifferent(Collection coll1, Collection coll2) {
         // Precondition checking
-        //
         if (coll1 == null) {
             return (coll2 != null && !coll2.isEmpty());
         }
@@ -1310,16 +1110,13 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Size comparison
-        //
         if (coll1.size() != coll2.size()) {
             return true;
         }
 
         // Item comparison
-        //
         if ((coll1 instanceof List) || (coll1 instanceof SortedSet)) {
             // Compare content *and* order
-            //
             Object[] array1 = coll1.toArray();
             Object[] array2 = coll2.toArray();
 
@@ -1337,7 +1134,6 @@ public class HibernateUtil implements PersistenceUtil {
             }
         }
         // Same collections
-        //
         return false;
     }
 
@@ -1348,9 +1144,9 @@ public class HibernateUtil implements PersistenceUtil {
      * @param coll2
      * @return
      */
+    @SuppressWarnings("rawtypes")
     private boolean areDifferent(Map map1, Map map2) {
         // Precondition checking
-        //
         if (map1 == null) {
             return (map2 != null && !map2.isEmpty());
         }
@@ -1360,13 +1156,11 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Size comparison
-        //
         if (map1.size() != map2.size()) {
             return true;
         }
 
         // Item comparison
-        //
         // No order : just compare contents
         for (Object key : map1.keySet()) {
             if (map2.containsKey(key) == false) {
@@ -1382,7 +1176,6 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Same maps
-        //
         return false;
     }
 
@@ -1392,31 +1185,26 @@ public class HibernateUtil implements PersistenceUtil {
      * @param sid
      * @return
      */
+    @SuppressWarnings("unchecked")
     private <T> T createOriginalEntity(SerializableId sid, Map<Serializable, T> collectionMap) {
         // Precondition checking
-        //
         T entity = null;
         if (sid.getId() != null) {
             // Is the entity still present ?
             entity = collectionMap.get(sid.getId());
             if (entity == null) {
                 // deleted item
-                //
                 try {
                     entity = (T) createPersistentEntity(sid);
                 } catch (ObjectNotFoundException ex) {
-                    // The data has already been deleted, just remove it from
-                    // the collection
-                    //
+                    // The data has already been deleted, just remove it from the collection
                     LOGGER.trace("Deleted entity : " + sid + " cannot be retrieved from DB and thus added to snapshot", ex);
                 }
             }
-        } else // if (sid.getHashCode() != null)
-        {
+        } else {
             entity = collectionMap.get(sid.getValue());
             if (entity == null) {
                 // deleted item
-                //
                 entity = (T) createNotPersistentEntity(sid);
             }
         }
@@ -1434,6 +1222,7 @@ public class HibernateUtil implements PersistenceUtil {
     /**
      * Create a not persistent entity (if possible !) back from its serializable id
      */
+    @SuppressWarnings("rawtypes")
     private Object createNotPersistentEntity(SerializableId sid) {
         if (sid.getValue() == null) {
             // Did not k nwo how to serialize it...
@@ -1443,7 +1232,6 @@ public class HibernateUtil implements PersistenceUtil {
             Class<?> clazz = Class.forName(sid.getEntityName());
             if (Number.class.isAssignableFrom(clazz)) {
                 // Special case for numbers (no empty constructor defined)
-                //
                 Constructor<?> ctor = clazz.getConstructor(new Class[] { String.class });
                 return ctor.newInstance(sid.getValue());
             } else if (clazz.equals(String.class)) {
@@ -1476,7 +1264,7 @@ public class HibernateUtil implements PersistenceUtil {
      * @return
      */
     private <T> Map<Serializable, T> createCollectionMap(Collection<T> collection) {
-        Map<Serializable, T> collectionMap = new HashMap<Serializable, T>();
+        Map<Serializable, T> collectionMap = new HashMap<>();
         if (collection != null) {
             for (T item : collection) {
                 if (item != null) {
@@ -1500,10 +1288,10 @@ public class HibernateUtil implements PersistenceUtil {
      * @return the current session (open a new one if needed)
      */
     private Session getSession() {
-        HibernateSession hSession = _session.get();
+        HibernateSession hSession = sessionThread.get();
         if (hSession == null) {
             openSession();
-            hSession = _session.get();
+            hSession = sessionThread.get();
         }
         return hSession.session;
     }
@@ -1513,16 +1301,14 @@ public class HibernateUtil implements PersistenceUtil {
      */
     protected Session getCurrentSession() {
         // Precondition checking
-        //
-        if (_sessionFactory == null) {
+        if (sessionFactory == null) {
             throw new NullPointerException("No Hibernate Session Factory defined !");
         }
 
         // Open the existing session
-        //
         Session session = null;
         try {
-            session = _sessionFactory.getCurrentSession();
+            session = sessionFactory.getCurrentSession();
             if (session.isConnected() == false) {
                 return null;
             }
@@ -1542,8 +1328,7 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private String getEntityName(Class<?> clazz, Object pojo) {
         // Direct metadata search
-        //
-        ClassMetadata metadata = _sessionFactory.getClassMetadata(clazz);
+        ClassMetadata metadata = sessionFactory.getClassMetadata(clazz);
         if (metadata != null) {
             return metadata.getEntityName();
         }
@@ -1551,24 +1336,18 @@ public class HibernateUtil implements PersistenceUtil {
         // Iterate over all metadata to prevent entity name bug
         // (if entity-name is redefined in mapping file, it is not found with
         // _sessionFatory.getClassMetada(clazz); !)
-        //
         List<String> entityNames = getEntityNamesFor(clazz);
 
         // check entity names
-        //
         if (entityNames.isEmpty()) {
             // Not found
-            //
             return getUnenhancedClass(clazz).getName();
         } else if (entityNames.size() == 1) {
             // Only one entity name
-            //
             return entityNames.get(0);
         }
 
-        // More than one entity name : need pojo to know which one is the right
-        // one
-        //
+        // More than one entity name : need pojo to know which one is the right one
         if (pojo != null) {
             // Get entity name
             return ((SessionImplementor) getSession()).bestGuessEntityName(pojo);
@@ -1581,8 +1360,8 @@ public class HibernateUtil implements PersistenceUtil {
      * @return all possible entity names for the argument class.
      */
     private List<String> getEntityNamesFor(Class<?> clazz) {
-        List<String> entityNames = new ArrayList<String>();
-        Map<String, ClassMetadata> allMetadata = _sessionFactory.getAllClassMetadata();
+        List<String> entityNames = new ArrayList<>();
+        Map<String, ClassMetadata> allMetadata = sessionFactory.getAllClassMetadata();
         for (ClassMetadata classMetadata : allMetadata.values()) {
             if (clazz.equals(classMetadata.getMappedClass())) {
                 entityNames.add(classMetadata.getEntityName());
@@ -1606,9 +1385,7 @@ public class HibernateUtil implements PersistenceUtil {
             }
         }
 
-        // The property has no proxy info or it does not
-        // contains 'initialized' field
-        //
+        // The property has no proxy info or it does not contains 'initialized' field
         return true;
     }
 }
@@ -1619,11 +1396,16 @@ public class HibernateUtil implements PersistenceUtil {
  * @author bruno.marchesson
  */
 class HibernateSession {
+
     public Session session;
+
     public boolean created;
+
+    public Map<Object, Object> clonedMap;
 
     public HibernateSession(Session session, boolean created) {
         this.session = session;
         this.created = created;
+        this.clonedMap = new HashMap<>();
     }
 }
