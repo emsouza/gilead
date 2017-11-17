@@ -1,4 +1,4 @@
-package net.sf.gilead.gwt;
+package net.sf.gilead.configuration;
 
 import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
