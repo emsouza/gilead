@@ -1,7 +1,7 @@
 Gilead
 ======
 
-* Gilead fork for GWT 2.7.0, Hibernate 4.3 and WildFly 8.2
+* Gilead fork for GWT 2.6.1+, Hibernate 5.0 and WildFly 10.1.
 
 Gilead permits you to use your Persistent POJO (and especially the partially loaded ones) outside the JVM (GWT) without pain. No lazy initialisation or serialization exception. Just POJO and Domain Driven Design.
 
@@ -15,4 +15,4 @@ Symetrically, Hibernate needs associations to be set with proxies when property 
 Beanlib
 --------------------------
 
-[Beanlib for Hibernate 4](https://github.com/emsouza/beanlib)
+[Beanlib for Hibernate](https://github.com/emsouza/beanlib)
