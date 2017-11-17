@@ -9,7 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.pojo.base.ILightEntity;
@@ -122,7 +122,7 @@ public class BaseLoadingService<T extends ILightEntity> {
 
         // Get Persistence util
         //
-        IPersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
+        PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
@@ -169,7 +169,7 @@ public class BaseLoadingService<T extends ILightEntity> {
 
         // Get Persistence util
         //
-        IPersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
+        PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }

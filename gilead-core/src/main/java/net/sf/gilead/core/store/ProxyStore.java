@@ -8,7 +8,7 @@ import java.util.Map;
  * 
  * @author bruno.marchesson
  */
-public interface IProxyStore {
+public interface ProxyStore {
 
     /**
      * Store the argument proxy informations.

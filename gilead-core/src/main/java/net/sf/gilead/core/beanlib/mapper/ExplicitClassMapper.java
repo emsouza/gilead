@@ -7,14 +7,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.beanlib.IClassMapper;
+import net.sf.gilead.core.beanlib.ClassMapper;
 
 /**
  * Class mapper based on explicitly parameterized classes
  *
  * @author Olaf Kock, Florian Siebert
  */
-public class ExplicitClassMapper implements IClassMapper {
+public class ExplicitClassMapper implements ClassMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExplicitClassMapper.class);
 

@@ -1,18 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.sf.gilead.core.beanlib.merge;
 
 import java.io.Serializable;
@@ -38,234 +23,178 @@ import net.sf.gilead.util.IntrospectionHelper;
  * @author bruno.marchesson
  */
 public class MergePropertyFilter implements DetailedPropertyFilter {
-	// ----
-	// Attributes
-	// ----
-	/**
-	 * The associated persistence utils
-	 */
-	private PersistenceUtil _persistenceUtil;
 
-	/**
-	 * The used Pojo store
-	 */
-	private ProxyStore _proxyStore;
+    /**
+     * The associated persistence utils
+     */
+    private PersistenceUtil persistenceUtil;
 
-	// ----
-	// Properties
-	// ----
-	/**
-	 * @return the persistence Util implementation to use
-	 */
-	public PersistenceUtil getPersistenceUtil() {
-		return _persistenceUtil;
-	}
+    /**
+     * The used Pojo store
+     */
+    private ProxyStore proxyStore;
 
-	/**
-	 * @param util the persistenceUtil to set
-	 */
-	public void setPersistenceUtil(PersistenceUtil util) {
-		_persistenceUtil = util;
-	}
+    /**
+     * Constructor
+     */
+    public MergePropertyFilter(PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
+        setPersistenceUtil(persistenceUtil);
+        setProxyStore(proxyStore);
+    }
 
-	/**
-	 * @return the proxy store
-	 */
-	public ProxyStore getProxyStore() {
-		return _proxyStore;
-	}
+    /**
+     * @return the persistence Util implementation to use
+     */
+    public PersistenceUtil getPersistenceUtil() {
+        return persistenceUtil;
+    }
 
-	/**
-	 * @param store the proxy store to set
-	 */
-	public void setProxyStore(ProxyStore store) {
-		_proxyStore = store;
-	}
+    /**
+     * @param util the persistenceUtil to set
+     */
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Constructor
-	 */
-	public MergePropertyFilter(PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
-		setPersistenceUtil(persistenceUtil);
-		setProxyStore(proxyStore);
-	}
+    /**
+     * @return the proxy store
+     */
+    public ProxyStore getProxyStore() {
+        return proxyStore;
+    }
 
-	// -------------------------------------------------------------------------
-	//
-	// DetailedBeanPopulatable implementation
-	//
-	// -------------------------------------------------------------------------
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.beanlib.spi.DetailedBeanPopulatable#shouldPopulate(java.lang.String , java.lang.Object,
-	 * java.lang.reflect.Method, java.lang.Object, java.lang.reflect.Method)
-	 */
-	@Override
-	public boolean propagate(String propertyName, Object cloneBean, Method readerMethod, Object persistentBean, Method setterMethod) {
-		// Always reset proxy information on stack
-		//
-		BeanlibCache.removeProxyInformations();
+    /**
+     * @param store the proxy store to set
+     */
+    public void setProxyStore(ProxyStore proxyStore) {
+        this.proxyStore = proxyStore;
+    }
 
-		try {
-			// Precondition checking
-			//
-			if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
-					|| (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
-				return false;
-			}
+    @Override
+    public boolean propagate(String propertyName, Object cloneBean, Method readerMethod, Object persistentBean, Method setterMethod) {
+        // Always reset proxy information on stack
+        BeanlibCache.setProxyInformations(null);
 
-			// Get proxy informations
-			//
-			Map<String, Serializable> proxyInformations = _proxyStore.getProxyInformations(cloneBean, propertyName);
+        try {
+            // Precondition checking
+            if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
+                    || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
+                return false;
+            }
 
-			// 'ReadOnly' or 'ServerOnly' annotation : original info was loaded,
-			// do not copy
-			//
-			if (/*
-				 * (AnnotationsManager.isServerOrReadOnly(cloneBean, propertyName)) ||
-				 */
-			(AnnotationsManager.isServerOrReadOnly(persistentBean, propertyName))) {
-				// If the proxy was initialized before clone
-				// force the merge value initialization now
-				//
-				if (isInitialized(proxyInformations)) {
-					Object persistentValue = readPropertyValue(persistentBean, readerMethod.getName());
-					_persistenceUtil.initialize(persistentValue);
-				}
-				return false;
-			}
+            // Get proxy informations
+            Map<String, Serializable> proxyInformations = proxyStore.getProxyInformations(cloneBean, propertyName);
 
-			if (proxyInformations == null) {
-				// No proxy informations : just populate the property
-				//
-				return true;
-			}
+            // 'ReadOnly' or 'ServerOnly' annotation : original info was loaded, do not copy
+            if (AnnotationsManager.isServerOrReadOnly(persistentBean, propertyName)) {
+                // If the proxy was initialized before clone force the merge value initialization now
+                if (isInitialized(proxyInformations)) {
+                    Object persistentValue = readPropertyValue(persistentBean, readerMethod.getName());
+                    persistenceUtil.initialize(persistentValue);
+                }
+                return false;
+            }
 
-			// Get clone value
-			//
-			Object cloneValue = readPropertyValue(cloneBean, readerMethod.getName());
+            if (proxyInformations == null) {
+                // No proxy informations : just populate the property
+                return true;
+            }
 
-			Class<?> valueClass = readerMethod.getReturnType();
-			boolean isCollection = Collection.class.isAssignableFrom(valueClass);
-			boolean isMap = Map.class.isAssignableFrom(valueClass);
+            // Get clone value
+            Object cloneValue = readPropertyValue(cloneBean, readerMethod.getName());
 
-			if (isCollection) {
-				if (isNullValue(cloneValue)) {
-					// The value is now null : proxy is needed
-					//
-					// Set collection proxy
-					//
-					Object persistentCollection = _persistenceUtil.createPersistentCollection(persistentBean, proxyInformations, null);
-					writePropertyValue(persistentBean, persistentCollection, setterMethod.getName(), setterMethod.getParameterTypes());
-					//
-					return false;
-				} else {
-					// Store proxy info for the copy operation
-					//
-					BeanlibCache.setProxyInformations(proxyInformations);
-				}
-			} else if (isMap) {
-				if (isNullValue(cloneValue)) {
-					// Set map proxy
-					//
-					Object persistentMap = _persistenceUtil.createPersistentMap(persistentBean, proxyInformations, null);
-					writePropertyValue(persistentBean, persistentMap, setterMethod.getName(), setterMethod.getParameterTypes());
-					return false;
-				} else {
-					// Store proxy info for the copy operation
-					//
-					BeanlibCache.setProxyInformations(proxyInformations);
-				}
-			} else if (isNullValue(cloneValue) && isInitialized(proxyInformations) == false) {
-				// Set an entity proxy
-				//
-				Object proxy = _persistenceUtil.createEntityProxy(proxyInformations);
-				if (proxy != null) {
-					writePropertyValue(persistentBean, proxy, setterMethod.getName(), setterMethod.getParameterTypes());
-				}
+            Class<?> valueClass = readerMethod.getReturnType();
+            boolean isCollection = Collection.class.isAssignableFrom(valueClass);
+            boolean isMap = Map.class.isAssignableFrom(valueClass);
 
-				// Skip beanlib in-depth population
-				//
-				return false;
-			}
+            if (isCollection) {
+                if (isNullValue(cloneValue)) {
+                    // The value is now null : proxy is needed
+                    // Set collection proxy
+                    Object persistentCollection = persistenceUtil.createPersistentCollection(persistentBean, proxyInformations, null);
+                    writePropertyValue(persistentBean, persistentCollection, setterMethod.getName(), setterMethod.getParameterTypes());
+                    return false;
+                } else {
+                    // Store proxy info for the copy operation
+                    BeanlibCache.setProxyInformations(proxyInformations);
+                }
+            } else if (isMap) {
+                if (isNullValue(cloneValue)) {
+                    // Set map proxy
+                    Object persistentMap = persistenceUtil.createPersistentMap(persistentBean, proxyInformations, null);
+                    writePropertyValue(persistentBean, persistentMap, setterMethod.getName(), setterMethod.getParameterTypes());
+                    return false;
+                } else {
+                    // Store proxy info for the copy operation
+                    BeanlibCache.setProxyInformations(proxyInformations);
+                }
+            } else if (isNullValue(cloneValue) && isInitialized(proxyInformations) == false) {
+                // Set an entity proxy
+                Object proxy = persistenceUtil.createEntityProxy(proxyInformations);
+                if (proxy != null) {
+                    writePropertyValue(persistentBean, proxy, setterMethod.getName(), setterMethod.getParameterTypes());
+                }
 
-			return true;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+                // Skip beanlib in-depth population
+                return false;
+            }
 
-	// -------------------------------------------------------------------------
-	//
-	// Internal method
-	//
-	// -------------------------------------------------------------------------
-	/**
-	 * Indicates if the argument property is lazy or not
-	 * 
-	 * @param proxyInfo serialized proxy informations
-	 * @return
-	 */
-	protected boolean isInitialized(Map<String, Serializable> proxyInfo) {
-		if (proxyInfo != null) {
-			Serializable initialized = proxyInfo.get(ILightEntity.INITIALISED);
-			if (initialized != null) {
-				return ((Boolean) initialized).booleanValue();
-			}
-		}
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-		// The property has no proxy info or it does not
-		// contains 'initialized' field
-		//
-		return true;
-	}
+    /**
+     * Indicates if the argument property is lazy or not
+     * 
+     * @param proxyInfo serialized proxy informations
+     * @return
+     */
+    protected boolean isInitialized(Map<String, Serializable> proxyInfo) {
+        if (proxyInfo != null) {
+            Serializable initialized = proxyInfo.get(ILightEntity.INITIALISED);
+            if (initialized != null) {
+                return ((Boolean) initialized).booleanValue();
+            }
+        }
 
-	/**
-	 * Read a property value, even if it has a private getter
-	 */
-	private Object readPropertyValue(Object bean, String propertyGetter) throws SecurityException, NoSuchMethodException, IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
-		Method readMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertyGetter, (Class[]) null);
-		readMethod.setAccessible(true);
+        // The property has no proxy info or it does not contains 'initialized' field
+        return true;
+    }
 
-		return readMethod.invoke(bean, (Object[]) null);
-	}
+    /**
+     * Read a property value, even if it has a private getter
+     */
+    private Object readPropertyValue(Object bean, String propertyGetter)
+            throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        Method readMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertyGetter, (Class[]) null);
+        readMethod.setAccessible(true);
 
-	/**
-	 * Read a property value, even if it has a private getter
-	 */
-	private void writePropertyValue(Object bean, Object value, String propertySetter, Class<?>... parameterTypes) throws SecurityException,
-			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		Method writeMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertySetter, parameterTypes);
-		writeMethod.setAccessible(true);
+        return readMethod.invoke(bean, (Object[]) null);
+    }
 
-		writeMethod.invoke(bean, value);
-	}
+    /**
+     * Read a property value, even if it has a private getter
+     */
+    private void writePropertyValue(Object bean, Object value, String propertySetter, Class<?>... parameterTypes)
+            throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        Method writeMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertySetter, parameterTypes);
+        writeMethod.setAccessible(true);
 
-	/**
-	 * Indicates if the argument value must be considered as null (empty collections or map are also considered as null)
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private boolean isNullValue(Object value) {
-		if (value == null) {
-			return true;
-		}
-		// else if (value instanceof Collection)
-		// {
-		// return ((Collection<?>) value).isEmpty();
-		// }
-		// else if (value instanceof Map)
-		// {
-		// return ((Map<?,?>)value).isEmpty();
-		// }
+        writeMethod.invoke(bean, value);
+    }
 
-		return false;
-	}
+    /**
+     * Indicates if the argument value must be considered as null (empty collections or map are also considered as null)
+     * 
+     * @param value
+     * @return
+     */
+    private boolean isNullValue(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return false;
+    }
 }

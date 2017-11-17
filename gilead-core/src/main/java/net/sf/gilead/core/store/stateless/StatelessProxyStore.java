@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.serialization.IProxySerialization;
-import net.sf.gilead.core.store.IProxyStore;
+import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.exception.ProxyStoreException;
 import net.sf.gilead.pojo.base.ILightEntity;
 
@@ -17,7 +17,7 @@ import net.sf.gilead.pojo.base.ILightEntity;
  * @see ILightEntity
  * @author bruno.marchesson
  */
-public class StatelessProxyStore implements IProxyStore {
+public class StatelessProxyStore implements ProxyStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatelessProxyStore.class);
 
@@ -80,12 +80,12 @@ public class StatelessProxyStore implements IProxyStore {
 
     // -------------------------------------------------------------------------
     //
-    // IProxyStore implementation
+    // ProxyStore implementation
     //
     // -------------------------------------------------------------------------
     /*
      * (non-Javadoc)
-     * @see net.sf.gilead.core.store.IProxyStore#storeProxyInformations(java.lang .Object, java.lang.String,
+     * @see net.sf.gilead.core.store.ProxyStore#storeProxyInformations(java.lang .Object, java.lang.String,
      * java.util.Map)
      */
     @Override
@@ -117,7 +117,7 @@ public class StatelessProxyStore implements IProxyStore {
 
     /*
      * (non-Javadoc)
-     * @see net.sf.gilead.core.store.IProxyStore#removeProxyInformations(java.lang .Object, java.lang.String)
+     * @see net.sf.gilead.core.store.ProxyStore#removeProxyInformations(java.lang .Object, java.lang.String)
      */
     @Override
     public void removeProxyInformations(Object pojo, String property) {
@@ -132,7 +132,7 @@ public class StatelessProxyStore implements IProxyStore {
 
     /*
      * (non-Javadoc)
-     * @see net.sf.gilead.core.store.IProxyStore#getProxyInformations(java.lang.Object , java.lang.String)
+     * @see net.sf.gilead.core.store.ProxyStore#getProxyInformations(java.lang.Object , java.lang.String)
      */
     @Override
     public Map<String, Serializable> getProxyInformations(Object pojo, String property) {

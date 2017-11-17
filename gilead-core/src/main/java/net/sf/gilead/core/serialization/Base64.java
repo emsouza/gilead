@@ -77,6 +77,7 @@ public class Base64 {
      *            faster.
      * @return A BASE64 encoded array. Never <code>null</code>.
      */
+    @SuppressWarnings("null")
     public final static char[] encodeToChar(byte[] sArr, boolean lineSep) {
         // Check special case
         int sLen = sArr != null ? sArr.length : 0;
@@ -131,6 +132,7 @@ public class Base64 {
      * @return The decoded array of bytes. May be of length 0. Will be <code>null</code> if the legal characters
      *         (including '=') isn't divideable by 4. (I.e. definitely corrupted).
      */
+    @SuppressWarnings("null")
     public final static byte[] decode(char[] sArr) {
         // Check special case
         int sLen = sArr != null ? sArr.length : 0;
@@ -268,6 +270,7 @@ public class Base64 {
      *            faster.
      * @return A BASE64 encoded array. Never <code>null</code>.
      */
+    @SuppressWarnings("null")
     public final static byte[] encodeToByte(byte[] sArr, boolean lineSep) {
         // Check special case
         int sLen = sArr != null ? sArr.length : 0;
@@ -472,6 +475,7 @@ public class Base64 {
      * @return The decoded array of bytes. May be of length 0. Will be <code>null</code> if the legal characters
      *         (including '=') isn't divideable by 4. (I.e. definitely corrupted).
      */
+    @SuppressWarnings("null")
     public final static byte[] decode(String str) {
         // Check special case
         int sLen = str != null ? str.length() : 0;

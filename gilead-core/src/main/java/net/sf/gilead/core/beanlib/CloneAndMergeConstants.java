@@ -2,7 +2,7 @@ package net.sf.gilead.core.beanlib;
 
 /**
  * Constants for clone and merge operations
- *
+ * 
  * @author bruno.marchesson
  */
 public interface CloneAndMergeConstants {

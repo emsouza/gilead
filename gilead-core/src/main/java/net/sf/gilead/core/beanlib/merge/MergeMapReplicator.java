@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.beanlib.merge;
 
 import java.io.Serializable;
@@ -26,41 +23,9 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
     public static final Factory factory = new Factory();
 
     /**
-     * Factory for {@link MergeClassBeanReplicator}
-     *
-     * @author bruno.marchesson
-     */
-    private static class Factory implements MapReplicatorSpi.Factory {
-        private Factory() {}
-
-        @Override
-        public Hibernate4MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
-            return new MergeMapReplicator(beanTransformer);
-        }
-    }
-
-    public static Hibernate4MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newMapReplicatable(beanTransformer);
-    }
-
-    /**
      * The associated persistence util
      */
     private PersistenceUtil persistenceUtil;
-
-    /**
-     * @return the _persistenceUtil
-     */
-    public PersistenceUtil getPersistenceUtil() {
-        return persistenceUtil;
-    }
-
-    /**
-     * @param util the _persistenceUtil to set
-     */
-    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
-        this.persistenceUtil = persistenceUtil;
-    }
 
     /**
      * Constructor
@@ -71,24 +36,39 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         super(beanTransformer);
     }
 
+    /**
+     * @return the persistenceUtil
+     */
+    public PersistenceUtil getPersistenceUtil() {
+        return persistenceUtil;
+    }
+
+    /**
+     * @param util the persistenceUtil to set
+     */
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
+    }
+
     @Override
+    @SuppressWarnings("unchecked")
     protected Object replicate(Object from) {
         // Reset bean local
-        BeanlibCache.removeProxyInformations();
+        BeanlibCache.setProxyInformations(null);
         return super.replicate(from);
     }
 
     /**
      * Map replication override
      */
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public <K, V, T> T replicateMap(Map<K, V> from, Class<T> toClass) {
         LOGGER.trace("Merge map from " + from + " to class " + toClass);
 
         // Get and reset persistent collection class if any
         Map<String, Serializable> proxyInformations = BeanlibCache.getProxyInformations();
-        BeanlibCache.removeProxyInformations();
+        BeanlibCache.setProxyInformations(null);
 
         // Clone map
         T map = super.replicateMap(from, toClass);
@@ -99,6 +79,20 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
             return (T) persistenceUtil.createPersistentMap(parent, proxyInformations, (Map<?, ?>) map);
         } else {
             return map;
+        }
+    }
+
+    /**
+     * Factory for {@link MergeClassBeanReplicator}
+     *
+     * @author bruno.marchesson
+     */
+    private static class Factory implements MapReplicatorSpi.Factory {
+        private Factory() {}
+
+        @Override
+        public Hibernate4MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
+            return new MergeMapReplicator(beanTransformer);
         }
     }
 }

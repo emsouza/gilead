@@ -45,7 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate.UnEnhancer;
-import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.hibernate.exception.UnableToCreateEntityException;
 import net.sf.gilead.core.serialization.SerializableId;
 import net.sf.gilead.exception.ComponentTypeException;
@@ -61,7 +61,7 @@ import net.sf.gilead.util.IntrospectionHelper;
  *
  * @author BMARCHESSON
  */
-public class HibernateUtil implements IPersistenceUtil {
+public class HibernateUtil implements PersistenceUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateUtil.class);
 

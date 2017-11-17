@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.beanlib.clone;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,24 +18,6 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
 
     public static final Factory factory = new Factory();
 
-    /**
-     * Factory for {@link CloneClassBeanReplicator}
-     *
-     * @author bruno.marchesson
-     */
-    private static class Factory implements CollectionReplicatorSpi.Factory {
-        private Factory() {}
-
-        @Override
-        public CloneCollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
-            return new CloneCollectionReplicator(beanTransformer);
-        }
-    }
-
-    public static CloneCollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newCollectionReplicatable(beanTransformer);
-    }
-
     protected CloneCollectionReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
     }
@@ -58,8 +37,8 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
     /**
      * @param util the _persistenceUtil to set
      */
-    public void setPersistenceUtil(PersistenceUtil util) {
-        persistenceUtil = util;
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
     }
 
     @Override
@@ -81,11 +60,26 @@ public class CloneCollectionReplicator extends Hibernate4CollectionReplicator {
             // PersistentSet with LinkHashSet handling
             Collection<?> underlyingSet = persistenceUtil.getUnderlyingCollection(from);
             if ((underlyingSet != null) && (underlyingSet instanceof LinkedHashSet)) {
-                return new LinkedHashSet<T>();
+                return new LinkedHashSet<>();
             }
         }
 
         // Fallback to normal behavior
         return super.createToCollection(from);
+    }
+
+    /**
+     * Factory for {@link CloneClassBeanReplicator}
+     * 
+     * @author bruno.marchesson
+     */
+    private static class Factory implements CollectionReplicatorSpi.Factory {
+
+        private Factory() {}
+
+        @Override
+        public CloneCollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
+            return new CloneCollectionReplicator(beanTransformer);
+        }
     }
 }

@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.sf.gilead.core.beanlib.clone;
 
 import org.slf4j.Logger;
@@ -36,6 +20,8 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloneClassBeanReplicator.class);
 
+    public static final Factory factory = new Factory();
+
     /**
      * The class mapper (can be null)
      */
@@ -45,26 +31,6 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
      * Persistence util class
      */
     private PersistenceUtil persistenceUtil;
-
-    public static final Factory factory = new Factory();
-
-    /**
-     * Factory for {@link MergeClassBeanReplicator}
-     *
-     * @author bruno.marchesson
-     */
-    public static class Factory implements BeanReplicatorSpi.Factory {
-        private Factory() {}
-
-        @Override
-        public CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-            return new CloneClassBeanReplicator(beanTransformer);
-        }
-    }
-
-    public static CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newBeanReplicatable(beanTransformer);
-    }
 
     protected CloneClassBeanReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
@@ -80,8 +46,8 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     /**
      * @param mapper the classMapper to set
      */
-    public void setClassMapper(ClassMapper mapper) {
-        classMapper = mapper;
+    public void setClassMapper(ClassMapper classMapper) {
+        this.classMapper = classMapper;
     }
 
     /**
@@ -94,12 +60,12 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
     /**
      * @param util the persistenceUtil to set
      */
-    public void setPersistenceUtil(PersistenceUtil util) {
-        persistenceUtil = util;
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
     }
 
     @Override
-    public <V extends Object, T extends Object> T replicateBean(V from, java.lang.Class<T> toClass) {
+    public <V extends Object, T extends Object> T replicateBean(V from, Class<T> toClass) {
         // Force persistence map computation (useful for subclass)
         persistenceUtil.isPersistentPojo(from);
 
@@ -111,7 +77,7 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T extends Object> T createToInstance(Object from, java.lang.Class<T> toClass)
+    protected <T extends Object> T createToInstance(Object from, Class<T> toClass)
             throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException {
         // Class mapper indirection
         if (classMapper != null) {
@@ -127,5 +93,20 @@ public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
             }
         }
         return super.createToInstance(from, toClass);
+    }
+
+    /**
+     * Factory for {@link MergeClassBeanReplicator}
+     *
+     * @author bruno.marchesson
+     */
+    public static class Factory implements BeanReplicatorSpi.Factory {
+
+        private Factory() {}
+
+        @Override
+        public CloneClassBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+            return new CloneClassBeanReplicator(beanTransformer);
+        }
     }
 }

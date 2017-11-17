@@ -72,7 +72,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(value, proxySerialization.unserialize(serialized));
         long end = System.nanoTime();
 
-        LOGGER.info("Integer serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
+        LOGGER.debug("Integer serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
 
         // int conversion
         int intValue = 1;
@@ -84,7 +84,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(intValue, proxySerialization.unserialize(serialized));
         end = System.nanoTime();
 
-        LOGGER.info("int serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
+        LOGGER.debug("int serialization took [" + (serialization - start) + ", " + (end - serialization) + "] nanoseconds");
     }
 
     /**
@@ -101,7 +101,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(value, proxySerialization.unserialize(serialized));
         long end = System.nanoTime();
 
-        LOGGER.info("Long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
+        LOGGER.debug("Long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
 
         // long conversion
         long longValue = 1;
@@ -113,7 +113,7 @@ public class SerializationManagerTest extends TestCase {
         assertEquals(longValue, proxySerialization.unserialize(serialized));
         end = System.nanoTime();
 
-        LOGGER.info("long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
+        LOGGER.debug("long serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
     }
 
     /**
@@ -140,7 +140,7 @@ public class SerializationManagerTest extends TestCase {
         HashMap<String, Serializable> unserialized = (HashMap<String, Serializable>) proxySerialization.unserialize(serialized);
         long end = System.nanoTime();
 
-        LOGGER.info("Map serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
+        LOGGER.debug("Map serialization took [" + (serialization - start) + ", " + (end - serialization) + "] ms");
 
         // Map checking
         assertNotNull(unserialized);

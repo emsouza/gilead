@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.sf.gilead.core.beanlib.clone;
 
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
@@ -36,44 +20,44 @@ import net.sf.gilead.core.store.ProxyStore;
  */
 public class CloneBeanReplicator extends HibernateBeanReplicator {
 
-	public CloneBeanReplicator(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
-		super(newBeanTransformer(classMapper, persistenceUtil, proxyStore));
-	}
+    public CloneBeanReplicator(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
+        super(newBeanTransformer(classMapper, persistenceUtil, proxyStore));
+    }
 
-	private static Hibernate4BeanTransformer newBeanTransformer(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
-		Hibernate4BeanTransformer transformer = new Hibernate4BeanTransformer();
+    private static Hibernate4BeanTransformer newBeanTransformer(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
+        Hibernate4BeanTransformer transformer = new Hibernate4BeanTransformer();
 
-		// Custom collection replicator
-		transformer.initCollectionReplicatableFactory(CloneCollectionReplicator.factory);
+        // Custom collection replicator
+        transformer.initCollectionReplicatableFactory(CloneCollectionReplicator.factory);
 
-		// Set associated PersistenceUtil
-		((CloneCollectionReplicator) transformer.getCollectionReplicatable()).setPersistenceUtil(persistenceUtil);
+        // Set associated PersistenceUtil
+        ((CloneCollectionReplicator) transformer.getCollectionReplicatable()).setPersistenceUtil(persistenceUtil);
 
-		transformer.initMapReplicatableFactory(Hibernate4MapReplicator.getFactory());
-		transformer.initBlobReplicatableFactory(Hibernate4BlobReplicator.getFactory());
+        transformer.initMapReplicatableFactory(Hibernate4MapReplicator.getFactory());
+        transformer.initBlobReplicatableFactory(Hibernate4BlobReplicator.getFactory());
 
-		// Custom bean replicatable
-		transformer.initBeanReplicatableFactory(CloneClassBeanReplicator.factory);
+        // Custom bean replicatable
+        transformer.initBeanReplicatableFactory(CloneClassBeanReplicator.factory);
 
-		// Set the associated class mapper
-		((CloneClassBeanReplicator) transformer.getBeanReplicatable()).setClassMapper(classMapper);
-		((CloneClassBeanReplicator) transformer.getBeanReplicatable()).setPersistenceUtil(persistenceUtil);
+        // Set the associated class mapper
+        ((CloneClassBeanReplicator) transformer.getBeanReplicatable()).setClassMapper(classMapper);
+        ((CloneClassBeanReplicator) transformer.getBeanReplicatable()).setPersistenceUtil(persistenceUtil);
 
-		// Custom transformers (timestamp handling)
-		transformer.initCustomTransformerFactory(new CustomBeanTransformerSpi.Factory() {
-			@Override
-			public CustomBeanTransformerSpi newCustomBeanTransformer(final BeanTransformerSpi beanTransformer) {
-				return CustomTransformersFactory.getInstance().createUnionCustomBeanTransformerForClone(beanTransformer);
-			}
-		});
+        // Custom transformers (timestamp handling)
+        transformer.initCustomTransformerFactory(new CustomBeanTransformerSpi.Factory() {
+            @Override
+            public CustomBeanTransformerSpi newCustomBeanTransformer(final BeanTransformerSpi beanTransformer) {
+                return CustomTransformersFactory.getInstance().createUnionCustomBeanTransformerForClone(beanTransformer);
+            }
+        });
 
-		// Lazy properties handling
-		transformer.initDetailedPropertyFilter(new ClonePropertyFilter(persistenceUtil, proxyStore));
+        // Lazy properties handling
+        transformer.initDetailedPropertyFilter(new ClonePropertyFilter(persistenceUtil, proxyStore));
 
-		// Protected and private setter collection
-		transformer.initSetterMethodCollector(new FastPrivateSetterMethodCollector());
-		transformer.initReaderMethodFinder(new FastPrivateReaderMethodFinder());
+        // Protected and private setter collection
+        transformer.initSetterMethodCollector(new FastPrivateSetterMethodCollector());
+        transformer.initReaderMethodFinder(new FastPrivateReaderMethodFinder());
 
-		return transformer;
-	}
+        return transformer;
+    }
 }

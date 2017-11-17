@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.beanlib.merge;
 
 import java.io.Serializable;
@@ -21,88 +18,53 @@ import net.sf.gilead.util.CollectionHelper;
  */
 public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
 
-    // ----
-    // Factory
-    // ----
     public static final Factory factory = new Factory();
 
     /**
-     * Factory for {@link MergeClassBeanReplicator}
-     *
-     * @author bruno.marchesson
-     */
-    private static class Factory implements CollectionReplicatorSpi.Factory {
-        private Factory() {}
-
-        @Override
-        public Hibernate4CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
-            return new MergeCollectionReplicator(beanTransformer);
-        }
-    }
-
-    public static Hibernate4CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newCollectionReplicatable(beanTransformer);
-    }
-
-    // ----
-    // Attributes
-    // ----
-    /**
      * The associated persistence util
      */
-    private PersistenceUtil _persistenceUtil;
+    private PersistenceUtil persistenceUtil;
 
-    // ----
-    // Properties
-    // ----
-    /**
-     * @return the _persistenceUtil
-     */
-    public PersistenceUtil getPersistenceUtil() {
-        return _persistenceUtil;
-    }
-
-    /**
-     * @param util the _persistenceUtil to set
-     */
-    public void setPersistenceUtil(PersistenceUtil util) {
-        _persistenceUtil = util;
-    }
-
-    // ----
-    // Constructor
-    // ----
     /**
      * Constructor
-     *
+     * 
      * @param beanTransformer
      */
     protected MergeCollectionReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
     }
 
-    // ----
-    // Overrides
-    // ----
+    /**
+     * @return the persistenceUtil
+     */
+    public PersistenceUtil getPersistenceUtil() {
+        return persistenceUtil;
+    }
+
+    /**
+     * @param util the persistenceUtil to set
+     */
+    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+        this.persistenceUtil = persistenceUtil;
+    }
+
     @Override
+    @SuppressWarnings("unchecked")
     protected Object replicate(Object from) {
         // Reset bean local
-        //
-        BeanlibCache.removeProxyInformations();
-
+        BeanlibCache.setProxyInformations(null);
         return super.replicate(from);
     }
 
     /**
      * Replicate collection override
      */
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public <V, T> T replicateCollection(Collection<V> from, Class<T> toClass) {
         // Get and reset proxy informations if any
-        //
         Map<String, Serializable> proxyInformations = BeanlibCache.getProxyInformations();
-        BeanlibCache.removeProxyInformations();
+        BeanlibCache.setProxyInformations(null);
 
         // Clone collection
         T collection = super.replicateCollection(from, toClass);
@@ -110,7 +72,7 @@ public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
         // Turn into persistent collection if needed
         if (proxyInformations != null) {
             Object parent = BeanlibCache.getToBeanStack().peek();
-            return (T) _persistenceUtil.createPersistentCollection(parent, proxyInformations, (Collection<?>) collection);
+            return (T) persistenceUtil.createPersistentCollection(parent, proxyInformations, (Collection<?>) collection);
         } else {
             return collection;
         }
@@ -125,5 +87,19 @@ public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
             from = (Collection<T>) CollectionHelper.getUnmodifiableCollection(from);
         }
         return super.createToCollection(from);
+    }
+
+    /**
+     * Factory for {@link MergeClassBeanReplicator}
+     * 
+     * @author bruno.marchesson
+     */
+    private static class Factory implements CollectionReplicatorSpi.Factory {
+        private Factory() {}
+
+        @Override
+        public Hibernate4CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
+            return new MergeCollectionReplicator(beanTransformer);
+        }
     }
 }

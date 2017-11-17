@@ -1,18 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.sf.gilead.core.beanlib.clone;
 
 import java.io.Serializable;
@@ -52,6 +37,14 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
     private ProxyStore proxyStore;
 
     /**
+     * Constructor
+     */
+    public ClonePropertyFilter(PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
+        setPersistenceUtil(persistenceUtil);
+        setProxyStore(proxyStore);
+    }
+
+    /**
      * @return the persistence Util implementation to use
      */
     public PersistenceUtil getPersistenceUtil() {
@@ -79,17 +72,10 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
         this.proxyStore = proxyStore;
     }
 
-    /**
-     * Constructor
-     */
-    public ClonePropertyFilter(PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
-        setPersistenceUtil(persistenceUtil);
-        setProxyStore(proxyStore);
-    }
-
     @Override
     public boolean propagate(String propertyName, Object fromBean, Method readerMethod, Object toBean, Method setterMethod) {
         // Is the property lazy loaded ?
+        //
         try {
             if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
                     || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
@@ -111,6 +97,7 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
             boolean isPersistentMap = persistenceUtil.isPersistentMap(fromValue.getClass());
 
             // Lazy handling
+            //
             if (persistenceUtil.isInitialized(fromValue) == false) {
                 // Lazy property !
                 LOGGER.trace(fromBean.toString() + "." + propertyName + " --> not initialized");
@@ -155,7 +142,6 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
      */
     private Object readPropertyValue(Object bean, String propertyGetter)
             throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-
         Method readMethod = IntrospectionHelper.getRecursiveDeclaredMethod(bean.getClass(), propertyGetter, (Class[]) null);
         readMethod.setAccessible(true);
         return readMethod.invoke(bean, (Object[]) null);
