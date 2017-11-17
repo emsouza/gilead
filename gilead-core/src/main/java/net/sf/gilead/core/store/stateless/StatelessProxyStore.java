@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.sf.gilead.core.store.stateless;
 
 import java.io.Serializable;
@@ -22,8 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.serialization.ProxySerialization;
-import net.sf.gilead.core.store.ProxyStore;
+import net.sf.gilead.core.serialization.IProxySerialization;
+import net.sf.gilead.core.store.IProxyStore;
 import net.sf.gilead.exception.ProxyStoreException;
 import net.sf.gilead.pojo.base.ILightEntity;
 
@@ -33,17 +17,14 @@ import net.sf.gilead.pojo.base.ILightEntity;
  * @see ILightEntity
  * @author bruno.marchesson
  */
-public class StatelessProxyStore implements ProxyStore {
+public class StatelessProxyStore implements IProxyStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatelessProxyStore.class);
 
-    // ----
-    // Attribute
-    // -----
     /**
      * Serializer for proxy informations
      */
-    private ProxySerialization _proxySerializer;
+    private IProxySerialization _proxySerializer;
 
     /**
      * Use separate serialization thread
@@ -55,20 +36,17 @@ public class StatelessProxyStore implements ProxyStore {
      */
     private ThreadLocal<SerializationThread> _serializationThread;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the proxy serializer
      */
-    public ProxySerialization getProxySerializer() {
+    public IProxySerialization getProxySerializer() {
         return _proxySerializer;
     }
 
     /**
      * @param serializer the serializer to set
      */
-    public void setProxySerializer(ProxySerialization serializer) {
+    public void setProxySerializer(IProxySerialization serializer) {
         _proxySerializer = serializer;
     }
 
@@ -96,7 +74,7 @@ public class StatelessProxyStore implements ProxyStore {
      */
     public StatelessProxyStore() {
         // default value
-        _serializationThread = new ThreadLocal<SerializationThread>();
+        _serializationThread = new ThreadLocal<>();
         _useSerializationThread = false;
     }
 

@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.proxy.xml;
 
 import java.util.ArrayList;
@@ -8,7 +5,7 @@ import java.util.List;
 
 /**
  * Method description
- *
+ * 
  * @author bruno.marchesson
  */
 public class Method {
@@ -153,7 +150,7 @@ public class Method {
      */
     public void addParameter(Parameter parameter) {
         if (parameters == null) {
-            parameters = new ArrayList<Parameter>();
+            parameters = new ArrayList<>();
         }
         parameters.add(parameter);
     }

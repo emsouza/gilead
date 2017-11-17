@@ -1,15 +1,15 @@
-/**
- *
- */
 package net.sf.gilead.exception;
 
 /**
  * Proxy store exception
- *
+ * 
  * @author bruno.marchesson
  */
 public class ProxyStoreException extends RuntimeException {
 
+    /**
+     * Serialisation ID
+     */
     private static final long serialVersionUID = 2652532805114101598L;
 
     /**

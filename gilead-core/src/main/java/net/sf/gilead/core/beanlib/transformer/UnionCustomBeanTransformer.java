@@ -9,7 +9,7 @@ import net.sf.beanlib.spi.CustomBeanTransformerSpi;
  * first appropriate one. Transforms the given instance of the source class into and instance of a destination class
  * iterating over the array of CustomBeanTransformerSpi finding the first appropriate one. This is a copy and paste from
  * http://groups.google.com/group/beanlib/browse_thread/thread/f300b5470c08f683
- *
+ * 
  * @author Hanson Char
  */
 public class UnionCustomBeanTransformer implements CustomBeanTransformerSpi {
@@ -39,7 +39,6 @@ public class UnionCustomBeanTransformer implements CustomBeanTransformerSpi {
     @Override
     public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo info) {
         // Iterate over custom transformers
-        //
         for (CustomBeanTransformerSpi cbt : customTransformers) {
             if (cbt.isTransformable(from, toClass, info)) {
                 return true;

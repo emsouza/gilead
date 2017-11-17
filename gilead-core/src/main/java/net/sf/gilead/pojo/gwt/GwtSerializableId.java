@@ -1,11 +1,8 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt;
 
 /**
  * GWT serializabe version of the SerializableId class.
- *
+ * 
  * @author bruno.marchesson
  */
 public class GwtSerializableId implements IGwtSerializableParameter {

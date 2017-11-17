@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.collection;
 
 import java.util.Map;
@@ -9,7 +6,7 @@ import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
 
 /**
  * Map parameter.
- *
+ * 
  * @author bruno.marchesson
  */
 public class MapParameter implements IGwtSerializableParameter {
@@ -20,6 +17,18 @@ public class MapParameter implements IGwtSerializableParameter {
      * The underlying value.
      */
     private Map<IGwtSerializableParameter, IGwtSerializableParameter> value;
+
+    /**
+     * Empty constructor (needed by GWT)
+     */
+    public MapParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public MapParameter(Map<IGwtSerializableParameter, IGwtSerializableParameter> value) {
+        this.value = value;
+    }
 
     /**
      * Change value.
@@ -35,16 +44,4 @@ public class MapParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public MapParameter(Map<IGwtSerializableParameter, IGwtSerializableParameter> value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public MapParameter() {}
 }

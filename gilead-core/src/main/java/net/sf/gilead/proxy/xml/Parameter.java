@@ -1,11 +1,8 @@
-/**
- *
- */
 package net.sf.gilead.proxy.xml;
 
 /**
  * Method parameters
- *
+ * 
  * @author bruno.marchesson
  */
 public class Parameter {

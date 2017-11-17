@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.beanlib.ClassMapper;
+import net.sf.gilead.core.beanlib.IClassMapper;
 
 /**
  * Class mapper based on package hierarchy (Domain and DTO must have the same name and placed in identified packages).
@@ -14,19 +14,19 @@ import net.sf.gilead.core.beanlib.ClassMapper;
  *
  * @author Olaf Kock, Florian Siebert
  */
-public class MultiDirectoryClassMapper implements ClassMapper {
+public class MultiDirectoryClassMapper implements IClassMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiDirectoryClassMapper.class);
 
     /**
      * Mapping from domain packages to target class packages
      */
-    private Map<String, String> sourcePackageMap = new HashMap<String, String>();
+    private Map<String, String> sourcePackageMap = new HashMap<>();
 
     /**
      * Reverse mapping from target packages to domain packages
      */
-    private Map<String, String> targetPackageMap = new HashMap<String, String>();
+    private Map<String, String> targetPackageMap = new HashMap<>();
 
     /**
      * The suffix for all target class names (e.g. "DTO")
@@ -42,7 +42,7 @@ public class MultiDirectoryClassMapper implements ClassMapper {
      * Constructor
      */
     public MultiDirectoryClassMapper() {
-        associationMap = new HashMap<Class<?>, Class<?>>();
+        this.associationMap = new HashMap<>();
     }
 
     /**
@@ -142,7 +142,7 @@ public class MultiDirectoryClassMapper implements ClassMapper {
         assert sourceClass.getCanonicalName().startsWith(strippedClassName);
         String targetClassName = targetPackage + strippedClassName + targetSuffix;
 
-        LOGGER.trace("Source class name is " + sourceClass.getCanonicalName() + ", target class is " + targetClassName);
+        LOGGER.debug("Source class name is " + sourceClass.getCanonicalName() + ", target class is " + targetClassName);
         return targetClassName;
     }
 
@@ -163,8 +163,7 @@ public class MultiDirectoryClassMapper implements ClassMapper {
         String strippedSourceClassName = strippedTargetClassName.substring(0, strippedTargetClassName.length() - targetSuffix.length());
         String sourceClassName = sourcePackageName + strippedSourceClassName;
 
-        LOGGER.trace("Source class for target " + targetClassName + " is " + sourceClassName);
+        LOGGER.debug("Source class for target " + targetClassName + " is " + sourceClassName);
         return sourceClassName;
     }
-
 }

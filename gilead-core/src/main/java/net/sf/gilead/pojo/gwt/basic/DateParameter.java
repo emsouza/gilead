@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.basic;
 
 import java.util.Date;
@@ -22,6 +19,18 @@ public class DateParameter implements IGwtSerializableParameter {
     private Date value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public DateParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public DateParameter(Date value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(Date value) {
@@ -35,16 +44,4 @@ public class DateParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public DateParameter(Date value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public DateParameter() {}
 }

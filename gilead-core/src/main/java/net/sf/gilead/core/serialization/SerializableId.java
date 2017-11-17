@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 /**
  * Id / Class structure for proxy information collection handling
- *
+ * 
  * @author bruno.marchesson
  */
 public class SerializableId implements Serializable {
 
+    /**
+     * Serialization ID
+     */
     private static final long serialVersionUID = -4365286012503534L;
 
     /**

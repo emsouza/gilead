@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.serialization;
 
 import com.thoughtworks.xstream.XStream;
@@ -16,7 +13,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author bruno.marchesson
  */
-public class XStreamProxySerialization implements ProxySerialization {
+public class XStreamProxySerialization implements IProxySerialization {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XStreamProxySerialization.class);
 

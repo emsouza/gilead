@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.proxy.xml;
 
 import java.util.ArrayList;
@@ -111,7 +108,7 @@ public class AdditionalCode {
      */
     public void addAttribute(Attribute attribute) {
         if (attributes == null) {
-            attributes = new ArrayList<Attribute>();
+            attributes = new ArrayList<>();
         }
         attributes.add(attribute);
     }
@@ -121,7 +118,7 @@ public class AdditionalCode {
      */
     public void addConstructor(Constructor constructor) {
         if (constructors == null) {
-            constructors = new ArrayList<Constructor>();
+            constructors = new ArrayList<>();
         }
         constructors.add(constructor);
     }
@@ -131,7 +128,7 @@ public class AdditionalCode {
      */
     public void addMethod(Method method) {
         if (methods == null) {
-            methods = new ArrayList<Method>();
+            methods = new ArrayList<>();
         }
         methods.add(method);
     }

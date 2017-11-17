@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.proxy.xml;
 
 import java.util.ArrayList;
@@ -8,7 +5,7 @@ import java.util.List;
 
 /**
  * Constructor description
- *
+ * 
  * @author bruno.marchesson
  */
 public class Constructor {
@@ -96,7 +93,7 @@ public class Constructor {
      */
     public void addParameter(Parameter parameter) {
         if (parameters == null) {
-            parameters = new ArrayList<Parameter>();
+            parameters = new ArrayList<>();
         }
         parameters.add(parameter);
     }

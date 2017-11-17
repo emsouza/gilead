@@ -1,12 +1,9 @@
-/**
- *
- */
 package net.sf.gilead.exception;
 
 /**
  * Exception thrown when a component type is encountered. It inherits from Transient Object Exception because most of
  * the time it must be treated as transient.
- *
+ * 
  * @author bruno.marchesson
  */
 public class ComponentTypeException extends TransientObjectException {

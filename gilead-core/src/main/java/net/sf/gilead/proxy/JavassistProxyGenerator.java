@@ -1,19 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.sf.gilead.proxy;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -40,7 +24,7 @@ import net.sf.gilead.proxy.xml.Method;
  *
  * @author bruno.marchesson
  */
-public class JavassistProxyGenerator implements ServerProxyGenerator {
+public class JavassistProxyGenerator implements IServerProxyGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JavassistProxyGenerator.class);
 
@@ -50,7 +34,7 @@ public class JavassistProxyGenerator implements ServerProxyGenerator {
             // Compute proxy class name
             String sourceClassName = superClass.getName();
             String proxyClassName = sourceClassName + additionalCode.getSuffix();
-            LOGGER.trace("Generating server proxy " + proxyClassName + " for class " + sourceClassName);
+            LOGGER.info("Generating server proxy " + proxyClassName + " for class " + sourceClassName);
 
             // Create proxy class
             ClassPool pool = ClassPool.getDefault();

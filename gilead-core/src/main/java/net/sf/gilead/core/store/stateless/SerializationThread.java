@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.core.store.stateless;
 
 import java.io.Serializable;
@@ -13,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.serialization.ProxySerialization;
+import net.sf.gilead.core.serialization.IProxySerialization;
 import net.sf.gilead.pojo.base.ILightEntity;
 
 /**
@@ -28,7 +25,7 @@ public class SerializationThread implements Runnable {
     /**
      * Serializer for proxy informations
      */
-    private ProxySerialization proxySerializer;
+    private IProxySerialization proxySerializer;
 
     /**
      * Serialization item list
@@ -38,35 +35,35 @@ public class SerializationThread implements Runnable {
     /**
      * Running flag
      */
-    private boolean _running;
+    private boolean running;
+
+    /**
+     * Constructor
+     */
+    public SerializationThread() {
+        itemList = new LinkedBlockingQueue<>(10);
+        running = true;
+    }
 
     /**
      * @return the proxy serializer
      */
-    public ProxySerialization getProxySerializer() {
+    public IProxySerialization getProxySerializer() {
         return proxySerializer;
     }
 
     /**
      * @param serializer the serializer to set
      */
-    public void setProxySerializer(ProxySerialization serializer) {
-        proxySerializer = serializer;
+    public void setProxySerializer(IProxySerialization proxySerializer) {
+        this.proxySerializer = proxySerializer;
     }
 
     /**
      * @param running the running state
      */
     public void setRunning(boolean running) {
-        _running = false;
-    }
-
-    /**
-     * Constructor
-     */
-    public SerializationThread() {
-        itemList = new LinkedBlockingQueue<SerializationItem>(10);
-        _running = true;
+        this.running = false;
     }
 
     /**
@@ -97,7 +94,7 @@ public class SerializationThread implements Runnable {
 
     @Override
     public void run() {
-        while (_running) {
+        while (running) {
             try {
                 SerializationItem item = itemList.poll(10, TimeUnit.MILLISECONDS);
                 if (item != null) {
@@ -107,7 +104,6 @@ public class SerializationThread implements Runnable {
                         Object serialized = item.proxyInfo;
                         if (proxySerializer != null) {
                             // Serialization needed
-                            //
                             proxySerializer.serialize((HashMap<String, Serializable>) item.proxyInfo);
                         }
                         item.entity.addProxyInformation(item.propertyName, serialized);

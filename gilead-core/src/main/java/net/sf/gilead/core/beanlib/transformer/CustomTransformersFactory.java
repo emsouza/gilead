@@ -22,7 +22,7 @@ public class CustomTransformersFactory {
     /**
      * Singleton instance
      */
-    private static CustomTransformersFactory INSTANCE = null;
+    private static CustomTransformersFactory instance = null;
 
     /**
      * List of custom bean transformers constructors for clone operation
@@ -38,18 +38,18 @@ public class CustomTransformersFactory {
      * @return the unique instance of the factory
      */
     public static synchronized CustomTransformersFactory getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CustomTransformersFactory();
+        if (instance == null) {
+            instance = new CustomTransformersFactory();
         }
-        return INSTANCE;
+        return instance;
     }
 
     /**
      * Private constructor
      */
     private CustomTransformersFactory() {
-        cloneTransformersList = new ArrayList<Constructor<CustomBeanTransformerSpi>>();
-        mergeTransformersList = new ArrayList<Constructor<CustomBeanTransformerSpi>>();
+        cloneTransformersList = new ArrayList<>();
+        mergeTransformersList = new ArrayList<>();
 
         // Transformers needed for Gilead
         addCustomBeanTransformer(TimestampCustomTransformer.class);
@@ -60,7 +60,7 @@ public class CustomTransformersFactory {
      * Add a custom bean transformer for both clone and merge
      */
     @SuppressWarnings("unchecked")
-    public void addCustomBeanTransformer(Class transformerClass) {
+    public void addCustomBeanTransformer(@SuppressWarnings("rawtypes") Class transformerClass) {
         Constructor<CustomBeanTransformerSpi> constructor = getConstructorFor(transformerClass);
         cloneTransformersList.add(constructor);
         mergeTransformersList.add(constructor);
@@ -70,7 +70,7 @@ public class CustomTransformersFactory {
      * Add a custom bean transformer for clone operation
      */
     @SuppressWarnings("unchecked")
-    public void addCloneCustomBeanTransformer(Class transformerClass) {
+    public void addCloneCustomBeanTransformer(@SuppressWarnings("rawtypes") Class transformerClass) {
         Constructor<CustomBeanTransformerSpi> constructor = getConstructorFor(transformerClass);
         cloneTransformersList.add(constructor);
     }
@@ -79,7 +79,7 @@ public class CustomTransformersFactory {
      * Add a custom bean transformer for merge operation
      */
     @SuppressWarnings("unchecked")
-    public void addMergeCustomBeanTransformer(Class transformerClass) {
+    public void addMergeCustomBeanTransformer(@SuppressWarnings("rawtypes") Class transformerClass) {
         Constructor<CustomBeanTransformerSpi> constructor = getConstructorFor(transformerClass);
         mergeTransformersList.add(constructor);
     }

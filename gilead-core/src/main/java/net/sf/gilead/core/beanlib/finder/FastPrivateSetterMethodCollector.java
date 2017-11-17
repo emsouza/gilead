@@ -1,18 +1,3 @@
-/*
- * Copyright 2009 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.sf.gilead.core.beanlib.finder;
 
 import java.lang.reflect.Method;
@@ -26,7 +11,7 @@ import net.sf.beanlib.spi.BeanMethodCollector;
 /**
  * Fast Private Setter Method collector, inspired by the beanlib one but relying on IntropsectionHelper, that caches
  * getDeclaredMethod results
- *
+ * 
  * @author bruno.marchesson
  */
 public class FastPrivateSetterMethodCollector implements BeanMethodCollector {
@@ -34,7 +19,7 @@ public class FastPrivateSetterMethodCollector implements BeanMethodCollector {
     /**
      * Cache map
      */
-    private HashMap<Class<?>, Method[]> cache = new HashMap<Class<?>, Method[]>();
+    private HashMap<Class<?>, Method[]> cache = new HashMap<>();
 
     @Override
     public Method[] collect(Object bean) {
@@ -44,7 +29,7 @@ public class FastPrivateSetterMethodCollector implements BeanMethodCollector {
             // Get all methods declared by the class or interface.
             // This includes public, protected, default (package) access,
             // and private methods, but excludes inherited methods.
-            Set<Method> set = new HashSet<Method>();
+            Set<Method> set = new HashSet<>();
 
             while (beanClass != Object.class) {
                 for (Method m : beanClass.getDeclaredMethods()) {

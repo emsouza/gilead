@@ -1,39 +1,36 @@
-/**
- *
- */
 package net.sf.gilead.core.store.stateful;
 
 import java.io.Serializable;
 import java.util.Map;
 
-import net.sf.gilead.core.PersistenceUtil;
-import net.sf.gilead.core.store.ProxyStore;
+import net.sf.gilead.core.IPersistenceUtil;
+import net.sf.gilead.core.store.IProxyStore;
 import net.sf.gilead.exception.NotPersistentObjectException;
 import net.sf.gilead.exception.TransientObjectException;
 
 /**
  * Abstract class for stateful proxy store.
- *
+ * 
  * @author bruno.marchesson
  */
-public abstract class AbstractStatefulProxyStore implements ProxyStore {
+public abstract class AbstractStatefulProxyStore implements IProxyStore {
 
     /**
      * The associated persistence util
      */
-    protected PersistenceUtil persistenceUtil;
+    protected IPersistenceUtil persistenceUtil;
 
     /**
      * @return the persistence Util implementation
      */
-    public PersistenceUtil getPersistenceUtil() {
+    public IPersistenceUtil getPersistenceUtil() {
         return persistenceUtil;
     }
 
     /**
      * @param persistenceUtil the persistence Util to set
      */
-    public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
+    public void setPersistenceUtil(IPersistenceUtil persistenceUtil) {
         this.persistenceUtil = persistenceUtil;
     }
 
@@ -72,21 +69,21 @@ public abstract class AbstractStatefulProxyStore implements ProxyStore {
 
     /**
      * Get the proxy informations associated with the key
-     *
+     * 
      * @return the value if found, null otherwise
      */
     public abstract Map<String, Serializable> get(String key);
 
     /**
      * Delete the key from the underlying storage
-     *
+     * 
      * @param key
      */
     public abstract void delete(String key);
 
     /**
      * Compute the hashmap key
-     *
+     * 
      * @param pojo
      * @param property
      * @return
@@ -98,7 +95,7 @@ public abstract class AbstractStatefulProxyStore implements ProxyStore {
 
     /**
      * Compute the hashmap key
-     *
+     * 
      * @param pojo
      * @param property
      * @return
@@ -109,7 +106,7 @@ public abstract class AbstractStatefulProxyStore implements ProxyStore {
 
     /**
      * Compute the hashmap key
-     *
+     * 
      * @param pojo
      * @param property
      * @return

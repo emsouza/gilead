@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package net.sf.gilead.services;
 
 import java.io.Serializable;
@@ -10,7 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
 
 /**
@@ -22,11 +20,17 @@ public class BaseRequestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseRequestService.class);
 
+    // ----
+    // Attributes
+    // ----
     /**
      * The associated bean manager. Default value is defined by the unique instance of the singleton.
      */
     private PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 
+    // ----
+    // Properties
+    // ---
     /**
      * @return the beanManager
      */
@@ -41,9 +45,18 @@ public class BaseRequestService {
         this.beanManager = beanManager;
     }
 
+    // -------------------------------------------------------------------------
+    //
+    // Request service implementation
+    //
+    // -------------------------------------------------------------------------
+    /**
+     * @see net.sf.gilead.gwt.client.RequestService#executeRequest(java.lang.String, java.util.List)
+     */
     @SuppressWarnings("unchecked")
     public List<Serializable> executeRequest(String query, List<Object> parameters) {
         // Precondition checking
+        //
         if (query == null) {
             throw new RuntimeException("Missing query !");
         }
@@ -55,20 +68,26 @@ public class BaseRequestService {
         }
 
         // Get Persistence util
-        PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
+        //
+        IPersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
 
         // Execute query
         // Note : double case is mandatory due to Java 6 compiler issue 6548436
+        //
         List<Serializable> result = (List<Serializable>) (Object) persistenceUtil.executeQuery(query, parameters);
         return result;
     }
 
+    /**
+     * @see net.sf.gilead.gwt.client.RequestService#executeRequest(java.lang.String, java.util.Map)
+     */
     @SuppressWarnings("unchecked")
     public List<Serializable> executeRequest(String query, Map<String, Object> parameters) {
         // Precondition checking
+        //
         if (query == null) {
             throw new RuntimeException("Missing query !");
         }
@@ -80,13 +99,15 @@ public class BaseRequestService {
         }
 
         // Get Persistence util
-        PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
+        //
+        IPersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
 
         // Execute query
         // Note : double case is mandatory due to Java 6 compiler issue 6548436
+        //
         List<Serializable> result = (List<Serializable>) (Object) persistenceUtil.executeQuery(query, parameters);
         return result;
     }

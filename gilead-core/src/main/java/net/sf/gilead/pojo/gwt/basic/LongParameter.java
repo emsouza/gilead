@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.basic;
 
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
@@ -20,6 +17,18 @@ public class LongParameter implements IGwtSerializableParameter {
     private Long value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public LongParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public LongParameter(Long value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(Long value) {
@@ -33,16 +42,4 @@ public class LongParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public LongParameter(Long value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public LongParameter() {}
 }

@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.basic;
 
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
@@ -20,6 +17,18 @@ public class ShortParameter implements IGwtSerializableParameter {
     private Short value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public ShortParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public ShortParameter(Short value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(Short value) {
@@ -33,16 +42,4 @@ public class ShortParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public ShortParameter(Short value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public ShortParameter() {}
 }

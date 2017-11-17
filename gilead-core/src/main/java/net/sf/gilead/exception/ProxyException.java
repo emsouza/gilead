@@ -1,11 +1,8 @@
-/**
- *
- */
 package net.sf.gilead.exception;
 
 /**
  * Exception in proxy generation or handling
- *
+ * 
  * @author bruno.marchesson
  */
 public class ProxyException extends RuntimeException {

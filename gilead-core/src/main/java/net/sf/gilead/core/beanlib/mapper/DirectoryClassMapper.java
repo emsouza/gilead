@@ -1,18 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.sf.gilead.core.beanlib.mapper;
 
 import java.util.HashMap;
@@ -21,14 +6,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.beanlib.ClassMapper;
+import net.sf.gilead.core.beanlib.IClassMapper;
 
 /**
  * Class mapper based on package hierarchy (Domain and DTO must have the same name and placed in identified packages)
  *
  * @author bruno.marchesson
  */
-public class DirectoryClassMapper implements ClassMapper {
+public class DirectoryClassMapper implements IClassMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryClassMapper.class);
 
@@ -58,6 +43,14 @@ public class DirectoryClassMapper implements ClassMapper {
     private Map<Class<?>, Class<?>> targetSourceMap;
 
     /**
+     * Constructor
+     */
+    public DirectoryClassMapper() {
+        this.sourceTargetMap = new HashMap<>();
+        this.targetSourceMap = new HashMap<>();
+    }
+
+    /**
      * @return the _rootClonePackage
      */
     public String getRootClonePackage() {
@@ -65,7 +58,7 @@ public class DirectoryClassMapper implements ClassMapper {
     }
 
     /**
-     * @param clonePackage the _rootClonePackage to set
+     * @param clonePackage the rootClonePackage to set
      */
     public void setRootClonePackage(String clonePackage) {
         rootClonePackage = clonePackage;
@@ -79,7 +72,7 @@ public class DirectoryClassMapper implements ClassMapper {
     }
 
     /**
-     * @param domainPackage the _rootDomainPackage to set
+     * @param domainPackage the rootDomainPackage to set
      */
     public void setRootDomainPackage(String domainPackage) {
         rootDomainPackage = domainPackage;
@@ -97,14 +90,6 @@ public class DirectoryClassMapper implements ClassMapper {
      */
     public void setCloneSuffix(String suffix) {
         cloneSuffix = suffix;
-    }
-
-    /**
-     * Constructor
-     */
-    public DirectoryClassMapper() {
-        sourceTargetMap = new HashMap<Class<?>, Class<?>>();
-        targetSourceMap = new HashMap<Class<?>, Class<?>>();
     }
 
     @Override
@@ -133,12 +118,13 @@ public class DirectoryClassMapper implements ClassMapper {
             targetClassName = rootClonePackage + suffix;
             if (cloneSuffix != null) {
                 // Add clone suffix
+                //
                 targetClassName += cloneSuffix;
             }
 
             // Instantiate target Class<?>
-            LOGGER.trace("Source Class name is " + sourceClassName);
-            LOGGER.trace("Computed target Class name is " + targetClassName);
+            LOGGER.debug("Source Class name is " + sourceClassName);
+            LOGGER.debug("Computed target Class name is " + targetClassName);
 
             try {
                 targetClass = Class.forName(targetClassName);
@@ -166,6 +152,7 @@ public class DirectoryClassMapper implements ClassMapper {
         String targetClassName = targetClass.getCanonicalName();
         if ((targetClassName == null) || (targetClassName.startsWith(rootClonePackage) == false)) {
             // Not a target Class<?>
+            //
             return null;
         }
 
@@ -175,8 +162,7 @@ public class DirectoryClassMapper implements ClassMapper {
             return null;
         }
 
-        // Is the correspondance already computed ?
-        // work on copy to prevent syncrhnoisation issue
+        // Is the correspondance already computed ? work on copy to prevent syncrhnoisation issue
         String cloneSuffix = this.cloneSuffix;
         synchronized (this) {
             Class<?> sourceClass = targetSourceMap.get(targetClass);
@@ -195,8 +181,8 @@ public class DirectoryClassMapper implements ClassMapper {
             }
 
             // Instantiate target Class<?>
-            LOGGER.trace("Target Class name is " + targetClassName);
-            LOGGER.trace("Computed source Class name is " + sourceClassName);
+            LOGGER.debug("Target Class name is " + targetClassName);
+            LOGGER.debug("Computed source Class name is " + sourceClassName);
 
             try {
                 sourceClass = Class.forName(sourceClassName);

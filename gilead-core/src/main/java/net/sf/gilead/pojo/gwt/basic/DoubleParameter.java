@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.basic;
 
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
@@ -20,6 +17,18 @@ public class DoubleParameter implements IGwtSerializableParameter {
     private Double value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public DoubleParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public DoubleParameter(Double value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(Double value) {
@@ -33,19 +42,4 @@ public class DoubleParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    // ----
-    // Constructor
-    // ----
-    /**
-     * Constructor.
-     */
-    public DoubleParameter(Double value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public DoubleParameter() {}
 }

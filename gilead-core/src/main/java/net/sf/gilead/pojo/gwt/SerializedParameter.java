@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt;
 
 /**
@@ -18,6 +15,18 @@ public class SerializedParameter implements IGwtSerializableParameter {
     private String value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public SerializedParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public SerializedParameter(String value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(String value) {
@@ -31,16 +40,4 @@ public class SerializedParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public SerializedParameter(String value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public SerializedParameter() {}
 }

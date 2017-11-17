@@ -12,16 +12,16 @@ public class AdditionalCodeManager {
     /**
      * Unique instance of the singleton
      */
-    private static AdditionalCodeManager INSTANCE = null;
+    private static AdditionalCodeManager _instance = null;
 
     /**
      * @return the instance of singleton
      */
     public static AdditionalCodeManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new AdditionalCodeManager();
+        if (_instance == null) {
+            _instance = new AdditionalCodeManager();
         }
-        return INSTANCE;
+        return _instance;
     }
 
     /**

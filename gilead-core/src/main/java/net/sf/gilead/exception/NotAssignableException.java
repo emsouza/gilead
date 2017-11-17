@@ -1,11 +1,8 @@
-/**
- *
- */
 package net.sf.gilead.exception;
 
 /**
  * Exception thrown when the target class from the class mapper is not assignable to the source one
- *
+ * 
  * @author bruno.marchesson
  */
 public class NotAssignableException extends RuntimeException {

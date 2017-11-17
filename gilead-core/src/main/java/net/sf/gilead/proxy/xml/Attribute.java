@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.proxy.xml;
 
 import org.apache.commons.lang3.StringUtils;

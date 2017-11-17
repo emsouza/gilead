@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.annotations;
 
 import static java.lang.annotation.ElementType.FIELD;

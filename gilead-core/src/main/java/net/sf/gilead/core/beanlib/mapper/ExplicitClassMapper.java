@@ -1,18 +1,3 @@
-/*
- * Copyright 2007 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.sf.gilead.core.beanlib.mapper;
 
 import java.util.HashMap;
@@ -22,23 +7,23 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.gilead.core.beanlib.ClassMapper;
+import net.sf.gilead.core.beanlib.IClassMapper;
 
 /**
  * Class mapper based on explicitly parameterized classes
  *
  * @author Olaf Kock, Florian Siebert
  */
-public class ExplicitClassMapper implements ClassMapper {
+public class ExplicitClassMapper implements IClassMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExplicitClassMapper.class);
 
     /**
      * The maps of the domain class to their target class correspondence.
      */
-    private Map<Class<?>, Class<?>> domainToTargetMap = new HashMap<Class<?>, Class<?>>();
+    private Map<Class<?>, Class<?>> domainToTargetMap = new HashMap<>();
 
-    private Map<Class<?>, Class<?>> targetToDomainMap = new HashMap<Class<?>, Class<?>>();
+    private Map<Class<?>, Class<?>> targetToDomainMap = new HashMap<>();
 
     /**
      * Constructor

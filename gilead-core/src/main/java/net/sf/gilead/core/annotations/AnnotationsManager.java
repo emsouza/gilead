@@ -28,24 +28,24 @@ public class AnnotationsManager {
      * Annotation map. It is filled with associated Gilead annotation for all classes and properties for performance
      * purpose (computing it each time is very expensive)
      */
-    private static Map<Class<?>, Map<String, Class<?>>> annotationMap = new HashMap<Class<?>, Map<String, Class<?>>>();
+    private static Map<Class<?>, Map<String, Class<?>>> annotationMap = new HashMap<>();
 
     /**
      * The associated access manager
      */
-    private static AccessManager accessManager;
+    private static IAccessManager accessManager;
 
     /**
-     * @param accessManager the access Manager to use for @LimitedAccess properties
+     * @param am the access Manager to use for @LimitedAccess properties
      */
-    public static void setAccessManager(AccessManager accessManager) {
-        AnnotationsManager.accessManager = accessManager;
+    public static void setAccessManager(IAccessManager am) {
+        accessManager = am;
     }
 
     /**
      * @return the access Manager
      */
-    public static AccessManager getAccessManager() {
+    public static IAccessManager getAccessManager() {
         return accessManager;
     }
 
@@ -98,7 +98,7 @@ public class AnnotationsManager {
     private static Map<String, Class<?>> getGileadAnnotations(Class<?> clazz) {
         LOGGER.trace("Looking for Gilead annotations for " + clazz);
 
-        Map<String, Class<?>> result = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> result = new HashMap<>();
 
         // Search annotations on fields
         try {
@@ -189,13 +189,14 @@ public class AnnotationsManager {
         Map<String, Class<?>> propertyAnnotations = annotationMap.get(clazz);
         if (propertyAnnotations == null) {
             // Compute property annotations
+            //
             propertyAnnotations = getGileadAnnotations(clazz);
             synchronized (annotationMap) {
                 annotationMap.put(clazz, propertyAnnotations);
             }
         }
 
-        // Does the map contains the target annotation for the argument property
+        // Does the map contains the target annotation for the argument property ?
         Class<?> annotation = propertyAnnotations.get(propertyName);
 
         // Limited access ?
@@ -228,6 +229,7 @@ public class AnnotationsManager {
         Map<String, Class<?>> propertyAnnotations = annotationMap.get(entityClass);
         if (propertyAnnotations == null) {
             // Compute property annotations
+            //
             propertyAnnotations = getGileadAnnotations(entityClass);
             synchronized (annotationMap) {
                 annotationMap.put(entityClass, propertyAnnotations);

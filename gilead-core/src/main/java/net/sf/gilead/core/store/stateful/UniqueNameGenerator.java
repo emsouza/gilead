@@ -1,19 +1,16 @@
-/**
- *
- */
 package net.sf.gilead.core.store.stateful;
 
 import java.io.Serializable;
 import java.util.Stack;
 
-import net.sf.gilead.core.PersistenceUtil;
+import net.sf.gilead.core.IPersistenceUtil;
 import net.sf.gilead.core.beanlib.merge.BeanlibCache;
 import net.sf.gilead.exception.ComponentTypeException;
 import net.sf.gilead.exception.TransientObjectException;
 
 /**
  * Static class for unique name generation
- *
+ * 
  * @author BMARCHESSON
  */
 public class UniqueNameGenerator {
@@ -21,14 +18,14 @@ public class UniqueNameGenerator {
     /**
      * Generates a unique name for the argument Hibenrate pojo
      */
-    public static String generateUniqueName(PersistenceUtil persistenceUtil, Object hibernatePojo) {
+    public static String generateUniqueName(IPersistenceUtil persistenceUtil, Object hibernatePojo) {
         return generateUniqueName(persistenceUtil, hibernatePojo, hibernatePojo.getClass());
     }
 
     /**
      * Generates a unique name for the argument DTO associated with the hibernateClass
      */
-    public static String generateUniqueName(PersistenceUtil persistenceUtil, Object pojo, Class<?> hibernateClass) {
+    public static String generateUniqueName(IPersistenceUtil persistenceUtil, Object pojo, Class<?> hibernateClass) {
         // Get ID
         Serializable id = getUniqueId(persistenceUtil, pojo);
 
@@ -52,12 +49,12 @@ public class UniqueNameGenerator {
     /**
      * Gets a unique ID for the argument persistent bean. It simply returns the ID of persistent bean, or the ID of the
      * parent persistent bean for component types.
-     *
+     * 
      * @param persistenceUtil the persistence util
      * @param persistentBean the persistent bean
      * @return
      */
-    public static Serializable getUniqueId(PersistenceUtil persistenceUtil, Object persistentBean) {
+    public static Serializable getUniqueId(IPersistenceUtil persistenceUtil, Object persistentBean) {
         try {
             return persistenceUtil.getId(persistentBean);
         } catch (ComponentTypeException ex) {
@@ -73,6 +70,7 @@ public class UniqueNameGenerator {
                     }
                 }
             }
+
             // Cannot find parent ID : resend ComponentTypeException
             throw ex;
         }

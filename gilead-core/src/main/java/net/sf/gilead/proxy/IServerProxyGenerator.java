@@ -4,10 +4,10 @@ import net.sf.gilead.proxy.xml.AdditionalCode;
 
 /**
  * Interface of the server proxy generator
- *
+ * 
  * @author bruno.marchesson
  */
-public interface ServerProxyGenerator {
+public interface IServerProxyGenerator {
 
     /**
      * Generate a proxy the argument class

@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.collection;
 
 import java.util.Set;
@@ -22,6 +19,18 @@ public class SetParameter implements IGwtSerializableParameter {
     private Set<IGwtSerializableParameter> value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public SetParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public SetParameter(Set<IGwtSerializableParameter> value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(Set<IGwtSerializableParameter> value) {
@@ -35,16 +44,4 @@ public class SetParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public SetParameter(Set<IGwtSerializableParameter> value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public SetParameter() {}
 }

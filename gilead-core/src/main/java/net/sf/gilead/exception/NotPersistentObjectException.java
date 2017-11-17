@@ -1,15 +1,15 @@
-/**
- *
- */
 package net.sf.gilead.exception;
 
 /**
  * Exception when trying to clone or merge an object not persisted with Persistence engine
- *
+ * 
  * @author bruno.marchesson
  */
 public class NotPersistentObjectException extends RuntimeException {
 
+    /**
+     * Serialisation ID
+     */
     private static final long serialVersionUID = 3274347637647294793L;
 
     /**
@@ -37,8 +37,8 @@ public class NotPersistentObjectException extends RuntimeException {
     @Override
     public String getMessage() {
         StringBuilder stringBuilder = new StringBuilder();
-
         stringBuilder.append("Not Persistent Object : ");
+        // stringBuilder.append(_object);
         if (object != null) {
             stringBuilder.append(" [Class is ");
             stringBuilder.append(object.getClass().getName());

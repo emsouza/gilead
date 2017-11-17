@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.basic;
 
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
@@ -12,15 +9,24 @@ import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
  */
 public class FloatParameter implements IGwtSerializableParameter {
 
-    /**
-     * Serialization ID.
-     */
     private static final long serialVersionUID = 2165631776081297493L;
 
     /**
      * The underlying value.
      */
     private Float value;
+
+    /**
+     * Empty constructor (needed by GWT)
+     */
+    public FloatParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public FloatParameter(Float value) {
+        this.value = value;
+    }
 
     /**
      * Change value.
@@ -36,16 +42,4 @@ public class FloatParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public FloatParameter(Float value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public FloatParameter() {}
 }

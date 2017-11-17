@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.sf.gilead.pojo.gwt.basic;
 
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
@@ -20,6 +17,18 @@ public class ByteParameter implements IGwtSerializableParameter {
     private Byte value;
 
     /**
+     * Empty constructor (needed by GWT)
+     */
+    public ByteParameter() {}
+
+    /**
+     * Constructor.
+     */
+    public ByteParameter(Byte value) {
+        this.value = value;
+    }
+
+    /**
      * Change value.
      */
     public void setUnderlyingValue(Byte value) {
@@ -33,16 +42,4 @@ public class ByteParameter implements IGwtSerializableParameter {
     public Object getUnderlyingValue() {
         return this.value;
     }
-
-    /**
-     * Constructor.
-     */
-    public ByteParameter(Byte value) {
-        this.value = value;
-    }
-
-    /**
-     * Empty constructor (needed by GWT)
-     */
-    public ByteParameter() {}
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.pojo.gwt;
 
 import java.io.Serializable;
@@ -12,8 +9,9 @@ import java.io.Serializable;
  * @author bruno.marchesson
  */
 public interface IGwtSerializableParameter extends Serializable {
-	/**
-	 * @return the underlying value.
-	 */
-	public Object getUnderlyingValue();
+
+    /**
+     * @return the underlying value.
+     */
+    Object getUnderlyingValue();
 }

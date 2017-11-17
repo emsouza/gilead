@@ -1,13 +1,9 @@
-/**
- *
- */
 package net.sf.gilead.proxy.xml;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -58,7 +54,7 @@ public class AdditionalCodeReader {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(filePath)) {
             return (AdditionalCode) xstream.fromXML(input);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new FileNotFoundException(filePath);
         }
     }
