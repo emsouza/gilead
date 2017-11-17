@@ -11,13 +11,9 @@ import java.util.ArrayList;
  * 
  * @author bruno.marchesson
  */
+@SuppressWarnings("rawtypes")
 public class PagingList extends ArrayList {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = 1084952802855800325L;
 
     /**
@@ -25,9 +21,6 @@ public class PagingList extends ArrayList {
      */
     private int totalRecords;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the totalRecords
      */

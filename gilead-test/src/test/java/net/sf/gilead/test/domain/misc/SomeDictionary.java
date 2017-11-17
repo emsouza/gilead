@@ -18,8 +18,10 @@ import javax.persistence.Transient;
 
 @Entity
 public class SomeDictionary implements Serializable {
+
     @Embeddable
     public static class PrimaryKey implements Serializable {
+
         private static final long serialVersionUID = -1786248350425646775L;
 
         private int baseDictionaryId;
@@ -86,7 +88,7 @@ public class SomeDictionary implements Serializable {
 
     private BaseDictionary baseDictionary;
 
-    private List<SomeDictionary> children = new ArrayList<SomeDictionary>();
+    private List<SomeDictionary> children = new ArrayList<>();
 
     private SomeDictionary parent;
 

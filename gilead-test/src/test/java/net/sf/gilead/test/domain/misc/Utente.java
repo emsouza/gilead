@@ -10,26 +10,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OrderBy;
 
-import net.sf.gilead.pojo.java5.LightEntity;
-
 import org.hibernate.annotations.Cascade;
+
+import net.sf.gilead.pojo.java5.LightEntity;
 
 @Entity
 public class Utente extends LightEntity {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -843102774046368069L;
 
     @Id
     @GeneratedValue
     private Integer id;
 
+    @OrderBy("intValue ASC")
+    @SuppressWarnings("deprecation")
     @ElementCollection(fetch = FetchType.LAZY)
     @Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-    @OrderBy("intValue ASC")
-    private Set<Preference> preferences = new LinkedHashSet<Preference>();
+    private Set<Preference> preferences = new LinkedHashSet<>();
 
     /**
      * @return the id
@@ -59,10 +57,6 @@ public class Utente extends LightEntity {
         this.preferences = preferences;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -71,10 +65,6 @@ public class Utente extends LightEntity {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -96,5 +86,4 @@ public class Utente extends LightEntity {
         }
         return true;
     }
-
 }

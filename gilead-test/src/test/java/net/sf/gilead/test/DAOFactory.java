@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.sf.gilead.test;
 
 import net.sf.gilead.test.dao.IEmployeeDAO;
@@ -16,6 +13,7 @@ import net.sf.gilead.test.dao.hibernate.UserDAO;
  * @author bruno.marchesson
  */
 public class DAOFactory {
+
     /**
      * @return the user DAO
      */

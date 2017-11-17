@@ -13,12 +13,9 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class Message extends LightEntity implements IMessage {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = 3445339493203407152L;
 
-    // Fields
     private int id;
     private Integer version;
     private String message;
@@ -26,7 +23,6 @@ public class Message extends LightEntity implements IMessage {
 
     private IUser author;
 
-    // Properties
     /**
      * @return the id
      */

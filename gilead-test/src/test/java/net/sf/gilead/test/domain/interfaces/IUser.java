@@ -9,66 +9,66 @@ import java.util.Set;
  * @author bruno.marchesson
  */
 public interface IUser {
-    public Integer getId();
 
-    public void setId(Integer id);
+    Integer getId();
 
-    public Integer getVersion();
+    void setId(Integer id);
 
-    public void setVersion(Integer version);
+    Integer getVersion();
 
-    public String getLogin();
+    void setVersion(Integer version);
 
-    public void setLogin(String surname);
+    String getLogin();
 
-    public String getFirstName();
+    void setLogin(String surname);
 
-    public void setFirstName(String firstName);
+    String getFirstName();
 
-    public String getLastName();
+    void setFirstName(String firstName);
 
-    public void setLastName(String lastName);
+    String getLastName();
 
-    public String getPassword();
+    void setLastName(String lastName);
 
-    public void setPassword(String password);
+    String getPassword();
 
-    public Set<IMessage> getMessageList();
+    void setPassword(String password);
 
-    public void setMessageList(Set<IMessage> messageList);
+    Set<IMessage> getMessageList();
 
-    public void addMessage(IMessage message);
+    void setMessageList(Set<IMessage> messageList);
 
-    public void removeMessage(IMessage message);
+    void addMessage(IMessage message);
+
+    void removeMessage(IMessage message);
 
     /**
      * @return the groupList
      */
-    public Set<IGroup> getGroupList();
+    Set<IGroup> getGroupList();
 
     /**
      * @param groupList the groupList to set
      */
-    public void setGroupList(Set<IGroup> groupList);
+    void setGroupList(Set<IGroup> groupList);
 
     /**
      * Add user to the argument group
      */
-    public void addToGroup(IGroup group);
+    void addToGroup(IGroup group);
 
     /**
      * Remove user from group
      */
-    public void removeUserFromGroup(IGroup group);
+    void removeUserFromGroup(IGroup group);
 
     /**
      * @return the address
      */
-    public IAddress getAddress();
+    IAddress getAddress();
 
     /**
      * @param address the address to set
      */
-    public void setAddress(IAddress address);
-
+    void setAddress(IAddress address);
 }

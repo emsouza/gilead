@@ -1,15 +1,14 @@
-
 package net.sf.gilead.test.dao.hibernate;
 
 import java.util.List;
 
-import net.sf.gilead.test.HibernateContext;
-import net.sf.gilead.test.dao.IUserDAO;
-import net.sf.gilead.test.domain.interfaces.IUser;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import net.sf.gilead.test.HibernateContext;
+import net.sf.gilead.test.dao.IUserDAO;
+import net.sf.gilead.test.domain.interfaces.IUser;
 
 /**
  * DAO for user beans. This implementation use HQL to work seamlessly with all implementation of the Message domain
@@ -18,11 +17,7 @@ import org.hibernate.Transaction;
  * @author bruno.marchesson
  */
 public class UserDAO implements IUserDAO {
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
+
     /**
      * Load the user with the argument ID
      */
@@ -32,24 +27,20 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("from User user where user.id=:id");
             query.setInteger("id", id);
 
             // Execute query
-            //
             IUser user = (IUser) query.uniqueResult();
             transaction.commit();
 
             return user;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -64,29 +55,24 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             StringBuffer hqlQuery = new StringBuffer();
             hqlQuery.append("from User user where user.login=:login");
 
             // Fill query
-            //
             Query query = session.createQuery(hqlQuery.toString());
             query.setString("login", login);
 
             // Execute query
-            //
             IUser user = (IUser) query.uniqueResult();
             transaction.commit();
 
             return user;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -101,31 +87,26 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             StringBuffer hqlQuery = new StringBuffer();
             hqlQuery.append("from User user");
             hqlQuery.append(" left join fetch user.messageList");
             hqlQuery.append(" where user.login=:login");
 
             // Fill query
-            //
             Query query = session.createQuery(hqlQuery.toString());
             query.setString("login", login);
 
             // Execute query
-            //
             IUser user = (IUser) query.uniqueResult();
             transaction.commit();
 
             return user;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -140,31 +121,26 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             StringBuffer hqlQuery = new StringBuffer();
             hqlQuery.append("from User user");
             hqlQuery.append(" left join fetch user.groupList");
             hqlQuery.append(" where user.login=:login");
 
             // Fill query
-            //
             Query query = session.createQuery(hqlQuery.toString());
             query.setString("login", login);
 
             // Execute query
-            //
             IUser user = (IUser) query.uniqueResult();
             transaction.commit();
 
             return user;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -180,23 +156,19 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("from User user");
 
             // Execute query
-            //
             List<IUser> list = query.list();
             transaction.commit();
 
             return list;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -212,23 +184,19 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("from User user left join fetch user.messageList");
 
             // Execute query
-            //
             List<IUser> list = query.list();
             transaction.commit();
 
             return list;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -243,23 +211,19 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Create query
-            //
             Query query = session.createQuery("select count(*) from User user");
 
             // Execute query
-            //
             int result = ((Long) query.uniqueResult()).intValue();
             transaction.commit();
 
             return result;
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }
@@ -276,17 +240,14 @@ public class UserDAO implements IUserDAO {
         Transaction transaction = null;
         try {
             // Get session
-            //
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
             // Save user
-            //
             session.saveOrUpdate(user);
             transaction.commit();
         } catch (RuntimeException e) {
             // Rollback
-            //
             transaction.rollback();
             throw e;
         }

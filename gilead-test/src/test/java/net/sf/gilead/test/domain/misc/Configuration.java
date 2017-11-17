@@ -8,9 +8,9 @@ import java.io.Serializable;
  * @author bruno.marchesson
  */
 public class Configuration implements Serializable {
-    // ----
-    // Attributes
-    // ----
+
+    private static final long serialVersionUID = 1151825415838912305L;
+
     /**
      * Configuration name
      */
@@ -21,9 +21,6 @@ public class Configuration implements Serializable {
      */
     private String springContextFile;
 
-    // ----
-    // Properties
-    // ----
     /**
      * @return the name
      */
@@ -51,5 +48,4 @@ public class Configuration implements Serializable {
     public void setSpringContextFile(String springContextFile) {
         this.springContextFile = springContextFile;
     }
-
 }

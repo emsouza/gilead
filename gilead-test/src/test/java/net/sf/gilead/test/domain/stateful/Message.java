@@ -13,12 +13,9 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * @author bruno.marchesson
  */
 public class Message implements Serializable, IMessage {
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = 3421537443957416948L;
 
-    // Fields
     private int id;
     private Integer version;
     private String message;
@@ -26,20 +23,11 @@ public class Message implements Serializable, IMessage {
 
     private User author;
 
-    // Properties
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#getId()
-     */
     @Override
     public final int getId() {
         return id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#setId(java.lang.Integer)
-     */
     @Override
     public final void setId(int id) {
         this.id = id;
@@ -61,37 +49,21 @@ public class Message implements Serializable, IMessage {
         this.version = version;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#getMessage()
-     */
     @Override
     public String getMessage() {
         return message;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#setMessage(java.lang.String)
-     */
     @Override
     public void setMessage(String message) {
         this.message = message;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#getDate()
-     */
     @Override
     public Date getDate() {
         return date;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#setDate(java.util.Date)
-     */
     @Override
     public void setDate(Date timeStamp) {
         this.date = timeStamp;

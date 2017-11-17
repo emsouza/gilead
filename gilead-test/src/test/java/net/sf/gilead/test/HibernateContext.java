@@ -1,4 +1,3 @@
-
 package net.sf.gilead.test;
 
 import org.hibernate.SessionFactory;
@@ -15,9 +14,6 @@ public class HibernateContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateContext.class);
 
-    // ----
-    // Enumeration
-    // ----
     public enum Context {
         stateful,
         stateless,
@@ -27,9 +23,6 @@ public class HibernateContext {
         annotated
     }
 
-    // ----
-    // Constants
-    // ----
     /**
      * The stateful configuration file
      */
@@ -91,11 +84,6 @@ public class HibernateContext {
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * @return the created session factory
      */
@@ -113,11 +101,6 @@ public class HibernateContext {
         return _sessionFactory;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * @return the appropriate context file associated with the current application configuration
      */
@@ -132,8 +115,7 @@ public class HibernateContext {
             return LEGACY_CONFIGURATION_FILE;
         } else if (_context == Context.java5) {
             return JAVA5_CONFIGURATION_FILE;
-        } else // if (_context == Context.annotated)
-        {
+        } else {
             return ANNOTATED_CONFIGURATION_FILE;
         }
     }

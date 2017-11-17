@@ -7,14 +7,16 @@ import java.util.TreeSet;
 import net.sf.gilead.pojo.gwt.LightEntity;
 
 public class Event extends LightEntity {
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = 7396466186076632943L;
+
     private Long id;
+
     private String name;
+
     private Date date;
-    private SortedSet<Person> attendees = new TreeSet<Person>();
+
+    private SortedSet<Person> attendees = new TreeSet<>();
 
     /**
      * @return the id

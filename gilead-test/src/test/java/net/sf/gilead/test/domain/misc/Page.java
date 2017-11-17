@@ -9,12 +9,9 @@ import net.sf.gilead.pojo.java5.LightEntity;
  * Page Domain class. Used to test list ordering
  */
 public class Page extends LightEntity {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = 1058354709157710766L;
 
-    // Fields
     private Integer id;
     private Integer version;
 
@@ -22,7 +19,6 @@ public class Page extends LightEntity {
 
     private List<Photo> photoList;
 
-    // Properties
     public Integer getId() {
         return this.id;
     }
@@ -66,15 +62,11 @@ public class Page extends LightEntity {
 
         // Create message list if needed
         if (photoList == null) {
-            photoList = new ArrayList<Photo>();
+            photoList = new ArrayList<>();
         }
         photoList.add(photo);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#removeMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     public void removePhoto(Photo photo) {
         photoList.remove(photo);
     }

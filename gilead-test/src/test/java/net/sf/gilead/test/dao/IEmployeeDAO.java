@@ -9,18 +9,13 @@ import net.sf.gilead.test.domain.interfaces.IEmployee;
  */
 public interface IEmployeeDAO {
 
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
     /**
      * Load the employee with the argument ID
      */
-    public IEmployee loadEmployee(Integer id);
+    IEmployee loadEmployee(Integer id);
 
     /**
      * Load the employee with the argument login
      */
-    public IEmployee searchEmployeeAndMessagesByLogin(String login);
+    IEmployee searchEmployeeAndMessagesByLogin(String login);
 }

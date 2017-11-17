@@ -8,12 +8,9 @@ import net.sf.gilead.pojo.java5.LightEntity;
  * @author bruno.marchesson
  */
 public class Photo extends LightEntity {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = -1067096371173906324L;
 
-    // Fields
     private Integer id;
     private Integer version;
 
@@ -21,7 +18,6 @@ public class Photo extends LightEntity {
 
     private Page page;
 
-    // Properties
     public final Integer getId() {
         return id;
     }
@@ -62,9 +58,7 @@ public class Photo extends LightEntity {
     /**
      * @param pageIndex the pageIndex to set
      */
-    public void setPageIndex(int pageIndex) {
-        // not used, calculated value, see getIndex() method
-    }
+    public void setPageIndex(int pageIndex) {}
 
     public Page getPage() {
         return page;

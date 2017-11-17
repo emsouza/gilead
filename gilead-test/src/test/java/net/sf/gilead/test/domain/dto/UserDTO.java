@@ -13,12 +13,9 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * DTO User class for Java5 support
  */
 public class UserDTO extends LightEntity implements IUser {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = 1058354709157710766L;
 
-    // Fields
     private Integer id;
     private Integer version;
 
@@ -32,7 +29,6 @@ public class UserDTO extends LightEntity implements IUser {
     private Set<IMessage> messageList;
     private Set<IGroup> groupList;
 
-    // Properties
     @Override
     public Integer getId() {
         return this.id;
@@ -109,23 +105,15 @@ public class UserDTO extends LightEntity implements IUser {
         this.messageList = messageList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#addMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void addMessage(IMessage message) {
         ((MessageDTO) message).setAuthor(this);
         if (messageList == null) {
-            messageList = new HashSet<IMessage>();
+            messageList = new HashSet<>();
         }
         messageList.add(message);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#removeMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void removeMessage(IMessage message) {
         messageList.remove(message);
@@ -153,7 +141,7 @@ public class UserDTO extends LightEntity implements IUser {
     @Override
     public void addToGroup(IGroup group) {
         if (groupList == null) {
-            groupList = new HashSet<IGroup>();
+            groupList = new HashSet<>();
         }
 
         if (groupList.contains(group) == false) {

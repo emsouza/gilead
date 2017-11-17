@@ -10,9 +10,7 @@ import java.util.List;
  * @param <Data>
  */
 public class BaseListLoadResult<Data> implements Serializable {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = -6519188971278457470L;
 
     /**

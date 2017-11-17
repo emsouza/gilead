@@ -8,6 +8,7 @@ import javax.persistence.Id;
 
 @Entity
 public class BaseDictionary implements Serializable {
+
     private static final long serialVersionUID = -4793946537941656195L;
 
     private int id;

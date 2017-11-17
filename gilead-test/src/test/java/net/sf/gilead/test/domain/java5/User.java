@@ -27,17 +27,13 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 /**
  * User Domain class for JAVA5 server
  */
-
 @Entity
 @Table(name = "user")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable, IUser {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = 1058354709157710766L;
 
-    // Fields
     private Integer id;
     private Integer version;
 
@@ -51,9 +47,8 @@ public class User implements Serializable, IUser {
     private Set<IMessage> messageList;
     private Set<IGroup> groupList;
 
-    // Properties
-    @Override
     @Id
+    @Override
     @GeneratedValue
     @Column(name = "ID")
     public Integer getId() {
@@ -125,9 +120,8 @@ public class User implements Serializable, IUser {
      * @return the message
      */
     @Override
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class)
     @JoinColumn(name = "USER_ID")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Message.class, orphanRemoval = true)
     public Set<IMessage> getMessageList() {
         return messageList;
     }
@@ -140,25 +134,17 @@ public class User implements Serializable, IUser {
         this.messageList = messageList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#addMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void addMessage(IMessage message) {
         ((Message) message).setAuthor(this);
 
         // Create message list if needed
         if (messageList == null) {
-            messageList = new HashSet<IMessage>();
+            messageList = new HashSet<>();
         }
         messageList.add(message);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#removeMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void removeMessage(IMessage message) {
         messageList.remove(message);
@@ -187,7 +173,7 @@ public class User implements Serializable, IUser {
     @Override
     public void addToGroup(IGroup group) {
         if (groupList == null) {
-            groupList = new HashSet<IGroup>();
+            groupList = new HashSet<>();
         }
 
         if (groupList.contains(group) == false) {

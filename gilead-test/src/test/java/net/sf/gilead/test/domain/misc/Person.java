@@ -3,9 +3,7 @@ package net.sf.gilead.test.domain.misc;
 import net.sf.gilead.pojo.gwt.LightEntity;
 
 public class Person extends LightEntity {
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = 2459649482584350839L;
 
     private Long id;

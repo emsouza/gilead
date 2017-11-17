@@ -1,15 +1,12 @@
-/**
- * 
- */
 package net.sf.gilead.test.dao.hibernate;
-
-import net.sf.gilead.test.HibernateContext;
-import net.sf.gilead.test.dao.IEmployeeDAO;
-import net.sf.gilead.test.domain.interfaces.IEmployee;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import net.sf.gilead.test.HibernateContext;
+import net.sf.gilead.test.dao.IEmployeeDAO;
+import net.sf.gilead.test.domain.interfaces.IEmployee;
 
 /**
  * DAO for employee beans.
@@ -17,11 +14,7 @@ import org.hibernate.Transaction;
  * @author bruno.marchesson
  */
 public class EmployeeDAO implements IEmployeeDAO {
-    // -------------------------------------------------------------------------
-    //
-    // Public interface
-    //
-    // -------------------------------------------------------------------------
+
     /**
      * Load the employee with the argument ID
      */

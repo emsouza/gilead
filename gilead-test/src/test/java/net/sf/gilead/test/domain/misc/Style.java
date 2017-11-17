@@ -52,6 +52,7 @@ public class Style {
 
         NONE {
             @Override
+            @SuppressWarnings({ "rawtypes", "unchecked" })
             public Comparator comparator(Comparator c) {
                 return c;
             }

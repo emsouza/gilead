@@ -1,19 +1,14 @@
 package net.sf.gilead.test.domain.misc;
 
-import java.io.Serializable;
-
 import javax.persistence.Embeddable;
-
-import net.sf.gilead.pojo.java5.LightEntity;
 
 import org.hibernate.annotations.Parent;
 
-@Embeddable
-public class Preference extends LightEntity implements Serializable {
+import net.sf.gilead.pojo.java5.LightEntity;
 
-    /**
-     * 
-     */
+@Embeddable
+public class Preference extends LightEntity {
+
     private static final long serialVersionUID = -731857320269444208L;
 
     @Parent
@@ -54,10 +49,6 @@ public class Preference extends LightEntity implements Serializable {
         return "Preference " + intValue;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -66,22 +57,21 @@ public class Preference extends LightEntity implements Serializable {
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Preference other = (Preference) obj;
-        if (intValue != other.intValue)
+        if (intValue != other.intValue) {
             return false;
+        }
         return true;
     }
-
 }

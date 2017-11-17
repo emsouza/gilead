@@ -1,6 +1,5 @@
 package net.sf.gilead.test.domain.stateless;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,13 +12,10 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 /**
  * User Domain class for stateless server
  */
-public class User extends LightEntity implements Serializable, IUser {
-    /**
-     * Serialisation ID
-     */
+public class User extends LightEntity implements IUser {
+
     private static final long serialVersionUID = 1058354709157710766L;
 
-    // Fields
     private Integer id;
     private Integer version;
 
@@ -33,7 +29,6 @@ public class User extends LightEntity implements Serializable, IUser {
     private Set<IMessage> messageList;
     private Set<IGroup> groupList;
 
-    // Properties
     @Override
     public Integer getId() {
         return this.id;
@@ -126,23 +121,15 @@ public class User extends LightEntity implements Serializable, IUser {
         this.messageList = messageList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#addMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void addMessage(IMessage message) {
         ((Message) message).setAuthor(this);
         if (messageList == null) {
-            messageList = new HashSet<IMessage>();
+            messageList = new HashSet<>();
         }
         messageList.add(message);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#removeMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void removeMessage(IMessage message) {
         messageList.remove(message);
@@ -171,12 +158,11 @@ public class User extends LightEntity implements Serializable, IUser {
     @Override
     public void addToGroup(IGroup group) {
         if (groupList == null) {
-            groupList = new HashSet<IGroup>();
+            groupList = new HashSet<>();
         }
 
         if (groupList.contains(group) == false) {
             groupList.add(group);
-            // group.addMember(this);
         }
     }
 
@@ -187,7 +173,6 @@ public class User extends LightEntity implements Serializable, IUser {
     public void removeUserFromGroup(IGroup group) {
         if ((groupList != null) && (groupList.contains(group))) {
             groupList.remove(group);
-            // group.removeMember(this);
         }
     }
 }

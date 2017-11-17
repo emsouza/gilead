@@ -1,6 +1,5 @@
 package net.sf.gilead.test.domain.misc;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -12,12 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import net.sf.gilead.pojo.java5.LightEntity;
-
 import org.hibernate.annotations.Cascade;
 
+import net.sf.gilead.pojo.java5.LightEntity;
+
 @Entity
-public class Client extends LightEntity implements Serializable {
+public class Client extends LightEntity {
+
+    private static final long serialVersionUID = -7663478891497366231L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -25,9 +27,8 @@ public class Client extends LightEntity implements Serializable {
     @ManyToMany
     @JoinTable(name = "LinkClientToProject", joinColumns = @JoinColumn(name = "clientId"), inverseJoinColumns = @JoinColumn(name = "projectId"))
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Collection<Project> projects = new LinkedHashSet<Project>();
+    private Collection<Project> projects = new LinkedHashSet<>();
 
-    // Some other fields and methods go here
     public long getId() {
         return id;
     }
@@ -43,5 +44,4 @@ public class Client extends LightEntity implements Serializable {
     public void setProjects(Collection<Project> projects) {
         this.projects = projects;
     }
-
 }

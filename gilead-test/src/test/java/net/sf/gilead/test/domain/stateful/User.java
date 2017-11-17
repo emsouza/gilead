@@ -13,9 +13,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
  * User Domain class for statefull server
  */
 public class User implements Serializable, IUser {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = 7239533396817246837L;
 
     // Fields
@@ -32,110 +30,61 @@ public class User implements Serializable, IUser {
     private Set<IMessage> messageList;
     private Set<IGroup> groupList;
 
-    // Properties
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#getId()
-     */
     @Override
     public Integer getId() {
         return this.id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#setId(java.lang.Integer)
-     */
     @Override
     public void setId(Integer id) {
         this.id = id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#getVersion()
-     */
     @Override
     public Integer getVersion() {
         return version;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#setVersion(java.lang.Integer)
-     */
     @Override
     public void setVersion(Integer version) {
         this.version = version;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#getLogin()
-     */
     @Override
     public String getLogin() {
         return this.login;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#setLogin(java.lang.String)
-     */
     @Override
     public void setLogin(String surname) {
         this.login = surname;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#getFirstName()
-     */
     @Override
     public String getFirstName() {
         return this.firstName;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#setFirstName(java.lang.String)
-     */
     @Override
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#getLastName()
-     */
     @Override
     public String getLastName() {
         return this.lastName;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#setLastName(java.lang.String)
-     */
     @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#getPassword()
-     */
     @Override
     public String getPassword() {
         return this.password;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.stateful.IUser#setPassword(java.lang.String)
-     */
     @Override
     public void setPassword(String password) {
         this.password = password;
@@ -157,10 +106,6 @@ public class User implements Serializable, IUser {
         this.messageList = messageList;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#addMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void addMessage(IMessage message) {
         // Bi-directional association
@@ -168,15 +113,11 @@ public class User implements Serializable, IUser {
 
         // Create message list if needed
         if (messageList == null) {
-            messageList = new HashSet<IMessage>();
+            messageList = new HashSet<>();
         }
         messageList.add(message);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IUser#removeMessage(net.sf.gilead.testApplication.domain.IMessage)
-     */
     @Override
     public void removeMessage(IMessage message) {
         messageList.remove(message);
@@ -204,7 +145,7 @@ public class User implements Serializable, IUser {
     @Override
     public void addToGroup(IGroup group) {
         if (groupList == null) {
-            groupList = new HashSet<IGroup>();
+            groupList = new HashSet<>();
         }
 
         if (groupList.contains(group) == false) {

@@ -25,12 +25,9 @@ import net.sf.gilead.test.domain.interfaces.IMessage;
 @Entity
 @Table(name = "message")
 public class Message implements Serializable, IMessage {
-    /**
-     * Serialisation ID
-     */
+
     private static final long serialVersionUID = -1067096371173906324L;
 
-    // Fields
     private int id;
     private Integer version;
     private String message;
@@ -38,23 +35,14 @@ public class Message implements Serializable, IMessage {
 
     private User author;
 
-    // Properties
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#getId()
-     */
-    @Override
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Override
     @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public final int getId() {
         return id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#setId(java.lang.Integer)
-     */
     @Override
     public final void setId(int id) {
         this.id = id;
@@ -78,39 +66,23 @@ public class Message implements Serializable, IMessage {
         this.version = version;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#getMessage()
-     */
     @Override
     @Column(name = "MESSAGE", nullable = false, length = 255)
     public String getMessage() {
         return message;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#setMessage(java.lang.String)
-     */
     @Override
     public void setMessage(String message) {
         this.message = message;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#getDate()
-     */
     @Override
     @Column(name = "DATE", nullable = false)
     public Date getDate() {
         return date;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.testApplication.domain.IMessage#setDate(java.util.Date)
-     */
     @Override
     public void setDate(Date timeStamp) {
         this.date = timeStamp;

@@ -7,15 +7,13 @@ package net.sf.gilead.test.domain.interfaces;
  */
 public interface IEmployee extends IUser {
 
-    // Properties
     /**
      * @return the email
      */
-    public abstract String getEmail();
+    String getEmail();
 
     /**
      * @param email the email to set
      */
-    public abstract void setEmail(String email);
-
+    void setEmail(String email);
 }

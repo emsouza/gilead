@@ -9,54 +9,48 @@ import java.util.Date;
  */
 public interface IMessage {
 
-    // Properties (native int instead of Integer for test purpose)
     /**
      * @return the id
      */
-    public int getId();
+    int getId();
 
     /**
      * @param id the id to set
      */
-    public void setId(int id);
+    void setId(int id);
 
     /**
      * @return the version
      */
-    public Integer getVersion();
+    Integer getVersion();
 
     /**
      * @param version the version to set
      */
-    public void setVersion(Integer version);
+    void setVersion(Integer version);
 
     /**
      * @return the message
      */
-    public String getMessage();
+    String getMessage();
 
     /**
      * @param message the message to set
      */
-    public void setMessage(String message);
+    void setMessage(String message);
 
     /**
      * @return the timeStamp
      */
-    public Date getDate();
+    Date getDate();
 
     /**
      * @param timeStamp the timeStamp to set
      */
-    public void setDate(Date timeStamp);
+    void setDate(Date timeStamp);
 
     /**
      * @return the author
      */
-    public IUser getAuthor();
-
-    /**
-     * @param author the author to set
-     */
-    // public void setAuthor(IUser author);
+    IUser getAuthor();
 }

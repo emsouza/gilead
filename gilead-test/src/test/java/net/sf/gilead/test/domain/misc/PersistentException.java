@@ -9,12 +9,7 @@ package net.sf.gilead.test.domain.misc;
  * @author bruno.marchesson
  */
 public class PersistentException extends Exception {
-    // ----
-    // Attributes
-    // ----
-    /**
-     * Serialization ID
-     */
+
     private static final long serialVersionUID = -365724127793925824L;
 
     /**
@@ -22,9 +17,6 @@ public class PersistentException extends Exception {
      */
     private Page page;
 
-    // ----
-    // Getters and setters
-    // ----
     /**
      * @return the page
      */
@@ -39,9 +31,6 @@ public class PersistentException extends Exception {
         this.page = page;
     }
 
-    // ----
-    // Constructor
-    // ----
     /**
      * Empty constructor
      */
@@ -53,5 +42,4 @@ public class PersistentException extends Exception {
     public PersistentException(Page page) {
         this.page = page;
     }
-
 }
