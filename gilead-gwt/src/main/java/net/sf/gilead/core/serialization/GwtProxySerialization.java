@@ -24,27 +24,27 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
     /**
      * String serializer
      */
-    protected IProxySerialization _stringSerializer;
+    protected IProxySerialization stringSerializer;
 
     /**
      * @return the String Serializer
      */
     public IProxySerialization getStringSerializer() {
-        return _stringSerializer;
+        return stringSerializer;
     }
 
     /**
      * @param serializer the string serializer to set
      */
-    public void setStringSerializer(IProxySerialization serializer) {
-        _stringSerializer = serializer;
+    public void setStringSerializer(IProxySerialization stringSerializer) {
+        this.stringSerializer = stringSerializer;
     }
 
     /**
      * Constructor
      */
     public GwtProxySerialization() {
-        _stringSerializer = new JBossProxySerialization();
+        stringSerializer = new JBossProxySerialization();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
             return super.convertBasicToGwt(object);
         } catch (SerializationException ex) {
             LOGGER.trace(object.getClass() + " not serializable => convert to string");
-            return new SerializedParameter((String) _stringSerializer.serialize(object));
+            return new SerializedParameter((String) stringSerializer.serialize(object));
         }
     }
 
@@ -108,7 +108,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
     protected Serializable convertBasicFromGwt(IGwtSerializableParameter parameter) {
         // Serialized case
         if (parameter instanceof SerializedParameter) {
-            return _stringSerializer.unserialize(parameter.getUnderlyingValue());
+            return stringSerializer.unserialize(parameter.getUnderlyingValue());
         } else if (parameter instanceof GwtSerializableId) {
             // Re-create serializable Id
             GwtSerializableId gwtSerializableId = (GwtSerializableId) parameter;
@@ -131,14 +131,14 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
             return super.convertListToGwt(object);
         } catch (SerializationException ex) {
             LOGGER.trace(object.getClass() + " not serializable => convert to string");
-            return new SerializedParameter((String) _stringSerializer.serialize(object));
+            return new SerializedParameter((String) stringSerializer.serialize(object));
         }
     }
 
     @Override
     protected Serializable convertListFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
         if (parameter instanceof SerializedParameter) {
-            return _stringSerializer.unserialize(parameter.getUnderlyingValue());
+            return stringSerializer.unserialize(parameter.getUnderlyingValue());
         } else {
             return super.convertListFromGwt(parameter);
         }
@@ -150,14 +150,14 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
             return super.convertSetToGwt(object);
         } catch (SerializationException ex) {
             LOGGER.trace(object.getClass() + " not serializable => convert to string");
-            return new SerializedParameter((String) _stringSerializer.serialize(object));
+            return new SerializedParameter((String) stringSerializer.serialize(object));
         }
     }
 
     @Override
     protected Serializable convertSetFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
         if (parameter instanceof SerializedParameter) {
-            return _stringSerializer.unserialize(parameter.getUnderlyingValue());
+            return stringSerializer.unserialize(parameter.getUnderlyingValue());
         } else {
             return super.convertSetFromGwt(parameter);
         }
@@ -169,14 +169,14 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
             return super.convertMapToGwt(object);
         } catch (SerializationException ex) {
             LOGGER.trace(object.getClass() + " not serializable => convert to string");
-            return new SerializedParameter((String) _stringSerializer.serialize(object));
+            return new SerializedParameter((String) stringSerializer.serialize(object));
         }
     }
 
     @Override
     protected Serializable convertMapFromGwt(IGwtSerializableParameter parameter) throws SerializationException {
         if (parameter instanceof SerializedParameter) {
-            return _stringSerializer.unserialize(parameter.getUnderlyingValue());
+            return stringSerializer.unserialize(parameter.getUnderlyingValue());
         } else {
             return super.convertMapFromGwt(parameter);
         }
