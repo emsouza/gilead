@@ -12,22 +12,22 @@ import net.sf.gilead.util.IntrospectionHelper;
 /**
  * @author bruno.marchesson
  */
-public class HibernateJpaUtil extends HibernateUtil {
+public class JpaUtil extends HibernateUtil {
 
-    public HibernateJpaUtil(SessionFactory sessionFactory) {
+    public JpaUtil(SessionFactory sessionFactory) {
         super(sessionFactory, null);
     }
 
-    public HibernateJpaUtil(EntityManagerFactory entityManagerFactory) {
+    public JpaUtil(EntityManagerFactory entityManagerFactory) {
         super();
         setEntityManagerFactory(entityManagerFactory);
     }
 
-    public HibernateJpaUtil(SessionFactory sessionFactory, Session session) {
+    public JpaUtil(SessionFactory sessionFactory, Session session) {
         super(sessionFactory, session);
     }
 
-    public HibernateJpaUtil(EntityManagerFactory entityManagerFactory, Session session) {
+    public JpaUtil(EntityManagerFactory entityManagerFactory, Session session) {
         super(session);
         setEntityManagerFactory(entityManagerFactory);
     }

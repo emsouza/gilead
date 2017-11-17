@@ -9,22 +9,22 @@ import org.jboss.as.jpa.container.TransactionScopedEntityManager;
 
 import net.sf.gilead.core.hibernate.HibernateUtil;
 
-public class HibernateWildFlyUtil extends HibernateUtil {
+public class WildFlyUtil extends HibernateUtil {
 
-    public HibernateWildFlyUtil(SessionFactory sessionFactory) {
+    public WildFlyUtil(SessionFactory sessionFactory) {
         super(sessionFactory, null);
     }
 
-    public HibernateWildFlyUtil(EntityManagerFactory entityManagerFactory) {
+    public WildFlyUtil(EntityManagerFactory entityManagerFactory) {
         super();
         setEntityManagerFactory(entityManagerFactory);
     }
 
-    public HibernateWildFlyUtil(SessionFactory sessionFactory, Session session) {
+    public WildFlyUtil(SessionFactory sessionFactory, Session session) {
         super(sessionFactory, session);
     }
 
-    public HibernateWildFlyUtil(EntityManagerFactory entityManagerFactory, Session session) {
+    public WildFlyUtil(EntityManagerFactory entityManagerFactory, Session session) {
         super(session);
         setEntityManagerFactory(entityManagerFactory);
     }

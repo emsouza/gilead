@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import net.sf.gilead.configuration.ConfigurationHelper;
-import net.sf.gilead.configuration.GwtConfigurationHelper;
 import net.sf.gilead.core.beanlib.mapper.DirectoryClassMapper;
 import net.sf.gilead.core.hibernate.HibernateUtil;
 import net.sf.gilead.core.store.stateful.InMemoryProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
+import net.sf.gilead.gwt.GwtConfigurationHelper;
 import net.sf.gilead.test.DAOFactory;
 import net.sf.gilead.test.HibernateContext;
 import net.sf.gilead.test.HibernateContext.Context;
