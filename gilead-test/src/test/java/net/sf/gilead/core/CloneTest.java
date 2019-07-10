@@ -179,55 +179,6 @@ public abstract class CloneTest extends TestCase {
     }
 
     /**
-     * Test clone and merge of a loaded message and associated user
-     */
-    public void testCloneAndMergeMessageAndUserDiffSession() throws InstantiationException, IllegalAccessException {
-        // Get UserDAO
-        IUserDAO userDAO = DAOFactory.getUserDAO();
-        assertNotNull(userDAO);
-        IUser junitUser = userDAO.loadUserByLogin(TestHelper.JUNIT_LOGIN);
-
-        // Create a new user and save it
-        Session session = HibernateContext.getSessionFactory().getCurrentSession();
-        Transaction tx = session.beginTransaction();
-
-        IUser user = createNewUser();
-        user.setLogin("newTest");
-        user.setFirstName("Unsaved");
-        user.setLastName("value");
-        user.setAddress(junitUser.getAddress());
-
-        IMessage message = createNewMessage(user);
-        user.addMessage(message);
-
-        // Clone user
-        session.saveOrUpdate(user);
-        IUser cloneUser = (IUser) beanManager.clone(user);
-
-        tx.commit();
-        session.close();
-
-        message = createNewCloneMessage(cloneUser);
-        cloneUser.addMessage(message);
-
-        session = HibernateContext.getSessionFactory().openSession();
-        tx = session.beginTransaction();
-
-        IUser mergeUser = (IUser) beanManager.merge(cloneUser);
-        session.saveOrUpdate(mergeUser);
-
-        tx.commit();
-
-        // Test cloned user
-        assertNotNull(cloneUser);
-        // assertNotNull(cloneUser.getMessageList());
-
-        // Test merged message
-        assertNotNull(mergeUser);
-        assertEquals(2, mergeUser.getMessageList().size());
-    }
-
-    /**
      * Test clone and merge of an unsaved user
      *
      * @throws IllegalAccessException

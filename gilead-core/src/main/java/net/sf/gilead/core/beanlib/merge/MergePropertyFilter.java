@@ -19,7 +19,7 @@ import net.sf.gilead.util.IntrospectionHelper;
  * Hibernate POJO from proxy information. Only the not lazy properties of the Hibernate POJO are filled. To be correct,
  * the clone and merge operations must be managed with the <b>same</b> Hibernate POJO, or a POJO with the <b>same</b>
  * fetching strategy
- * 
+ *
  * @author bruno.marchesson
  */
 public class MergePropertyFilter implements DetailedPropertyFilter {
@@ -77,8 +77,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 
         try {
             // Precondition checking
-            if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
-                    || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
+            if (CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) || CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName)) {
                 return false;
             }
 
@@ -128,7 +127,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
                     // Store proxy info for the copy operation
                     BeanlibCache.setProxyInformations(proxyInformations);
                 }
-            } else if (isNullValue(cloneValue) && isInitialized(proxyInformations) == false) {
+            } else if (isNullValue(cloneValue) && !isInitialized(proxyInformations)) {
                 // Set an entity proxy
                 Object proxy = persistenceUtil.createEntityProxy(proxyInformations);
                 if (proxy != null) {
@@ -147,7 +146,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 
     /**
      * Indicates if the argument property is lazy or not
-     * 
+     *
      * @param proxyInfo serialized proxy informations
      * @return
      */
@@ -187,7 +186,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 
     /**
      * Indicates if the argument value must be considered as null (empty collections or map are also considered as null)
-     * 
+     *
      * @param value
      * @return
      */
