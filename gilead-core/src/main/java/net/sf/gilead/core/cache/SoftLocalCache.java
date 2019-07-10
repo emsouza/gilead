@@ -4,7 +4,7 @@ import java.lang.ref.SoftReference;
 
 /**
  * Hacking ThreadLocal leak https://github.com/evanj/expire-threadlocal
- * 
+ *
  * @author eduardo.souza
  */
 public class SoftLocalCache<T> {

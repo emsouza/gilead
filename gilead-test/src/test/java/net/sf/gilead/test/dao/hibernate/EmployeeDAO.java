@@ -1,8 +1,8 @@
 package net.sf.gilead.test.dao.hibernate;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import net.sf.gilead.test.HibernateContext;
 import net.sf.gilead.test.dao.IEmployeeDAO;
@@ -10,7 +10,7 @@ import net.sf.gilead.test.domain.interfaces.IEmployee;
 
 /**
  * DAO for employee beans.
- * 
+ *
  * @author bruno.marchesson
  */
 public class EmployeeDAO implements IEmployeeDAO {
@@ -29,7 +29,7 @@ public class EmployeeDAO implements IEmployeeDAO {
 
             // Create query
             Query query = session.createQuery("from Employee employee where employee.id=:id");
-            query.setInteger("id", id);
+            query.setParameter("id", id);
 
             // Execute query
             IEmployee employee = (IEmployee) query.uniqueResult();
@@ -63,7 +63,7 @@ public class EmployeeDAO implements IEmployeeDAO {
 
             // Fill query
             Query query = session.createQuery(hqlQuery.toString());
-            query.setString("login", login);
+            query.setParameter("login", login);
 
             // Execute query
             IEmployee employee = (IEmployee) query.uniqueResult();

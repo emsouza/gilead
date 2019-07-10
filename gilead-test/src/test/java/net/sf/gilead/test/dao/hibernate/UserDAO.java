@@ -2,9 +2,9 @@ package net.sf.gilead.test.dao.hibernate;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import net.sf.gilead.test.HibernateContext;
 import net.sf.gilead.test.dao.IUserDAO;
@@ -13,7 +13,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 /**
  * DAO for user beans. This implementation use HQL to work seamlessly with all implementation of the Message domain
  * class (Java 1.4 _ stateful or stateless _ and Java5)
- * 
+ *
  * @author bruno.marchesson
  */
 public class UserDAO implements IUserDAO {
@@ -32,7 +32,7 @@ public class UserDAO implements IUserDAO {
 
             // Create query
             Query query = session.createQuery("from User user where user.id=:id");
-            query.setInteger("id", id);
+            query.setParameter("id", id);
 
             // Execute query
             IUser user = (IUser) query.uniqueResult();
@@ -64,7 +64,7 @@ public class UserDAO implements IUserDAO {
 
             // Fill query
             Query query = session.createQuery(hqlQuery.toString());
-            query.setString("login", login);
+            query.setParameter("login", login);
 
             // Execute query
             IUser user = (IUser) query.uniqueResult();
@@ -98,7 +98,7 @@ public class UserDAO implements IUserDAO {
 
             // Fill query
             Query query = session.createQuery(hqlQuery.toString());
-            query.setString("login", login);
+            query.setParameter("login", login);
 
             // Execute query
             IUser user = (IUser) query.uniqueResult();
@@ -132,7 +132,7 @@ public class UserDAO implements IUserDAO {
 
             // Fill query
             Query query = session.createQuery(hqlQuery.toString());
-            query.setString("login", login);
+            query.setParameter("login", login);
 
             // Execute query
             IUser user = (IUser) query.uniqueResult();
@@ -231,7 +231,7 @@ public class UserDAO implements IUserDAO {
 
     /**
      * Save the argument user
-     * 
+     *
      * @param user the user to save or create
      */
     @Override

@@ -8,21 +8,22 @@ import net.sf.gilead.test.domain.stateful.User;
 
 /**
  * Service for server side initialization (unit test purpose)
- * 
+ *
  * @author bruno.marchesson
  */
 @RemoteServiceRelativePath("StatefulInitService")
 public interface StatefulInitService extends RemoteService {
+
     /**
      * Initialize the test environment and load a test message
-     * 
+     *
      * @return
      */
     Message loadTestMessage();
 
     /**
      * Initialize the test environment and load a user message
-     * 
+     *
      * @return
      */
     User loadTestUser();

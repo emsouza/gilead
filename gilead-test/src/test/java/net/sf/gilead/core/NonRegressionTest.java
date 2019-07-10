@@ -3,6 +3,10 @@ package net.sf.gilead.core;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
 import junit.framework.TestCase;
 import net.sf.gilead.core.store.stateful.AbstractStatefulProxyStore;
 import net.sf.gilead.core.store.stateful.InMemoryProxyStore;
@@ -16,10 +20,6 @@ import net.sf.gilead.test.domain.misc.Preference;
 import net.sf.gilead.test.domain.misc.Project;
 import net.sf.gilead.test.domain.misc.SomeDictionary;
 import net.sf.gilead.test.domain.misc.Utente;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 /**
  * Non regression test based on user feedback
@@ -204,7 +204,7 @@ public class NonRegressionTest extends TestCase {
             session = HibernateContext.getSessionFactory().getCurrentSession();
             transaction = session.beginTransaction();
 
-            Utente user = (Utente) session.get(Utente.class, id);
+            Utente user = session.get(Utente.class, id);
             user.getPreferences().size();
             transaction.commit();
 

@@ -266,16 +266,16 @@ public class PersistentBeanManager {
                     targetClass = hibernateClass;
                 }
 
-                if ((assignable == true) && (hibernateClass.isAssignableFrom(targetClass) == false)) {
+                if (assignable && !hibernateClass.isAssignableFrom(targetClass)) {
                     throw new NotAssignableException(hibernateClass, targetClass);
                 }
 
                 // Proxy checking
-                if (persistenceUtil.isInitialized(pojo) == false) {
+                if (!persistenceUtil.isInitialized(pojo)) {
                     // If the root pojo is not initialized, replace it by null
                     return null;
                 }
-            } else if (holdPersistentObject(pojo) == false) {
+            } else if (!holdPersistentObject(pojo)) {
 
                 // Do not clone not persistent classes, since they do not necessary implement Java Bean specification.
                 LOGGER.trace("Not persistent instance, clone is not needed : " + pojo.toString());
@@ -340,9 +340,9 @@ public class PersistentBeanManager {
         }
 
         // Precondition checking : is the pojo managed by Hibernate
-        if (persistenceUtil.isPersistentClass(hibernateClass) == true) {
+        if (persistenceUtil.isPersistentClass(hibernateClass)) {
             // Assignation checking
-            if ((assignable == true) && (hibernateClass.isAssignableFrom(cloneClass) == false)) {
+            if (assignable && !hibernateClass.isAssignableFrom(cloneClass)) {
                 throw new NotAssignableException(hibernateClass, cloneClass);
             }
         }
@@ -544,7 +544,8 @@ public class PersistentBeanManager {
     protected Map<Object, Object> createNewMap(Map<?, ?> pojoMap) {
         Class<? extends Map> mapClass = pojoMap.getClass();
 
-        if (persistenceUtil.isPersistentCollection(mapClass) || mapClass.isAnonymousClass() || mapClass.isMemberClass() || mapClass.isLocalClass()) {
+        if (persistenceUtil.isPersistentCollection(mapClass) || mapClass.isAnonymousClass() || mapClass.isMemberClass()
+                || mapClass.isLocalClass()) {
             return new HashMap<>();
         } else {
             // Create the same map

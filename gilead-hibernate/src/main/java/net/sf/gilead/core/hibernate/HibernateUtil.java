@@ -15,10 +15,11 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
+import javax.persistence.metamodel.ManagedType;
+
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionException;
 import org.hibernate.SessionFactory;
@@ -31,11 +32,12 @@ import org.hibernate.collection.internal.PersistentSortedMap;
 import org.hibernate.collection.internal.PersistentSortedSet;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.query.Query;
 import org.hibernate.tuple.IdentifierProperty;
 import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.CollectionType;
@@ -214,7 +216,7 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Retrieve Class<?> hibernate metadata
-        ClassMetadata hibernateMetadata = sessionFactory.getClassMetadata(getEntityName(hibernateClass, pojo));
+        EntityPersister hibernateMetadata = sessionFactory.getMetamodel().entityPersisters().get(getEntityName(hibernateClass, pojo));
         if (hibernateMetadata == null) {
             // Component class (persistent but not metadata) : no associated id
             // So must be considered as transient
@@ -231,7 +233,7 @@ public class HibernateUtil implements PersistenceUtil {
                 id = ((HibernateProxy) pojo).getHibernateLazyInitializer().getIdentifier();
             } else {
                 // Otherwise : use metada
-                id = hibernateMetadata.getIdentifier(pojo, null);
+                id = hibernateMetadata.getEntityTuplizer().getIdentifier(pojo, null);
             }
         } else {
             // DTO case : invoke the method with the same name
@@ -456,7 +458,7 @@ public class HibernateUtil implements PersistenceUtil {
         // Create collection for the class name
         String className = (String) proxyInformations.get(CLASS_NAME);
 
-        SessionImplementor session = (SessionImplementor) getSession();
+        SharedSessionContractImplementor session = (SharedSessionContractImplementor) getSession();
         PersistentCollection collection = null;
         if (PersistentMap.class.getName().equals(className)) {
             // Persistent map creation
@@ -478,7 +480,7 @@ public class HibernateUtil implements PersistenceUtil {
 
         // Fill with serialized parameters
         String role = (String) proxyInformations.get(ROLE);
-        CollectionPersister collectionPersister = sessionFactory.getCollectionPersister(role);
+        CollectionPersister collectionPersister = sessionFactory.getMetamodel().collectionPersister(role);
 
         Serializable snapshot = null;
         if (originalMap != null) {
@@ -523,7 +525,8 @@ public class HibernateUtil implements PersistenceUtil {
      */
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Collection<?> createPersistentCollection(Object parent, Map<String, Serializable> proxyInformations, Collection<?> underlyingCollection) {
+    public Collection<?> createPersistentCollection(Object parent, Map<String, Serializable> proxyInformations,
+            Collection<?> underlyingCollection) {
         try {
             // Re-create original collection
             Collection<?> originalCollection = createOriginalCollection(proxyInformations, underlyingCollection);
@@ -531,7 +534,7 @@ public class HibernateUtil implements PersistenceUtil {
             // Create Persistent collection for the class name
             String className = (String) proxyInformations.get(CLASS_NAME);
 
-            SessionImplementor session = (SessionImplementor) getSession();
+            SharedSessionContractImplementor session = (SharedSessionContractImplementor) getSession();
             PersistentCollection collection = null;
             if (PersistentBag.class.getName().equals(className)) {
                 // Persistent bag creation
@@ -567,7 +570,7 @@ public class HibernateUtil implements PersistenceUtil {
 
             // Fill with serialized parameters
             String role = (String) proxyInformations.get(ROLE);
-            CollectionPersister collectionPersister = sessionFactory.getCollectionPersister(role);
+            CollectionPersister collectionPersister = sessionFactory.getMetamodel().collectionPersister(role);
 
             Serializable snapshot = null;
             if (originalCollection != null) {
@@ -693,6 +696,11 @@ public class HibernateUtil implements PersistenceUtil {
         return Hibernate.isInitialized(proxy);
     }
 
+    @Override
+    public void initialize(Object proxy) {
+        Hibernate.initialize(proxy);
+    }
+
     /**
      * Flush pending modifications if needed
      */
@@ -704,11 +712,6 @@ public class HibernateUtil implements PersistenceUtil {
             LOGGER.trace("Flushing session !");
             session.flush();
         }
-    }
-
-    @Override
-    public void initialize(Object proxy) {
-        Hibernate.initialize(proxy);
     }
 
     @Override
@@ -809,7 +812,7 @@ public class HibernateUtil implements PersistenceUtil {
 
         // Look for component classes
         for (String entityName : entityNames) {
-            Type[] types = sessionFactory.getClassMetadata(entityName).getPropertyTypes();
+            Type[] types = sessionFactory.getMetamodel().entityPersister(entityName).getPropertyTypes();
             for (Type type : types) {
                 LOGGER.trace("Scanning type " + type.getName() + " from " + clazz);
                 computePersistentForType(type);
@@ -976,7 +979,7 @@ public class HibernateUtil implements PersistenceUtil {
         }
 
         // Get unsaved value from entity metamodel
-        EntityPersister entityPersister = sessionFactory.getEntityPersister(getEntityName(persistentClass, pojo));
+        EntityPersister entityPersister = sessionFactory.getMetamodel().entityPersister(getEntityName(persistentClass, pojo));
         EntityMetamodel metamodel = entityPersister.getEntityMetamodel();
         IdentifierProperty idProperty = metamodel.getIdentifierProperty();
         Boolean result = idProperty.getUnsavedValue().isUnsaved(id);
@@ -1328,9 +1331,9 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private String getEntityName(Class<?> clazz, Object pojo) {
         // Direct metadata search
-        ClassMetadata metadata = sessionFactory.getClassMetadata(clazz);
+        ManagedType<?> metadata = sessionFactory.getMetamodel().managedType(clazz);
         if (metadata != null) {
-            return metadata.getEntityName();
+            return metadata.getJavaType().getName();
         }
 
         // Iterate over all metadata to prevent entity name bug
@@ -1361,10 +1364,10 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private List<String> getEntityNamesFor(Class<?> clazz) {
         List<String> entityNames = new ArrayList<>();
-        Map<String, EntityPersister> allMetadata = sessionFactory.getMetamodel().entityPersisters();
-        for (EntityPersister classMetadata : allMetadata.values()) {
-            if (clazz.equals(classMetadata.getMappedClass())) {
-                entityNames.add(classMetadata.getEntityName());
+        Set<ManagedType<?>> allMetadata = sessionFactory.getMetamodel().getManagedTypes();
+        for (ManagedType<?> classMetadata : allMetadata) {
+            if (clazz.equals(classMetadata.getJavaType())) {
+                entityNames.add(classMetadata.getJavaType().getName());
             }
         }
 

@@ -4,7 +4,6 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.jboss.as.jpa.container.TransactionScopedEntityManager;
 
 import net.sf.gilead.core.hibernate.HibernateUtil;
@@ -40,9 +39,9 @@ public class WildFlyUtil extends HibernateUtil {
             // Need to call 'getDelegate' method
             entityManagerFactory = ((TransactionScopedEntityManager) entityManagerFactory).getDelegate();
         }
-        if (entityManagerFactory instanceof HibernateEntityManagerFactory) {
+        if (entityManagerFactory instanceof SessionFactory) {
             // Base class
-            setSessionFactory(((HibernateEntityManagerFactory) entityManagerFactory).getSessionFactory());
+            setSessionFactory(((SessionFactory) entityManagerFactory));
         } else {
             throw new IllegalArgumentException("Cannot find Hibernate entity manager factory implementation for " + entityManagerFactory);
         }

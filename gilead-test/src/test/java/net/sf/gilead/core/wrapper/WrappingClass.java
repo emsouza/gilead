@@ -9,7 +9,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 /**
  * Wrapping (non persistent) class containing persistent classes. Must be cloned and merged as a regular persistent
  * bean.
- * 
+ *
  * @author bruno.marchesson
  */
 public class WrappingClass {

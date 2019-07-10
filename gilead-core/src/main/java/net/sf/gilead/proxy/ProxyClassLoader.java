@@ -94,7 +94,6 @@ public class ProxyClassLoader extends URLClassLoader {
      */
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        System.out.println(name);
         AdditionalCode additionalCode = AdditionalCodeManager.getInstance().getAdditionalCodeFor(name);
         if (additionalCode != null) {
             // Get source class name
