@@ -1,9 +1,9 @@
 package net.sf.gilead.core.beanlib.clone;
 
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
-import net.sf.beanlib.hibernate4.Hibernate4BeanTransformer;
-import net.sf.beanlib.hibernate4.Hibernate4BlobReplicator;
-import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
+import net.sf.beanlib.hibernate5.Hibernate5BeanTransformer;
+import net.sf.beanlib.hibernate5.Hibernate5BlobReplicator;
+import net.sf.beanlib.hibernate5.Hibernate5MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.gilead.core.PersistenceUtil;
@@ -24,8 +24,8 @@ public class CloneBeanReplicator extends HibernateBeanReplicator {
         super(newBeanTransformer(classMapper, persistenceUtil, proxyStore));
     }
 
-    private static Hibernate4BeanTransformer newBeanTransformer(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
-        Hibernate4BeanTransformer transformer = new Hibernate4BeanTransformer();
+    private static Hibernate5BeanTransformer newBeanTransformer(ClassMapper classMapper, PersistenceUtil persistenceUtil, ProxyStore proxyStore) {
+        Hibernate5BeanTransformer transformer = new Hibernate5BeanTransformer();
 
         // Custom collection replicator
         transformer.initCollectionReplicatableFactory(CloneCollectionReplicator.factory);
@@ -33,8 +33,8 @@ public class CloneBeanReplicator extends HibernateBeanReplicator {
         // Set associated PersistenceUtil
         ((CloneCollectionReplicator) transformer.getCollectionReplicatable()).setPersistenceUtil(persistenceUtil);
 
-        transformer.initMapReplicatableFactory(Hibernate4MapReplicator.getFactory());
-        transformer.initBlobReplicatableFactory(Hibernate4BlobReplicator.getFactory());
+        transformer.initMapReplicatableFactory(Hibernate5MapReplicator.getFactory());
+        transformer.initBlobReplicatableFactory(Hibernate5BlobReplicator.getFactory());
 
         // Custom bean replicatable
         transformer.initBeanReplicatableFactory(CloneClassBeanReplicator.factory);

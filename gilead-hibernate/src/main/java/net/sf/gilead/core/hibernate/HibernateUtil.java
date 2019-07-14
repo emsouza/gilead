@@ -322,7 +322,6 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
-    @SuppressWarnings("resource")
     public void openSession() {
         // Precondition checking
         if (sessionFactory == null) {
@@ -706,7 +705,6 @@ public class HibernateUtil implements PersistenceUtil {
      */
     @Override
     public void flushIfNeeded() {
-        @SuppressWarnings("resource")
         Session session = getCurrentSession();
         if (session != null) {
             LOGGER.trace("Flushing session !");
@@ -715,7 +713,6 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
-    @SuppressWarnings("resource")
     public Object loadAssociation(Class<?> parentClass, Serializable parentId, String propertyName) {
         // Create query
         StringBuilder queryString = new StringBuilder();
@@ -736,7 +733,7 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "resource" })
+    @SuppressWarnings({ "unchecked" })
     public List<Object> executeQuery(String query, List<Object> parameters) {
         LOGGER.trace("Executing query '" + query + "'");
 
@@ -756,7 +753,7 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "resource" })
+    @SuppressWarnings({ "unchecked" })
     public List<Object> executeQuery(String query, Map<String, Object> parameters) {
         LOGGER.trace("Executing query '" + query + "'");
 

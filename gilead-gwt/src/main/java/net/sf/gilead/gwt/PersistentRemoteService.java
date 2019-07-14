@@ -98,7 +98,6 @@ public abstract class PersistentRemoteService extends RemoteServiceServlet {
      * Override of the RemoteServletService main method
      */
     @Override
-    @SuppressWarnings("null")
     public String processCall(String payload) throws SerializationException {
         // Normal processing
         RPCRequest rpcRequest = null;

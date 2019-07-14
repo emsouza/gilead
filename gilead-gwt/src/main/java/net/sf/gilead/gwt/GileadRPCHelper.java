@@ -27,7 +27,6 @@ public class GileadRPCHelper {
     /**
      * Proxy class loader initialisation
      */
-    @SuppressWarnings("resource")
     public static void initClassLoader() {
         // Set Proxy class loader (privileged code needed)
         //

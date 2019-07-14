@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.hibernate.UnEnhancer;
-import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
+import net.sf.beanlib.hibernate5.Hibernate5JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.gilead.core.PersistenceUtil;
@@ -21,7 +21,7 @@ import net.sf.gilead.exception.TransientObjectException;
  *
  * @author bruno.marchesson
  */
-public class MergeClassBeanReplicator extends Hibernate4JavaBeanReplicator {
+public class MergeClassBeanReplicator extends Hibernate5JavaBeanReplicator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeClassBeanReplicator.class);
 

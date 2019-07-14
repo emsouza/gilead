@@ -3,7 +3,7 @@ package net.sf.gilead.core.beanlib.clone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.beanlib.hibernate4.Hibernate4JavaBeanReplicator;
+import net.sf.beanlib.hibernate5.Hibernate5JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.gilead.core.PersistenceUtil;
@@ -16,7 +16,7 @@ import net.sf.gilead.core.beanlib.merge.MergeClassBeanReplicator;
  *
  * @author bruno.marchesson
  */
-public class CloneClassBeanReplicator extends Hibernate4JavaBeanReplicator {
+public class CloneClassBeanReplicator extends Hibernate5JavaBeanReplicator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloneClassBeanReplicator.class);
 

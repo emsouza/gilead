@@ -91,7 +91,6 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
     /**
      * Create the needed source writer
      */
-    @SuppressWarnings("resource")
     protected SourceWriter getSourceWriter(TreeLogger logger, GeneratorContext context, String packageName, String className, String superclassName,
             AdditionalCode additionalCode) {
         PrintWriter printWriter = context.tryCreate(logger, packageName, className);

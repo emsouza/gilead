@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 
-import net.sf.beanlib.hibernate4.Hibernate4CollectionReplicator;
+import net.sf.beanlib.hibernate5.Hibernate5CollectionReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 import net.sf.gilead.core.PersistenceUtil;
@@ -16,7 +16,7 @@ import net.sf.gilead.util.CollectionHelper;
  *
  * @author bruno.marchesson
  */
-public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
+public class MergeCollectionReplicator extends Hibernate5CollectionReplicator {
 
     public static final Factory factory = new Factory();
 
@@ -98,7 +98,7 @@ public class MergeCollectionReplicator extends Hibernate4CollectionReplicator {
         private Factory() {}
 
         @Override
-        public Hibernate4CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
+        public Hibernate5CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
             return new MergeCollectionReplicator(beanTransformer);
         }
     }

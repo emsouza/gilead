@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.beanlib.hibernate4.Hibernate4MapReplicator;
+import net.sf.beanlib.hibernate5.Hibernate5MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 import net.sf.gilead.core.PersistenceUtil;
@@ -16,7 +16,7 @@ import net.sf.gilead.core.PersistenceUtil;
  *
  * @author bruno.marchesson
  */
-public class MergeMapReplicator extends Hibernate4MapReplicator {
+public class MergeMapReplicator extends Hibernate5MapReplicator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeMapReplicator.class);
 
@@ -91,7 +91,7 @@ public class MergeMapReplicator extends Hibernate4MapReplicator {
         private Factory() {}
 
         @Override
-        public Hibernate4MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
+        public Hibernate5MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
             return new MergeMapReplicator(beanTransformer);
         }
     }
