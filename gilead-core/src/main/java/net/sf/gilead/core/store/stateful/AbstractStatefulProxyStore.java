@@ -10,7 +10,7 @@ import net.sf.gilead.exception.TransientObjectException;
 
 /**
  * Abstract class for stateful proxy store.
- * 
+ *
  * @author bruno.marchesson
  */
 public abstract class AbstractStatefulProxyStore implements ProxyStore {
@@ -69,21 +69,21 @@ public abstract class AbstractStatefulProxyStore implements ProxyStore {
 
     /**
      * Get the proxy informations associated with the key
-     * 
+     *
      * @return the value if found, null otherwise
      */
     public abstract Map<String, Serializable> get(String key);
 
     /**
      * Delete the key from the underlying storage
-     * 
+     *
      * @param key
      */
     public abstract void delete(String key);
 
     /**
      * Compute the hashmap key
-     * 
+     *
      * @param pojo
      * @param property
      * @return
@@ -95,7 +95,7 @@ public abstract class AbstractStatefulProxyStore implements ProxyStore {
 
     /**
      * Compute the hashmap key
-     * 
+     *
      * @param pojo
      * @param property
      * @return
@@ -106,7 +106,7 @@ public abstract class AbstractStatefulProxyStore implements ProxyStore {
 
     /**
      * Compute the hashmap key
-     * 
+     *
      * @param pojo
      * @param property
      * @return
