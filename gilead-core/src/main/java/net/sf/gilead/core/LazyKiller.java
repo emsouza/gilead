@@ -121,7 +121,7 @@ public class LazyKiller {
             return null;
         }
 
-        LOGGER.trace("Detaching " + hibernatePojo.toString());
+        LOGGER.debug("Detaching [{}].", hibernatePojo.toString());
 
         // Search for Proxy
         Class<?> targetClass = hibernatePojo.getClass();
@@ -146,7 +146,7 @@ public class LazyKiller {
             return null;
         }
 
-        LOGGER.trace("Detaching " + hibernatePojo.toString());
+        LOGGER.trace("Detaching [{}].", hibernatePojo.toString());
 
         // Clone with beanLib
         return clone(hibernatePojo, cloneClass);
@@ -164,7 +164,7 @@ public class LazyKiller {
             return;
         }
 
-        LOGGER.trace("Attaching " + clonePojo.toString());
+        LOGGER.debug("Attaching [{}].", clonePojo.getClass());
 
         // Populate with BeanLib
         populate(hibernatePojo, clonePojo);

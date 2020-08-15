@@ -8,28 +8,28 @@ import java.util.Map;
 /**
  * Interface for all Facade over (JPA) persistence engines. It allows the library to work with Hibernate and (soon)
  * OpenJPA and EclipseLink
- * 
+ *
  * @author bruno.marchesson
  */
 public interface PersistenceUtil {
 
     /**
      * Open a new session
-     * 
+     *
      * @return the opened session
      */
     void openSession();
 
     /**
      * Close the session opened with 'openSession' call
-     * 
+     *
      * @return the opened session
      */
     void closeCurrentSession();
 
     /**
      * Load a fresh instance of the persistent Pojo
-     * 
+     *
      * @param clonePojo the clone pojo (needed for ID)
      * @param persistentClass the persistent class
      * @return the loaded instance
@@ -63,14 +63,14 @@ public interface PersistenceUtil {
 
     /**
      * Get the persistent class without proxy
-     * 
+     *
      * @return the underlying persistent class
      */
     Class<?> getUnenhancedClass(Class<?> clazz);
 
     /**
      * Indicated if the argument class is enhanced or not
-     * 
+     *
      * @param clazz the persistent class
      * @return true is the class is enhanced, false otherwise
      */
@@ -78,7 +78,7 @@ public interface PersistenceUtil {
 
     /**
      * Indicates if the argument collection is persistent or not
-     * 
+     *
      * @param collectionClass the collection class
      * @return
      */
@@ -86,15 +86,15 @@ public interface PersistenceUtil {
 
     /**
      * Returns the underlying (real) collection for the persistent collection
-     * 
+     *
      * @param persistentCollection the persistent collection
      * @return
      */
-    public Collection<?> getUnderlyingCollection(Collection<?> persistentCollection);
+    Collection<?> getUnderlyingCollection(Collection<?> persistentCollection);
 
     /**
      * Indicates if the argument map is persistent or not
-     * 
+     *
      * @param collectionClass the collection class
      * @return
      */
@@ -102,7 +102,7 @@ public interface PersistenceUtil {
 
     /**
      * Indicates it the argument is initialized not
-     * 
+     *
      * @param proxy the instance to check
      * @return
      */
@@ -110,7 +110,7 @@ public interface PersistenceUtil {
 
     /**
      * Initialize the argument if not
-     * 
+     *
      * @param proxy the instance to initialize
      * @return
      */
@@ -118,7 +118,7 @@ public interface PersistenceUtil {
 
     /**
      * Serialize proxy informations of the argument entity into a map of properties
-     * 
+     *
      * @param proxy the proxy to serialize
      * @return a map of properties
      */
@@ -126,7 +126,7 @@ public interface PersistenceUtil {
 
     /**
      * Create an uninitialized proxy from the proxy informations
-     * 
+     *
      * @param proxyInformations the serialized proxy informations
      * @return the generated proxy
      */
@@ -134,7 +134,7 @@ public interface PersistenceUtil {
 
     /**
      * Serialize a persistent collection
-     * 
+     *
      * @param persistentCollection the persistent collection
      * @return a Map with mininmum informations needed to re-create the persistent info
      */
@@ -142,7 +142,7 @@ public interface PersistenceUtil {
 
     /**
      * Create a persistent collection from serialized informations
-     * 
+     *
      * @param parent the parent bean of the collection
      * @param serialized form of the persistent collection informations
      * @param underlyingCollection the filled underlying collection
@@ -152,7 +152,7 @@ public interface PersistenceUtil {
 
     /**
      * Serialize a persistent map
-     * 
+     *
      * @param persistentMap the persistent map
      * @return a Map with mininmum informations needed to re-create the persistent info
      */
@@ -160,7 +160,7 @@ public interface PersistenceUtil {
 
     /**
      * Create a persistent map from serialized informations
-     * 
+     *
      * @param parent the parent bean of the collection
      * @param serialized form of the persistent collection informations
      * @param underlyingMap the filled underlying map
@@ -170,7 +170,7 @@ public interface PersistenceUtil {
 
     /**
      * Load an association from the parent object
-     * 
+     *
      * @param parentClass class of the parent entity
      * @param parentId id of the parent entity
      * @param propertyName the name of the property to load
@@ -179,7 +179,7 @@ public interface PersistenceUtil {
 
     /**
      * Executes an EJBQL query.
-     * 
+     *
      * @param query the EJBQL query
      * @param parameters parameters list (can be null)
      * @return the query result list
@@ -188,7 +188,7 @@ public interface PersistenceUtil {
 
     /**
      * Executes an EJBQL query.
-     * 
+     *
      * @param query the EJBQL query
      * @param parameters parameters map (can be null)
      * @return the query result list
