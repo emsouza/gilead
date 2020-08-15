@@ -8,7 +8,7 @@ import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 
 /**
  * StackTraceElement transformer. Used to clone an exception that contains a persistent POJO
- * 
+ *
  * @author BMARCHESSON
  */
 public class StackTraceElementCustomTransformer implements CustomBeanTransformerSpi {
@@ -17,7 +17,7 @@ public class StackTraceElementCustomTransformer implements CustomBeanTransformer
 
     /**
      * Constructor
-     * 
+     *
      * @param beanTransformer
      */
     public StackTraceElementCustomTransformer(final BeanTransformerSpi beanTransformer) {

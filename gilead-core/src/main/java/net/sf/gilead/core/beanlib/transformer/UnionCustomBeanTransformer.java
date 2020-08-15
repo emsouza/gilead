@@ -9,7 +9,7 @@ import net.sf.beanlib.spi.CustomBeanTransformerSpi;
  * first appropriate one. Transforms the given instance of the source class into and instance of a destination class
  * iterating over the array of CustomBeanTransformerSpi finding the first appropriate one. This is a copy and paste from
  * http://groups.google.com/group/beanlib/browse_thread/thread/f300b5470c08f683
- * 
+ *
  * @author Hanson Char
  */
 public class UnionCustomBeanTransformer implements CustomBeanTransformerSpi {
@@ -21,7 +21,7 @@ public class UnionCustomBeanTransformer implements CustomBeanTransformerSpi {
 
     /**
      * Register the array of CustomBeanTransformerSpi used by the class
-     * 
+     *
      * @param customTransformers
      */
     public UnionCustomBeanTransformer(CustomBeanTransformerSpi... customTransformers) {
@@ -31,7 +31,7 @@ public class UnionCustomBeanTransformer implements CustomBeanTransformerSpi {
     /**
      * Iterate over the given array of CustomBeanTransformerSpi, checking if there is a valid transformer to transform
      * the 'from' object, to the target 'toClass'
-     * 
+     *
      * @param from the source object instance
      * @param toClass the destination class to transform the 'from' object in
      * @return true if a custom bean transformer was found, false if not
@@ -50,7 +50,7 @@ public class UnionCustomBeanTransformer implements CustomBeanTransformerSpi {
     /**
      * Transforms 'in' object into an instance of class 'toClass', using the first valid transformer in the
      * _customTransformers array. Returns null if no valid customTransmer is available.
-     * 
+     *
      * @param in the source object to be transformed
      * @param toClass the destination class which the instance will be returned
      * @param propertyInfo the property which will be passed on the to the valid CustomBeanTransformerSpi registered

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.sf.beanlib.spi.DetailedPropertyFilter;
 import net.sf.gilead.core.PersistenceUtil;
-import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.CloneAndMergeConstants;
 import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.pojo.base.ILightEntity;
@@ -83,16 +82,6 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 
             // Get proxy informations
             Map<String, Serializable> proxyInformations = proxyStore.getProxyInformations(cloneBean, propertyName);
-
-            // 'ReadOnly' or 'ServerOnly' annotation : original info was loaded, do not copy
-            if (AnnotationsManager.isServerOrReadOnly(persistentBean, propertyName)) {
-                // If the proxy was initialized before clone force the merge value initialization now
-                if (isInitialized(proxyInformations)) {
-                    Object persistentValue = readPropertyValue(persistentBean, readerMethod.getName());
-                    persistenceUtil.initialize(persistentValue);
-                }
-                return false;
-            }
 
             if (proxyInformations == null) {
                 // No proxy informations : just populate the property
@@ -191,9 +180,6 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
      * @return
      */
     private boolean isNullValue(Object value) {
-        if (value == null) {
-            return true;
-        }
-        return false;
+        return value == null;
     }
 }

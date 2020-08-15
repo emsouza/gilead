@@ -27,7 +27,7 @@ public class MergeCollectionReplicator extends Hibernate5CollectionReplicator {
 
     /**
      * Constructor
-     * 
+     *
      * @param beanTransformer
      */
     protected MergeCollectionReplicator(BeanTransformerSpi beanTransformer) {
@@ -91,7 +91,7 @@ public class MergeCollectionReplicator extends Hibernate5CollectionReplicator {
 
     /**
      * Factory for {@link MergeClassBeanReplicator}
-     * 
+     *
      * @author bruno.marchesson
      */
     private static class Factory implements CollectionReplicatorSpi.Factory {

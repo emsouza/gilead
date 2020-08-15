@@ -6,7 +6,7 @@ import java.util.Stack;
 
 /**
  * Thread local to store BeanLib additional parameters
- * 
+ *
  * @author bruno.marchesson
  */
 public class BeanlibCache {
