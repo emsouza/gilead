@@ -1,7 +1,5 @@
 package net.sf.gilead.core.beanlib.merge;
 
-import java.io.Serializable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +8,8 @@ import net.sf.beanlib.hibernate5.Hibernate5JavaBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.gilead.core.PersistenceUtil;
-import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.ClassMapper;
 import net.sf.gilead.core.store.ProxyStore;
-import net.sf.gilead.exception.NotPersistentObjectException;
-import net.sf.gilead.exception.TransientObjectException;
 
 /**
  * Bean replicator with different from and to classes for merge operation
@@ -112,10 +107,10 @@ public class MergeClassBeanReplicator extends Hibernate5JavaBeanReplicator {
         if (classMapper != null) {
             Class<T> sourceClass = (Class<T>) classMapper.getSourceClass(UnEnhancer.unenhanceClass(from.getClass()));
             if (sourceClass != null) {
-                LOGGER.trace("Creating mapped class " + sourceClass);
+                LOGGER.debug("Creating mapped class [{}].", sourceClass);
                 toClass = sourceClass;
             } else {
-                LOGGER.trace("Creating merged class " + toClass);
+                LOGGER.debug("Creating merged class [{}].", toClass);
             }
         }
 
@@ -125,32 +120,11 @@ public class MergeClassBeanReplicator extends Hibernate5JavaBeanReplicator {
             toClass = (Class<T>) from.getClass();
         }
 
-        T result = null;
-
-        // Proxy informations
-        if ((AnnotationsManager.hasGileadAnnotations(from.getClass())) || (AnnotationsManager.hasGileadAnnotations(toClass))) {
-            // Load entity
-            try {
-                Serializable id = persistenceUtil.getId(from, toClass);
-                toClass = chooseClass(from.getClass(), toClass);
-                result = (T) persistenceUtil.load(id, toClass);
-            } catch (NotPersistentObjectException e) {
-                LOGGER.warn("Not an hibernate class (" + toClass + ") : annotated values will not be restored.");
-                return (T) from;
-            } catch (TransientObjectException e) {
-                LOGGER.warn("Transient value of class " + toClass + " : annotated values will not be restored.");
-                return (T) from;
-            }
-        }
-
-        if (result == null) {
-            result = super.createToInstance(from, toClass);
-
-            // Dynamic proxy workaround : for inheritance purpose beanlib returns an instance of the proxy class since
-            // it inherits from the source class...
-            if ((classMapper != null) && (classMapper.getSourceClass(result.getClass()) != null)) {
-                result = newInstanceAsPrivileged(toClass);
-            }
+        T result = super.createToInstance(from, toClass);
+        // Dynamic proxy workaround : for inheritance purpose beanlib returns an instance of the proxy class since
+        // it inherits from the source class...
+        if ((classMapper != null) && (classMapper.getSourceClass(result.getClass()) != null)) {
+            result = newInstanceAsPrivileged(toClass);
         }
 
         // Add the bean to stack
