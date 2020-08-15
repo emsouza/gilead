@@ -64,7 +64,7 @@ public class MergeMapReplicator extends Hibernate5MapReplicator {
     @Override
     @SuppressWarnings("unchecked")
     public <K, V, T> T replicateMap(Map<K, V> from, Class<T> toClass) {
-        LOGGER.trace("Merge map from " + from + " to class " + toClass);
+        LOGGER.debug("Merge map from [{}] to class [{}].", from, toClass);
 
         // Get and reset persistent collection class if any
         Map<String, Serializable> proxyInformations = BeanlibCache.getProxyInformations();
