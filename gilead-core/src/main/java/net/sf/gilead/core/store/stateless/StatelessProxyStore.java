@@ -24,76 +24,60 @@ public class StatelessProxyStore implements ProxyStore {
     /**
      * Serializer for proxy informations
      */
-    private IProxySerialization _proxySerializer;
+    private IProxySerialization proxySerializer;
 
     /**
      * Use separate serialization thread
      */
-    private boolean _useSerializationThread;
+    private boolean useSerializationThread;
 
     /**
      * Separate serialization thread
      */
-    private ThreadLocal<SerializationThread> _serializationThread;
+    private ThreadLocal<SerializationThread> serializationThread;
 
     /**
      * @return the proxy serializer
      */
     public IProxySerialization getProxySerializer() {
-        return _proxySerializer;
+        return proxySerializer;
     }
 
     /**
      * @param serializer the serializer to set
      */
     public void setProxySerializer(IProxySerialization serializer) {
-        _proxySerializer = serializer;
+        this.proxySerializer = serializer;
     }
 
     /**
-     * @return the _useSerializationThread
+     * @return the useSerializationThread
      */
     public boolean getUseSerializationThread() {
-        return _useSerializationThread;
+        return useSerializationThread;
     }
 
     /**
-     * @param serializationThread the _useSerializationThread to set
+     * @param serializationThread the useSerializationThread to set
      */
     public void setUseSerializationThread(boolean serializationThread) {
-        _useSerializationThread = serializationThread;
+        this.useSerializationThread = serializationThread;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    // -------------------------------------------------------------------------
     /**
      * Constructor
      */
     public StatelessProxyStore() {
-        // default value
-        _serializationThread = new ThreadLocal<>();
-        _useSerializationThread = false;
+        serializationThread = new ThreadLocal<>();
+        useSerializationThread = false;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // ProxyStore implementation
-    //
-    // -------------------------------------------------------------------------
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.store.ProxyStore#storeProxyInformations(java.lang .Object, java.lang.String,
-     * java.util.Map)
-     */
     @Override
     public void storeProxyInformations(Object cloneBean, Object persistentBean, String property, Map<String, Serializable> proxyInformations) {
 
         // ILightEntity checking
         if (!(cloneBean instanceof ILightEntity)) {
-            throw new ProxyStoreException("Class " + cloneBean.getClass() + " must implements ILightEntity interface !", cloneBean);
+            throw new ProxyStoreException("Class " + cloneBean.getClass() + " must implements ILightEntity interface!", cloneBean);
         }
 
         // Extract initialization info
@@ -108,32 +92,22 @@ public class StatelessProxyStore implements ProxyStore {
         }
 
         // Store information in the POJO
-        if (!_useSerializationThread) {
+        if (!useSerializationThread) {
             ((ILightEntity) cloneBean).addProxyInformation(property, convertMap(proxyInformations));
         } else {
             getSerializationThread().serialize((ILightEntity) cloneBean, property, proxyInformations);
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.store.ProxyStore#removeProxyInformations(java.lang .Object, java.lang.String)
-     */
     @Override
     public void removeProxyInformations(Object pojo, String property) {
         // ILightEntity checking
-        //
         if (pojo instanceof ILightEntity) {
             // Remove information from the POJO
-            //
             ((ILightEntity) pojo).removeProxyInformation(property);
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.core.store.ProxyStore#getProxyInformations(java.lang.Object , java.lang.String)
-     */
     @Override
     public Map<String, Serializable> getProxyInformations(Object pojo, String property) {
         // ILightEntity checking
@@ -157,8 +131,8 @@ public class StatelessProxyStore implements ProxyStore {
      */
     @Override
     public void cleanUp() {
-        if ((_useSerializationThread == true) && (_serializationThread.get() != null)) {
-            LOGGER.trace("Cleaning up serialization thread");
+        if ((useSerializationThread == true) && (serializationThread.get() != null)) {
+            LOGGER.debug("Cleaning up serialization thread");
             SerializationThread thread = getSerializationThread();
 
             // Wait for end of serialization
@@ -170,33 +144,25 @@ public class StatelessProxyStore implements ProxyStore {
                 }
             }
             thread.setRunning(false);
-            _serializationThread.set(null);
+            serializationThread.set(null);
         }
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Convert Map<String,Serializable> to Map<String, Object>
      */
     protected Object convertMap(Map<String, Serializable> map) {
         // Precondition checking
-        //
         if (map == null) {
             return null;
         }
 
         // Convert map
-        //
-        if (_proxySerializer == null) {
+        if (proxySerializer == null) {
             // No serialization needed
-            //
             return map;
         } else {
-            return _proxySerializer.serialize((Serializable) map);
+            return proxySerializer.serialize((Serializable) map);
         }
     }
 
@@ -206,19 +172,16 @@ public class StatelessProxyStore implements ProxyStore {
     @SuppressWarnings("unchecked")
     protected Map<String, Serializable> convertToSerializable(Object serialized) {
         // Precondition checking
-        //
         if (serialized == null) {
             return null;
         }
 
         // Convert map
-        //
-        if (_proxySerializer == null) {
+        if (proxySerializer == null) {
             // No serialization
-            //
             return (Map<String, Serializable>) serialized;
         } else {
-            return (Map<String, Serializable>) _proxySerializer.unserialize(serialized);
+            return (Map<String, Serializable>) proxySerializer.unserialize(serialized);
         }
     }
 
@@ -226,12 +189,12 @@ public class StatelessProxyStore implements ProxyStore {
      * @return the serialization thread.
      */
     protected SerializationThread getSerializationThread() {
-        SerializationThread thread = _serializationThread.get();
+        SerializationThread thread = serializationThread.get();
         if (thread == null) {
             thread = new SerializationThread();
-            thread.setProxySerializer(_proxySerializer);
+            thread.setProxySerializer(proxySerializer);
             new Thread(thread).start();
-            _serializationThread.set(thread);
+            serializationThread.set(thread);
         }
 
         return thread;
