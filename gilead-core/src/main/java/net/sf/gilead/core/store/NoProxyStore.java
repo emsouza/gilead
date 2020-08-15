@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Empty proxy store. The proxy informations is not stored, so this store can be used for cloning entities only (trying
  * to merge them throws an exception).
- * 
+ *
  * @author bruno.marchesson
  */
 public class NoProxyStore implements ProxyStore {
@@ -20,7 +20,7 @@ public class NoProxyStore implements ProxyStore {
     @Override
     public Map<String, Serializable> getProxyInformations(Object pojo, String property) {
         // Must no be called !
-        throw new RuntimeException("Cannot merge entities with NoProxyStore !");
+        throw new RuntimeException("Cannot merge entities with NoProxyStore!");
     }
 
     /**
