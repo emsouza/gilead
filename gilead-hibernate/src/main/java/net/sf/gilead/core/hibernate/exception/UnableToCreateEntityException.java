@@ -9,8 +9,4 @@ public class UnableToCreateEntityException extends RuntimeException {
 
     private static final long serialVersionUID = 7365046921616049066L;
 
-    /**
-     * Empty constructor
-     */
-    public UnableToCreateEntityException() {}
 }
