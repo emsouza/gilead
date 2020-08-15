@@ -11,7 +11,7 @@ import net.sf.beanlib.spi.BeanMethodCollector;
 /**
  * Fast Private Setter Method collector, inspired by the beanlib one but relying on IntropsectionHelper, that caches
  * getDeclaredMethod results
- * 
+ *
  * @author bruno.marchesson
  */
 public class FastPrivateSetterMethodCollector implements BeanMethodCollector {

@@ -9,7 +9,7 @@ import net.sf.gilead.util.IntrospectionHelper;
 /**
  * Fast Private Reader Method finder, inspired by the beanlib one but relying on IntropsectionHelper, that caches
  * getDeclaredMethod results
- * 
+ *
  * @author bruno.marchesson
  */
 public class FastPrivateReaderMethodFinder implements BeanMethodFinder {
