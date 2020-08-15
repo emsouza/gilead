@@ -11,8 +11,6 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 import java.io.PrintWriter;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sf.gilead.pojo.base.ILightEntity;
 import net.sf.gilead.proxy.xml.AdditionalCode;
 import net.sf.gilead.proxy.xml.AdditionalCodeReader;
@@ -51,7 +49,7 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
             JClassType requestedClass = typeOracle.getType(typeName);
 
             // Do not generate proxy for a class already implementing ILightEntity interface
-            if (isLazyPojo(requestedClass) == true) {
+            if (isLazyPojo(requestedClass)) {
                 // LOGGER is not compatible from GWT 1.4 to GWT 1.5 !
                 // logger.info(requestedClass.getClass().getName() + "is already a lazy pojo : proxy not needed.");
                 return null;
@@ -91,6 +89,7 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
     /**
      * Create the needed source writer
      */
+    @SuppressWarnings("resource")
     protected SourceWriter getSourceWriter(TreeLogger logger, GeneratorContext context, String packageName, String className, String superclassName,
             AdditionalCode additionalCode) {
         PrintWriter printWriter = context.tryCreate(logger, packageName, className);
@@ -105,7 +104,7 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
         composerFactory.setSuperclass(superclassName);
 
         // Add implemented interface if needed
-        if (StringUtils.isEmpty(additionalCode.getImplementedInterface()) == false) {
+        if (additionalCode.getImplementedInterface() != null && !additionalCode.getImplementedInterface().isEmpty()) {
             composerFactory.addImplementedInterface(additionalCode.getImplementedInterface());
         }
 
@@ -115,7 +114,7 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
 
     /**
      * Add additional code to the instrumented class
-     * 
+     *
      * @param logger
      * @param sourceWriter
      * @param additionalCode
@@ -139,13 +138,13 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
 
     /**
      * Generates an additional attribute
-     * 
+     *
      * @param sourceWriter
      * @param attribute
      */
     protected void generateAttribute(SourceWriter sourceWriter, Attribute attribute) {
         // Javadoc comment if needed
-        if (StringUtils.isEmpty(attribute.getJavadoc()) == false) {
+        if (attribute.getJavadoc() != null && !attribute.getJavadoc().isEmpty()) {
             sourceWriter.beginJavaDocComment();
             sourceWriter.println(attribute.getJavadoc());
             sourceWriter.endJavaDocComment();
@@ -157,13 +156,13 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
 
     /**
      * Generates an additional attribute
-     * 
+     *
      * @param sourceWriter
      * @param attribute
      */
     protected void generateMethod(SourceWriter sourceWriter, Method method) {
         // Javadoc comment if needed
-        if (StringUtils.isEmpty(method.getJavadoc()) == false) {
+        if (method.getJavadoc() != null && !method.getJavadoc().isEmpty()) {
             sourceWriter.beginJavaDocComment();
             sourceWriter.println(method.getJavadoc());
             sourceWriter.endJavaDocComment();
@@ -176,7 +175,7 @@ public abstract class AbstractGwtProxyGenerator extends Generator {
 
     /**
      * Check if the argument class already implements ILightEntity
-     * 
+     *
      * @param clazz
      * @return
      */
