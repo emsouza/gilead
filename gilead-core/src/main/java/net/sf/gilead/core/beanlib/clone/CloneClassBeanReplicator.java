@@ -86,10 +86,10 @@ public class CloneClassBeanReplicator extends Hibernate5JavaBeanReplicator {
 
             // Keep target class only if not null
             if (targetClass != null) {
-                LOGGER.trace("Class mapper : from " + from.getClass() + " to " + targetClass);
+                LOGGER.debug("Class mapper : from [{}] to [{}].", from.getClass(), targetClass);
                 toClass = targetClass;
             } else {
-                LOGGER.trace("Class mapper : no target class for " + from.getClass());
+                LOGGER.debug("Class mapper : no target class for [{}],", from.getClass());
             }
         }
         return super.createToInstance(from, toClass);

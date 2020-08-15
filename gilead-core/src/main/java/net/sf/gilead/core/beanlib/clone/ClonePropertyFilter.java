@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.beanlib.spi.DetailedPropertyFilter;
 import net.sf.gilead.core.PersistenceUtil;
-import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.core.beanlib.CloneAndMergeConstants;
 import net.sf.gilead.core.store.ProxyStore;
 import net.sf.gilead.pojo.base.ILightEntity;
@@ -75,15 +74,9 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
     @Override
     public boolean propagate(String propertyName, Object fromBean, Method readerMethod, Object toBean, Method setterMethod) {
         // Is the property lazy loaded ?
-        //
         try {
             if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
                     || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
-                return false;
-            }
-
-            // 'ServerOnly' annotation handling
-            if ((AnnotationsManager.isServerOnly(fromBean, propertyName))) {
                 return false;
             }
 
@@ -97,7 +90,6 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
             boolean isPersistentMap = persistenceUtil.isPersistentMap(fromValue.getClass());
 
             // Lazy handling
-            //
             if (persistenceUtil.isInitialized(fromValue) == false) {
                 // Lazy property !
                 LOGGER.trace(fromBean.toString() + "." + propertyName + " --> not initialized");

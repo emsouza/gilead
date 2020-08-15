@@ -15,7 +15,7 @@ import net.sf.gilead.core.store.ProxyStore;
 
 /**
  * Hibernate Bean Replicator override to inject the class mapper used for clone to a different class.
- * 
+ *
  * @author bruno.marchesson
  */
 public class CloneBeanReplicator extends HibernateBeanReplicator {

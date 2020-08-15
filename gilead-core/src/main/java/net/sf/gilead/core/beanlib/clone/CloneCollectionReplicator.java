@@ -28,14 +28,14 @@ public class CloneCollectionReplicator extends Hibernate5CollectionReplicator {
     protected PersistenceUtil persistenceUtil;
 
     /**
-     * @return the _persistenceUtil
+     * @return the persistenceUtil
      */
     public PersistenceUtil getPersistenceUtil() {
         return persistenceUtil;
     }
 
     /**
-     * @param util the _persistenceUtil to set
+     * @param util the persistenceUtil to set
      */
     public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
         this.persistenceUtil = persistenceUtil;
@@ -70,7 +70,7 @@ public class CloneCollectionReplicator extends Hibernate5CollectionReplicator {
 
     /**
      * Factory for {@link CloneClassBeanReplicator}
-     * 
+     *
      * @author bruno.marchesson
      */
     private static class Factory implements CollectionReplicatorSpi.Factory {
