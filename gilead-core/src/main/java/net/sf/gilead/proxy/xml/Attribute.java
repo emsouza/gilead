@@ -149,26 +149,4 @@ public class Attribute {
 
         return result.toString();
     }
-
-    /**
-     * Convert Attribute to Java 1.4 syntax
-     */
-    public String toJava14String() {
-        StringBuffer result = new StringBuffer();
-
-        result.append(visibility);
-        result.append(" ");
-        result.append(type);
-        result.append(" ");
-        result.append(name);
-
-        if (StringUtils.isEmpty(defaultValue) == false) {
-            result.append(" = ");
-            result.append(defaultValue);
-        }
-
-        result.append(";");
-
-        return result.toString();
-    }
 }

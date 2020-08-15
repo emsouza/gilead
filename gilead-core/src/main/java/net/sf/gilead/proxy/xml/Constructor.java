@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Constructor description
- * 
+ *
  * @author bruno.marchesson
  */
 public class Constructor {
@@ -88,7 +88,7 @@ public class Constructor {
 
     /**
      * Add the argument parameter
-     * 
+     *
      * @param parameter
      */
     public void addParameter(Parameter parameter) {
@@ -120,35 +120,6 @@ public class Constructor {
                 }
 
                 result.append(parameter.toJava5String());
-            }
-        }
-        result.append(")");
-
-        return result.toString();
-    }
-
-    /**
-     * Compute Java14 syntax signature
-     */
-    public String computeJava14Signature(String className) {
-        StringBuffer result = new StringBuffer();
-
-        result.append(visibility);
-        result.append(" ");
-        result.append(className);
-        result.append("(");
-
-        if ((parameters != null) && (parameters.isEmpty() == false)) {
-            // Add parameters
-            boolean firstParameter = true;
-            for (Parameter parameter : parameters) {
-                if (firstParameter == false) {
-                    result.append(", ");
-                } else {
-                    firstParameter = false;
-                }
-
-                result.append(parameter.toJava14String());
             }
         }
         result.append(")");
