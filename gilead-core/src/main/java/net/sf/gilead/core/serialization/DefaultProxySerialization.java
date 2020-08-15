@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +15,15 @@ import org.slf4j.LoggerFactory;
 import net.sf.gilead.exception.ConvertorException;
 
 /**
- * Serialization manager singleton. It use JBoss serialization library to convert Serializable to simple byte array and
+ * Serialization manager singleton. It use Java serialization library to convert Serializable to simple byte array and
  * deserializes them when back. (needed for proxy informations, since GWT does not like Serializable type in Map<String,
  * Serializable>)
  *
  * @author bruno.marchesson
  */
-public class JBossProxySerialization implements IProxySerialization {
+public class DefaultProxySerialization implements IProxySerialization {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JBossProxySerialization.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultProxySerialization.class);
 
     @Override
     public Object serialize(Serializable serializable) {
@@ -36,7 +37,7 @@ public class JBossProxySerialization implements IProxySerialization {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(out)) {
 
             oos.writeObject(serializable);
-            return Base64.encodeToString(out.toByteArray(), false);
+            return Base64.getEncoder().encodeToString(out.toByteArray());
 
         } catch (IOException ex) {
             throw new ConvertorException("Error converting Serializable", ex);
@@ -53,7 +54,7 @@ public class JBossProxySerialization implements IProxySerialization {
             throw new RuntimeException("Cannot unserialize object : " + object + " (was expecting a String)");
         }
 
-        byte[] bytes = Base64.decodeFast((String) object);
+        byte[] bytes = Base64.getDecoder().decode((String) object);
         LOGGER.trace("Unserialization of [{}].", Arrays.toString(bytes));
 
         // Precondition checking

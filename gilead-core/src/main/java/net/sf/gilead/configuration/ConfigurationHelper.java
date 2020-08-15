@@ -2,7 +2,7 @@ package net.sf.gilead.configuration;
 
 import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.core.serialization.JBossProxySerialization;
+import net.sf.gilead.core.serialization.DefaultProxySerialization;
 import net.sf.gilead.core.store.NoProxyStore;
 import net.sf.gilead.core.store.stateful.HttpSessionProxyStore;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
@@ -37,7 +37,7 @@ public class ConfigurationHelper {
             beanManager.setPersistenceUtil(persistenceUtil);
 
             StatelessProxyStore proxyStore = new StatelessProxyStore();
-            proxyStore.setProxySerializer(new JBossProxySerialization());
+            proxyStore.setProxySerializer(new DefaultProxySerialization());
             beanManager.setProxyStore(proxyStore);
 
             beanManager.setClassMapper(null);

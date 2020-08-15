@@ -44,7 +44,7 @@ public class GwtProxySerialization extends GwtSerializer implements IProxySerial
      * Constructor
      */
     public GwtProxySerialization() {
-        stringSerializer = new JBossProxySerialization();
+        stringSerializer = new DefaultProxySerialization();
     }
 
     @Override

@@ -75,8 +75,7 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
     public boolean propagate(String propertyName, Object fromBean, Method readerMethod, Object toBean, Method setterMethod) {
         // Is the property lazy loaded ?
         try {
-            if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
-                    || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
+            if (CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) || CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName)) {
                 return false;
             }
 
@@ -90,7 +89,7 @@ public class ClonePropertyFilter implements DetailedPropertyFilter {
             boolean isPersistentMap = persistenceUtil.isPersistentMap(fromValue.getClass());
 
             // Lazy handling
-            if (persistenceUtil.isInitialized(fromValue) == false) {
+            if (!persistenceUtil.isInitialized(fromValue)) {
                 // Lazy property !
                 LOGGER.trace(fromBean.toString() + "." + propertyName + " --> not initialized");
 
