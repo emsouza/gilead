@@ -17,8 +17,11 @@ public class Message extends LightEntity implements IMessage {
     private static final long serialVersionUID = 3445339493203407152L;
 
     private int id;
+
     private Integer version;
+
     private String message;
+
     private Date date;
 
     private IUser author;
@@ -27,7 +30,7 @@ public class Message extends LightEntity implements IMessage {
      * @return the id
      */
     @Override
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
@@ -35,7 +38,7 @@ public class Message extends LightEntity implements IMessage {
      * @param id the id to set
      */
     @Override
-    public final void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 

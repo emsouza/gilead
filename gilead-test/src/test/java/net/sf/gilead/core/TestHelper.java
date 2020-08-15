@@ -267,7 +267,8 @@ public class TestHelper {
         InMemoryProxyStore proxyStore = new InMemoryProxyStore();
         proxyStore.setPersistenceUtil(persistenceUtil);
 
-        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
+        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new
+                                                                                 // PersistentBeanManager();
         beanManager.setPersistenceUtil(persistenceUtil);
         beanManager.setProxyStore(proxyStore);
         beanManager.setClassMapper(null);
@@ -284,7 +285,8 @@ public class TestHelper {
         HibernateUtil persistenceUtil = new HibernateUtil();
         persistenceUtil.setSessionFactory(HibernateContext.getSessionFactory());
 
-        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
+        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new
+                                                                                 // PersistentBeanManager();
         beanManager.setPersistenceUtil(persistenceUtil);
         beanManager.setProxyStore(new StatelessProxyStore());
 
@@ -295,18 +297,6 @@ public class TestHelper {
         beanManager.setClassMapper(classMapper);
 
         return beanManager;
-    }
-
-    /**
-     * Init bean manager for annotated Java5 mode
-     */
-    public static PersistentBeanManager initJava5AnnotatedBeanManager() {
-        HibernateContext.setContext(HibernateContext.Context.annotated);
-
-        // force init
-        PersistentBeanManager.getInstance().setPersistenceUtil(null);
-
-        return ConfigurationHelper.initStatelessBeanManager(new HibernateUtil(HibernateContext.getSessionFactory(), null));
     }
 
     /**
@@ -327,12 +317,9 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.User();
-        } else if (context == Context.java5) {
+        } else {
             // Java5
             return new net.sf.gilead.test.domain.java5.User();
-        } else {
-            // Annotated Java5
-            return new net.sf.gilead.test.domain.annotated.User();
         }
     }
 
@@ -354,12 +341,9 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Employee();
-        } else if (context == Context.java5) {
+        } else {
             // Java5
             return new net.sf.gilead.test.domain.java5.Employee();
-        } else {
-            // Annotated Java5
-            return new net.sf.gilead.test.domain.annotated.Employee();
         }
     }
 
@@ -381,12 +365,9 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Message();
-        } else if (context == Context.java5) {
+        } else {
             // Java5
             return new net.sf.gilead.test.domain.java5.Message();
-        } else {
-            // Annotated Java5
-            return new net.sf.gilead.test.domain.annotated.Message();
         }
     }
 
@@ -408,12 +389,9 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Group();
-        } else if (context == Context.java5) {
+        } else {
             // Java5
             return new net.sf.gilead.test.domain.java5.Group();
-        } else {
-            // Annotated Java5
-            return new net.sf.gilead.test.domain.annotated.Group();
         }
     }
 
@@ -435,12 +413,9 @@ public class TestHelper {
         } else if (context == Context.stateful) {
             // stateful
             return new net.sf.gilead.test.domain.stateful.Address();
-        } else if (context == Context.java5) {
+        } else {
             // Java5
             return new net.sf.gilead.test.domain.java5.Address();
-        } else {
-            // Annotated Java5
-            return new net.sf.gilead.test.domain.annotated.Address();
         }
     }
 }

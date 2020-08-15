@@ -19,7 +19,7 @@ import net.sf.gilead.test.domain.interfaces.IMessage;
 /**
  * Message domain class for Java5 Hibernate POJO This class has no inheritance on hibernate4gwt, and will be converted
  * as a DTO in HibernateRemoteService
- * 
+ *
  * @author bruno.marchesson
  */
 @Entity
@@ -29,8 +29,11 @@ public class Message implements Serializable, IMessage {
     private static final long serialVersionUID = -1067096371173906324L;
 
     private int id;
+
     private Integer version;
+
     private String message;
+
     private Date date;
 
     private User author;
@@ -39,12 +42,12 @@ public class Message implements Serializable, IMessage {
     @Override
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
     @Override
-    public final void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 

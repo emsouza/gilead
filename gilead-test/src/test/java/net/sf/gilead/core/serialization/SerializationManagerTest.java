@@ -19,16 +19,6 @@ public class SerializationManagerTest extends TestCase {
     private static final Logger LOGGER = LoggerFactory.getLogger(SerializationManagerTest.class);
 
     /**
-     * Test Java serialization
-     */
-    public void testByteStringProxySerialization() {
-        IProxySerialization proxySerialization = new ByteStringProxySerialization();
-        testIntegerConversion(proxySerialization);
-        testLongConversion(proxySerialization);
-        testMapConversion(proxySerialization);
-    }
-
-    /**
      * Test XStream serialization
      */
     public void testXStreamProxySerialization() {
@@ -42,7 +32,7 @@ public class SerializationManagerTest extends TestCase {
      * Test JBoss serialization
      */
     public void testJBossProxySerialization() {
-        IProxySerialization proxySerialization = new JBossProxySerialization();
+        IProxySerialization proxySerialization = new DefaultProxySerialization();
         testIntegerConversion(proxySerialization);
         testLongConversion(proxySerialization);
         testMapConversion(proxySerialization);

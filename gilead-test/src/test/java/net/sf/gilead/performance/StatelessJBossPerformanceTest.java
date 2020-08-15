@@ -1,12 +1,12 @@
 package net.sf.gilead.performance;
 
 import net.sf.gilead.core.TestHelper;
-import net.sf.gilead.core.serialization.JBossProxySerialization;
+import net.sf.gilead.core.serialization.DefaultProxySerialization;
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 
 /**
  * Performance test for stateless mode
- * 
+ *
  * @author bruno.marchesson
  */
 public class StatelessJBossPerformanceTest extends PerformanceTest {
@@ -19,7 +19,7 @@ public class StatelessJBossPerformanceTest extends PerformanceTest {
         // Init bean manager
         beanManager = TestHelper.initLegacyStatelessBeanManager();
 
-        ((StatelessProxyStore) beanManager.getProxyStore()).setProxySerializer(new JBossProxySerialization());
+        ((StatelessProxyStore) beanManager.getProxyStore()).setProxySerializer(new DefaultProxySerialization());
 
         // Call base setup
         super.setUp();

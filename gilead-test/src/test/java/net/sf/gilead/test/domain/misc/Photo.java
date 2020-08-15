@@ -4,7 +4,7 @@ import net.sf.gilead.pojo.java5.LightEntity;
 
 /**
  * Photo Domain class. Used for testing list order
- * 
+ *
  * @author bruno.marchesson
  */
 public class Photo extends LightEntity {
@@ -12,17 +12,18 @@ public class Photo extends LightEntity {
     private static final long serialVersionUID = -1067096371173906324L;
 
     private Integer id;
+
     private Integer version;
 
     private String url;
 
     private Page page;
 
-    public final Integer getId() {
+    public Integer getId() {
         return id;
     }
 
-    public final void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

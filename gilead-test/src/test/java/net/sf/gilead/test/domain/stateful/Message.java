@@ -17,19 +17,22 @@ public class Message implements Serializable, IMessage {
     private static final long serialVersionUID = 3421537443957416948L;
 
     private int id;
+
     private Integer version;
+
     private String message;
+
     private Date date;
 
     private User author;
 
     @Override
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
     @Override
-    public final void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
