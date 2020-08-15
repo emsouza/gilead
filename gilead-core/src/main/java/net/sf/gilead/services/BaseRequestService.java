@@ -20,17 +20,11 @@ public class BaseRequestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseRequestService.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The associated bean manager. Default value is defined by the unique instance of the singleton.
      */
     private PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 
-    // ----
-    // Properties
-    // ---
     /**
      * @return the beanManager
      */
@@ -45,30 +39,23 @@ public class BaseRequestService {
         this.beanManager = beanManager;
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Request service implementation
-    //
-    // -------------------------------------------------------------------------
     /**
      * @see net.sf.gilead.gwt.client.RequestService#executeRequest(java.lang.String, java.util.List)
      */
     @SuppressWarnings("unchecked")
     public List<Serializable> executeRequest(String query, List<Object> parameters) {
         // Precondition checking
-        //
         if (query == null) {
             throw new RuntimeException("Missing query !");
         }
 
-        LOGGER.trace("Executing request " + query);
+        LOGGER.debug("Executing request [{}].", query);
 
         if (beanManager == null) {
             throw new NullPointerException("Bean manager not set !");
         }
 
         // Get Persistence util
-        //
         PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
@@ -76,30 +63,24 @@ public class BaseRequestService {
 
         // Execute query
         // Note : double case is mandatory due to Java 6 compiler issue 6548436
-        //
         List<Serializable> result = (List<Serializable>) (Object) persistenceUtil.executeQuery(query, parameters);
         return result;
     }
 
-    /**
-     * @see net.sf.gilead.gwt.client.RequestService#executeRequest(java.lang.String, java.util.Map)
-     */
     @SuppressWarnings("unchecked")
     public List<Serializable> executeRequest(String query, Map<String, Object> parameters) {
         // Precondition checking
-        //
         if (query == null) {
             throw new RuntimeException("Missing query !");
         }
 
-        LOGGER.trace("Executing request " + query);
+        LOGGER.debug("Executing request [{}].", query);
 
         if (beanManager == null) {
             throw new NullPointerException("Bean manager not set !");
         }
 
         // Get Persistence util
-        //
         PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
@@ -107,7 +88,6 @@ public class BaseRequestService {
 
         // Execute query
         // Note : double case is mandatory due to Java 6 compiler issue 6548436
-        //
         List<Serializable> result = (List<Serializable>) (Object) persistenceUtil.executeQuery(query, parameters);
         return result;
     }

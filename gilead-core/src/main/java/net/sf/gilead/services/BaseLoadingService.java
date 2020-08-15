@@ -23,17 +23,11 @@ public class BaseLoadingService<T extends ILightEntity> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseLoadingService.class);
 
-    // ----
-    // Attributes
-    // ----
     /**
      * The associated bean manager. Default value is defined by the unique instance of the singleton.
      */
     private PersistentBeanManager beanManager = PersistentBeanManager.getInstance();
 
-    // ----
-    // Properties
-    // ---
     /**
      * @return the beanManager
      */
@@ -48,21 +42,6 @@ public class BaseLoadingService<T extends ILightEntity> {
         this.beanManager = beanManager;
     }
 
-    // -----------------------------------------------------------------------
-    //
-    // Constructors
-    //
-    // -----------------------------------------------------------------------
-    /**
-     * Constructor
-     */
-    public BaseLoadingService() {}
-
-    // -------------------------------------------------------------------------
-    //
-    // Association loading implementation
-    //
-    // -------------------------------------------------------------------------
     /**
      * Load an association from the parent entity
      *
@@ -85,11 +64,6 @@ public class BaseLoadingService<T extends ILightEntity> {
         return (Set<K>) loadAssociation(parent, propertyName);
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Entity loading methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Loads an entity
      */
@@ -114,7 +88,7 @@ public class BaseLoadingService<T extends ILightEntity> {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
 
-        LOGGER.trace("Loading entity " + className + " with ID" + id);
+        LOGGER.debug("Loading entity [{}] with ID [{}].", className, id);
 
         // Load entity and clone it
         try {
@@ -126,11 +100,6 @@ public class BaseLoadingService<T extends ILightEntity> {
 
     }
 
-    // -------------------------------------------------------------------------
-    //
-    // Internal methods
-    //
-    // -------------------------------------------------------------------------
     /**
      * Loads an association
      */
@@ -153,7 +122,7 @@ public class BaseLoadingService<T extends ILightEntity> {
             throw new NullPointerException("Persistence util not set on beanManager field !");
         }
 
-        LOGGER.trace("Loading property " + propertyName + " for entity " + parent);
+        LOGGER.debug("Loading property [{}] for entity [{}].", propertyName, parent);
 
         // Get Id
         Serializable id = persistenceUtil.getId(parent);
@@ -161,7 +130,7 @@ public class BaseLoadingService<T extends ILightEntity> {
         // Load entity and assocation
         Object entity = persistenceUtil.loadAssociation(parent.getClass(), id, propertyName);
         if (entity == null) {
-            LOGGER.warn("Cannot load entity " + parent.getClass() + "[" + id + "] with property " + propertyName);
+            LOGGER.warn("Cannot load entity [{}] with ID [{}] with property [{}].", parent.getClass(), id, propertyName);
             return null;
         }
 
