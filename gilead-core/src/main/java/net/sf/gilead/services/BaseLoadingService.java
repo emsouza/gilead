@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.gilead.core.PersistenceUtil;
 import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.core.annotations.AnnotationsManager;
 import net.sf.gilead.pojo.base.ILightEntity;
 import net.sf.gilead.util.IntrospectionHelper;
 
@@ -76,21 +75,11 @@ public class BaseLoadingService<T extends ILightEntity> {
         return (K) loadAssociation(parent, propertyName);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.gwt.client.LoadingService#loadAssociationList(net.sf.gilead .pojo.base.ILightEntity,
-     * java.lang.String)
-     */
     @SuppressWarnings("unchecked")
     public <K extends ILightEntity> List<K> loadListAssociation(T parent, String propertyName) {
         return (List<K>) loadAssociation(parent, propertyName);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see net.sf.gilead.gwt.client.LoadingService#loadSetAssociation(net.sf.gilead .pojo.base.ILightEntity,
-     * java.lang.String)
-     */
     @SuppressWarnings("unchecked")
     public <K extends ILightEntity> Set<K> loadSetAssociation(T parent, String propertyName) {
         return (Set<K>) loadAssociation(parent, propertyName);
@@ -107,7 +96,6 @@ public class BaseLoadingService<T extends ILightEntity> {
     @SuppressWarnings("unchecked")
     public T loadEntity(String className, Serializable id) {
         // Precondition checking
-        //
         if (id == null) {
             throw new NullPointerException("Missing id!");
         }
@@ -121,7 +109,6 @@ public class BaseLoadingService<T extends ILightEntity> {
         }
 
         // Get Persistence util
-        //
         PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
@@ -130,7 +117,6 @@ public class BaseLoadingService<T extends ILightEntity> {
         LOGGER.trace("Loading entity " + className + " with ID" + id);
 
         // Load entity and clone it
-        //
         try {
             Object entity = persistenceUtil.load(id, Class.forName(className));
             return (T) beanManager.clone(entity);
@@ -150,9 +136,8 @@ public class BaseLoadingService<T extends ILightEntity> {
      */
     protected Object loadAssociation(T parent, String propertyName) {
         // Precondition checking
-        //
         if (parent == null) {
-            throw new NullPointerException("Null entity !");
+            throw new NullPointerException("Null entity!");
         }
         if ((propertyName == null) || (propertyName.length() == 0)) {
             throw new NullPointerException("Null or empty property name!");
@@ -162,13 +147,7 @@ public class BaseLoadingService<T extends ILightEntity> {
             throw new NullPointerException("Bean manager not set !");
         }
 
-        if (AnnotationsManager.isServerOnly(parent, propertyName)) {
-            LOGGER.warn("Cannot load @ServerOnly property " + propertyName);
-            return null;
-        }
-
         // Get Persistence util
-        //
         PersistenceUtil persistenceUtil = beanManager.getPersistenceUtil();
         if (persistenceUtil == null) {
             throw new NullPointerException("Persistence util not set on beanManager field !");
@@ -177,11 +156,9 @@ public class BaseLoadingService<T extends ILightEntity> {
         LOGGER.trace("Loading property " + propertyName + " for entity " + parent);
 
         // Get Id
-        //
         Serializable id = persistenceUtil.getId(parent);
 
         // Load entity and assocation
-        //
         Object entity = persistenceUtil.loadAssociation(parent.getClass(), id, propertyName);
         if (entity == null) {
             LOGGER.warn("Cannot load entity " + parent.getClass() + "[" + id + "] with property " + propertyName);
@@ -189,7 +166,6 @@ public class BaseLoadingService<T extends ILightEntity> {
         }
 
         // Get getter for the property
-        //
         Object association = null;
         try {
             Method reader = IntrospectionHelper.getReaderMethodForProperty(entity.getClass(), propertyName);

@@ -10,7 +10,7 @@ import net.sf.gilead.proxy.xml.AdditionalCode;
 
 /**
  * This wrapping class loader is used to generate proxy every time that a IProxy assignable class is loaded
- * 
+ *
  * @author bruno.marchesson
  */
 public class ProxyClassLoader extends URLClassLoader {
@@ -18,20 +18,20 @@ public class ProxyClassLoader extends URLClassLoader {
     /**
      * The wrapped class loader
      */
-    private ClassLoader _wrappedClassLoader;
+    private ClassLoader wrappedClassLoader;
 
     /**
      * Indicates if the wrapped classloader is an URL one or not
      */
-    private boolean _isUrlClassLoader;
+    private boolean isUrlClassLoader;
 
     /**
      * Constructor
      */
     public ProxyClassLoader(ClassLoader wrappedClassLoader) {
         super(new URL[] {});
-        _wrappedClassLoader = wrappedClassLoader;
-        _isUrlClassLoader = (wrappedClassLoader instanceof URLClassLoader);
+        this.wrappedClassLoader = wrappedClassLoader;
+        this.isUrlClassLoader = (wrappedClassLoader instanceof URLClassLoader);
     }
 
     /**
@@ -39,8 +39,8 @@ public class ProxyClassLoader extends URLClassLoader {
      */
     @Override
     public URL findResource(String name) {
-        if (_isUrlClassLoader) {
-            return ((URLClassLoader) _wrappedClassLoader).findResource(name);
+        if (isUrlClassLoader) {
+            return ((URLClassLoader) wrappedClassLoader).findResource(name);
         } else {
             return super.findResource(name);
         }
@@ -51,8 +51,8 @@ public class ProxyClassLoader extends URLClassLoader {
      */
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
-        if (_isUrlClassLoader) {
-            return ((URLClassLoader) _wrappedClassLoader).findResources(name);
+        if (isUrlClassLoader) {
+            return ((URLClassLoader) wrappedClassLoader).findResources(name);
         } else {
             return super.findResources(name);
         }
@@ -65,7 +65,7 @@ public class ProxyClassLoader extends URLClassLoader {
      */
     @Override
     public URL getResource(String name) {
-        return _wrappedClassLoader.getResource(name);
+        return wrappedClassLoader.getResource(name);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ProxyClassLoader extends URLClassLoader {
      */
     @Override
     public InputStream getResourceAsStream(String name) {
-        return _wrappedClassLoader.getResourceAsStream(name);
+        return wrappedClassLoader.getResourceAsStream(name);
     }
 
     /**
@@ -86,7 +86,7 @@ public class ProxyClassLoader extends URLClassLoader {
      */
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-        return _wrappedClassLoader.getResources(name);
+        return wrappedClassLoader.getResources(name);
     }
 
     /**
@@ -97,17 +97,14 @@ public class ProxyClassLoader extends URLClassLoader {
         AdditionalCode additionalCode = AdditionalCodeManager.getInstance().getAdditionalCodeFor(name);
         if (additionalCode != null) {
             // Get source class name
-            //
             String sourceClassName = AdditionalCodeManager.getInstance().getSourceClassName(name, additionalCode);
-            Class<?> sourceClass = _wrappedClassLoader.loadClass(sourceClassName);
+            Class<?> sourceClass = wrappedClassLoader.loadClass(sourceClassName);
 
             // Generate proxy
-            //
             return ProxyManager.getInstance().generateProxyClass(sourceClass, additionalCode);
         } else {
             // Load class
-            //
-            return _wrappedClassLoader.loadClass(name);
+            return wrappedClassLoader.loadClass(name);
         }
     }
 }
