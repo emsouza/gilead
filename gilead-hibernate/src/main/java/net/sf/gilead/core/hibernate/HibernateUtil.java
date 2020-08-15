@@ -187,10 +187,9 @@ public class HibernateUtil implements PersistenceUtil {
     public void setSessionFactory(SessionFactory sessionFactory) {
         if ((sessionFactory != null) && (sessionFactory instanceof SessionFactoryImpl == false)) {
             // Probably a Spring injected session factory
-            //
             sessionFactory = (SessionFactory) IntrospectionHelper.searchMember(SessionFactoryImpl.class, sessionFactory);
             if (sessionFactory == null) {
-                throw new IllegalArgumentException("Cannot find Hibernate session factory implementation !");
+                throw new IllegalArgumentException("Cannot find Hibernate session factory implementation!");
             }
         }
         this.sessionFactory = (SessionFactoryImpl) sessionFactory;
@@ -205,19 +204,18 @@ public class HibernateUtil implements PersistenceUtil {
     public Serializable getId(Object pojo, Class<?> hibernateClass) {
         // Precondition checking
         if (sessionFactory == null) {
-            throw new NullPointerException("No Hibernate Session Factory defined !");
+            throw new NullPointerException("No Hibernate Session Factory defined!");
         }
 
-        // Persistence checking
+        // Verify if class is persistent.
         if (isPersistentClass(hibernateClass) == false) {
-            // Not an hibernate Class !
-            LOGGER.trace(hibernateClass + " is not persistent");
+            LOGGER.debug("Class [{}] is not persistent.", hibernateClass.getName());
             throw new NotPersistentObjectException(pojo);
         }
 
         // Retrieve Class<?> hibernate metadata
-        EntityPersister hibernateMetadata = sessionFactory.getMetamodel().entityPersisters().get(getEntityName(hibernateClass, pojo));
-        if (hibernateMetadata == null) {
+        EntityPersister entityPersister = sessionFactory.getMetamodel().entityPersisters().get(getEntityName(hibernateClass, pojo));
+        if (entityPersister == null) {
             // Component class (persistent but not metadata) : no associated id
             // So must be considered as transient
             throw new ComponentTypeException(pojo);
@@ -227,17 +225,20 @@ public class HibernateUtil implements PersistenceUtil {
         Serializable id = null;
         Class<?> pojoClass = getPersistentClass(pojo);
         if (hibernateClass.equals(pojoClass)) {
-            // Same class for pojo and hibernate class
+            LOGGER.debug("Same class for pojo [{}] and hibernateClass [{}].", pojo.getClass().getName(), hibernateClass.getName());
             if (pojo instanceof HibernateProxy) {
                 // To prevent LazyInitialisationException
+                LOGGER.debug("Get identifier by LazyInitializer [{}].", pojo.getClass().getName());
                 id = ((HibernateProxy) pojo).getHibernateLazyInitializer().getIdentifier();
             } else {
                 // Otherwise : use metada
-                id = hibernateMetadata.getEntityTuplizer().getIdentifier(pojo, null);
+                LOGGER.debug("Get identifier by ClassMetadata [{}].", pojo.getClass().getName());
+                id = entityPersister.getClassMetadata().getIdentifier(pojo, (SharedSessionContractImplementor) session);
             }
         } else {
+            LOGGER.debug("Get identifier of POJO [{}].", pojo.getClass().getName());
             // DTO case : invoke the method with the same name
-            String property = hibernateMetadata.getIdentifierPropertyName();
+            String property = entityPersister.getIdentifierPropertyName();
 
             try {
                 // compute getter method name
@@ -259,6 +260,7 @@ public class HibernateUtil implements PersistenceUtil {
         if (isUnsavedValue(pojo, id, hibernateClass)) {
             throw new TransientObjectException(pojo);
         }
+
         return id;
     }
 
@@ -284,7 +286,7 @@ public class HibernateUtil implements PersistenceUtil {
     public boolean isPersistentClass(Class<?> clazz) {
         // Precondition checking
         if (sessionFactory == null) {
-            throw new NullPointerException("No Hibernate Session Factory defined !");
+            throw new NullPointerException("No Hibernate Session Factory defined!");
         }
 
         // Check proxy (based on beanlib Unenhancer class)
@@ -322,10 +324,11 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
+    @SuppressWarnings("resource")
     public void openSession() {
         // Precondition checking
         if (sessionFactory == null) {
-            throw new NullPointerException("No Hibernate Session Factory defined !");
+            throw new NullPointerException("No Hibernate Session Factory defined!");
         }
 
         // Open a the existing session
@@ -357,6 +360,7 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
+    @SuppressWarnings("resource")
     public Object load(Serializable id, Class<?> persistentClass) {
         // Unenhance persistent class if needed
         persistentClass = getUnenhancedClass(persistentClass);
@@ -384,6 +388,7 @@ public class HibernateUtil implements PersistenceUtil {
      * Create a proxy for the argument class and id
      */
     @Override
+    @SuppressWarnings("resource")
     public Object createEntityProxy(Map<String, Serializable> proxyInformations) {
         // Get needed proxy inforamtions
         Serializable id = proxyInformations.get(ID);
@@ -704,6 +709,7 @@ public class HibernateUtil implements PersistenceUtil {
      * Flush pending modifications if needed
      */
     @Override
+    @SuppressWarnings("resource")
     public void flushIfNeeded() {
         Session session = getCurrentSession();
         if (session != null) {
@@ -713,6 +719,7 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
+    @SuppressWarnings({ "unchecked", "resource" })
     public Object loadAssociation(Class<?> parentClass, Serializable parentId, String propertyName) {
         // Create query
         StringBuilder queryString = new StringBuilder();
@@ -721,11 +728,10 @@ public class HibernateUtil implements PersistenceUtil {
         queryString.append(" item LEFT OUTER JOIN FETCH item.");
         queryString.append(propertyName);
         queryString.append(" WHERE item.id = :id");
-        LOGGER.trace("Query is '" + queryString.toString() + "'");
 
         // Fill query
         Session session = getSession();
-        Query query = session.createQuery(queryString.toString());
+        Query<Object> query = session.createQuery(queryString.toString());
         query.setParameter("id", parentId);
 
         // Execute query
@@ -733,13 +739,13 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "resource" })
     public List<Object> executeQuery(String query, List<Object> parameters) {
-        LOGGER.trace("Executing query '" + query + "'");
+        LOGGER.debug("Executing query [{}]", query);
 
         // Fill query
         Session session = getSession();
-        Query hqlQuery = session.createQuery(query);
+        Query<Object> hqlQuery = session.createQuery(query);
 
         // Fill parameters
         if (parameters != null) {
@@ -753,13 +759,13 @@ public class HibernateUtil implements PersistenceUtil {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "resource" })
     public List<Object> executeQuery(String query, Map<String, Object> parameters) {
-        LOGGER.trace("Executing query '" + query + "'");
+        LOGGER.trace("Executing query [{}].", query);
 
         // Fill query
         Session session = getSession();
-        Query hqlQuery = session.createQuery(query);
+        Query<Object> hqlQuery = session.createQuery(query);
 
         // Fill parameters
         if (parameters != null) {
@@ -795,7 +801,6 @@ public class HibernateUtil implements PersistenceUtil {
                         markClassAsPersistent(clazz, true);
                         return;
                     }
-
                 }
             }
 
@@ -811,7 +816,7 @@ public class HibernateUtil implements PersistenceUtil {
         for (String entityName : entityNames) {
             Type[] types = sessionFactory.getMetamodel().entityPersister(entityName).getPropertyTypes();
             for (Type type : types) {
-                LOGGER.trace("Scanning type " + type.getName() + " from " + clazz);
+                LOGGER.debug("Scanning type [{}] from [{}].", type.getName(), clazz);
                 computePersistentForType(type);
             }
         }
@@ -1198,7 +1203,7 @@ public class HibernateUtil implements PersistenceUtil {
                     entity = (T) createPersistentEntity(sid);
                 } catch (ObjectNotFoundException ex) {
                     // The data has already been deleted, just remove it from the collection
-                    LOGGER.trace("Deleted entity : " + sid + " cannot be retrieved from DB and thus added to snapshot", ex);
+                    LOGGER.debug("Deleted entity: " + sid + " cannot be retrieved from DB and thus added to snapshot", ex);
                 }
             }
         } else {
@@ -1215,6 +1220,7 @@ public class HibernateUtil implements PersistenceUtil {
     /**
      * Create an entity back from its serializable id
      */
+    @SuppressWarnings("resource")
     private Object createPersistentEntity(SerializableId sid) {
         return getSession().load(sid.getEntityName(), sid.getId());
     }
@@ -1326,16 +1332,18 @@ public class HibernateUtil implements PersistenceUtil {
      * @param clazz
      * @return
      */
+    @SuppressWarnings("resource")
     private String getEntityName(Class<?> clazz, Object pojo) {
         // Direct metadata search
         ManagedType<?> metadata = sessionFactory.getMetamodel().managedType(clazz);
         if (metadata != null) {
+            LOGGER.debug("Found metadata for class [{}] in managed types.", clazz.getName());
             return metadata.getJavaType().getName();
+        } else {
+            LOGGER.debug("Not found metadata for class [{}] in managed types.", clazz.getName());
         }
 
-        // Iterate over all metadata to prevent entity name bug
-        // (if entity-name is redefined in mapping file, it is not found with
-        // _sessionFatory.getClassMetada(clazz); !)
+        // Iterate over all metadata to prevent entity name bug.
         List<String> entityNames = getEntityNamesFor(clazz);
 
         // check entity names
@@ -1352,7 +1360,7 @@ public class HibernateUtil implements PersistenceUtil {
             // Get entity name
             return ((SessionImplementor) getSession()).bestGuessEntityName(pojo);
         } else {
-            throw new NullPointerException("Missing pojo for entity name retrieving !");
+            throw new NullPointerException("Missing pojo for entity name retrieving!");
         }
     }
 

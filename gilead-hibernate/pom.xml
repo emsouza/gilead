@@ -31,21 +31,5 @@
 			<artifactId>hibernate-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.wildfly</groupId>
-			<artifactId>wildfly-jpa</artifactId>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>sun.jdk</groupId>
-					<artifactId>jconsole</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 	</dependencies>
 </project>
