@@ -26,20 +26,18 @@ public class JBossProxySerialization implements IProxySerialization {
 
     @Override
     public Object serialize(Serializable serializable) {
-        LOGGER.trace("Serialization of " + serializable);
+        LOGGER.debug("Serialization of [{}].", serializable);
         // Precondition checking
         if (serializable == null) {
             return null;
         }
 
         // Serialize using Java mechanism
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(out);
-            oos.writeObject(serializable);
-            oos.close();
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(out)) {
 
+            oos.writeObject(serializable);
             return Base64.encodeToString(out.toByteArray(), false);
+
         } catch (IOException ex) {
             throw new ConvertorException("Error converting Serializable", ex);
         }
@@ -56,7 +54,7 @@ public class JBossProxySerialization implements IProxySerialization {
         }
 
         byte[] bytes = Base64.decodeFast((String) object);
-        LOGGER.trace("Unserialization of " + Arrays.toString(bytes));
+        LOGGER.trace("Unserialization of [{}].", Arrays.toString(bytes));
 
         // Precondition checking
         if ((bytes == null) || (bytes.length == 0)) {
@@ -64,10 +62,10 @@ public class JBossProxySerialization implements IProxySerialization {
         }
 
         // Convert back to Serializable
-        try {
-            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-            ObjectInputStream ois = new ObjectInputStream(in);
+        try (ByteArrayInputStream in = new ByteArrayInputStream(bytes); ObjectInputStream ois = new ObjectInputStream(in)) {
+
             return (Serializable) ois.readObject();
+
         } catch (Exception e) {
             throw new ConvertorException("Error converting Serializable", e);
         }
