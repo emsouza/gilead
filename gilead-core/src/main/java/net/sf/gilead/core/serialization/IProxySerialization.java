@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Interface for proxy serialization strategy
- * 
+ *
  * @author bruno.marchesson
  */
 public interface IProxySerialization {
