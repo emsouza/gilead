@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2008 - 2014 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -35,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *   Query q = em.createNativeQuery(
  *       "SELECT o.id, o.quantity, o.item, i.id, i.name, i.description "+
  *           "FROM Order o, Item i " +
- *           "WHERE (o.quantity > 25) AND (o.item = i.id)",
+ *           "WHERE (o.quantity &gt; 25) AND (o.item = i.id)",
  *       "OrderItemResults");
  *   &#064;SqlResultSetMapping(name="OrderItemResults",
  *       entities={

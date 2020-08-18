@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2008 - 2014 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -43,8 +43,8 @@ public enum SharedCacheMode {
 
     /**
      * Caching is enabled for all entities except those for which
-     * <code>Cacheable(false) is specified.  Entities for which
-     * <code>Cacheable(false) is specified are not cached.
+     * <code>Cacheable(false)</code> is specified.  Entities for which
+     * <code>Cacheable(false)</code> is specified are not cached.
      */
     DISABLE_SELECTIVE, 
 

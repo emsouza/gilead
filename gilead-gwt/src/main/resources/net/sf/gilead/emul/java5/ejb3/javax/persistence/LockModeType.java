@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2008 - 2014 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -50,8 +50,8 @@ package javax.persistence;
  * Transaction T2 eventually commits successfully; it does not 
  * matter whether T1 commits or rolls back and whether it does 
  * so before or after T2 commits.
- *   <li>
- *   </li> P2 (Non-repeatable read): Transaction T1 reads a row. 
+ *   </li>
+ *   <li> P2 (Non-repeatable read): Transaction T1 reads a row. 
  * Another transaction T2 then modifies or deletes that row, 
  * before T1 has committed. Both transactions eventually commit 
  * successfully.

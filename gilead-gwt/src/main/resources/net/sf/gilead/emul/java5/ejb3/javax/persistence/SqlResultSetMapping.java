@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2008 - 2015 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,12 +9,14 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
+ *     Petros Splinakis - Java Persistence 2.2
  *     Linda DeMichiel - Java Persistence 2.1
  *     Linda DeMichiel - Java Persistence 2.0
  *
  ******************************************************************************/ 
 package javax.persistence;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.TYPE;
@@ -33,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *            "o.item AS order_item, " +
  *            "i.name AS item_name, " +
  *        "FROM Order o, Item i " +
- *        "WHERE (order_quantity > 25) AND (order_item = i.id)",
+ *        "WHERE (order_quantity &gt; 25) AND (order_item = i.id)",
  *    "OrderResults");
  *    
  *    &#064;SqlResultSetMapping(name="OrderResults", 
@@ -54,6 +56,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @since Java Persistence 1.0
  */
+@Repeatable(SqlResultSetMappings.class)
 @Target({TYPE}) 
 @Retention(RUNTIME)
 public @interface SqlResultSetMapping { 

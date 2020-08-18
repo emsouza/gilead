@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2008 - 2014 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -26,7 +26,7 @@ import static javax.persistence.InheritanceType.SINGLE_TABLE;
  * hierarchy. It is specified on the entity class that is the root of
  * the entity class hierarchy.  If the <code>Inheritance</code> annotation is not
  * specified or if no inheritance type is specified for an entity
- * class hierarchy, the <code>SINGLE_TABLE<code> mapping strategy is used.
+ * class hierarchy, the <code>SINGLE_TABLE</code> mapping strategy is used.
  *
  * <pre>
  *

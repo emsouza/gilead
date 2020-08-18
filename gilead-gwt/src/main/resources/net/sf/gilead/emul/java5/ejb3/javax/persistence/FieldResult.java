@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 - 2013 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2008 - 2014 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *           "o.quantity AS order_quantity, " +
  *           "o.item AS order_item, " +
  *         "FROM Order o, Item i " +
- *         "WHERE (order_quantity > 25) AND (order_item = i.id)",
+ *         "WHERE (order_quantity &gt; 25) AND (order_item = i.id)",
  *       "OrderResults");
  *
  *   &#064;SqlResultSetMapping(name="OrderResults",
