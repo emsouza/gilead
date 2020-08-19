@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
+import javax.persistence.Embeddable;
 import javax.persistence.metamodel.ManagedType;
 
 import org.hibernate.Hibernate;
@@ -792,12 +793,12 @@ public class HibernateUtil implements PersistenceUtil {
 
         // Get associated metadata
         List<String> entityNames = getEntityNamesFor(clazz);
-        if ((entityNames == null) || (entityNames.isEmpty() == true)) {
+        if (entityNames == null || entityNames.isEmpty()) {
             // Not persistent : check implemented interfaces (they can be declared as persistent !!)
             Class<?>[] interfaces = clazz.getInterfaces();
             if (interfaces != null) {
-                for (Class<?> interface1 : interfaces) {
-                    if (isPersistentClass(interface1)) {
+                for (Class<?> inter : interfaces) {
+                    if (isPersistentClass(inter)) {
                         markClassAsPersistent(clazz, true);
                         return;
                     }
@@ -811,6 +812,10 @@ public class HibernateUtil implements PersistenceUtil {
 
         // Persistent class
         markClassAsPersistent(clazz, true);
+
+        if (clazz.isAnnotationPresent(Embeddable.class)) {
+            return;
+        }
 
         // Look for component classes
         for (String entityName : entityNames) {
@@ -830,9 +835,9 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private void markClassAsPersistent(Class<?> clazz, boolean persistent) {
         if (persistent) {
-            LOGGER.trace("Marking " + clazz + " as persistent");
+            LOGGER.debug("Marking [{}] as persistent", clazz);
         } else {
-            LOGGER.trace("Marking " + clazz + " as not persistent");
+            LOGGER.debug("Marking [{}] as not persistent", clazz);
         }
         synchronized (persistenceMap) {
             // Debug check
