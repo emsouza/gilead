@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>net.sf.gilead</groupId>
 		<artifactId>gilead</artifactId>
-		<version>3.2.0-SNAPSHOT</version>
+		<version>3.2.0</version>
 	</parent>
 
 	<dependencies>
