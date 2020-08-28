@@ -32,6 +32,6 @@ public class JpaUtil extends HibernateUtil {
      */
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         // Call parent setSessionFactory
-        setSessionFactory(((SessionFactory) entityManagerFactory));
+        setSessionFactory((SessionFactory) entityManagerFactory);
     }
 }

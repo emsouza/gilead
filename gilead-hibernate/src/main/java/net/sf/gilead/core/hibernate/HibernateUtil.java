@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import javax.persistence.Embeddable;
+import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.ManagedType;
 
 import org.hibernate.Hibernate;
@@ -54,7 +54,6 @@ import net.sf.gilead.core.serialization.SerializableId;
 import net.sf.gilead.exception.ComponentTypeException;
 import net.sf.gilead.exception.NotPersistentObjectException;
 import net.sf.gilead.exception.TransientObjectException;
-import net.sf.gilead.pojo.base.ILightEntity;
 import net.sf.gilead.pojo.base.IUserType;
 import net.sf.gilead.util.IntrospectionHelper;
 
@@ -511,12 +510,13 @@ public class HibernateUtil implements PersistenceUtil {
             collection.dirty();
         }
 
-        // Associated the collection to the persistence context
-        if (isInitialized(proxyInformations) == true) {
-            session.getPersistenceContext().addInitializedDetachedCollection(collectionPersister, collection);
-        } else {
-            session.getPersistenceContext().addUninitializedDetachedCollection(collectionPersister, collection);
-        }
+        // In Hibernate 5.4 causes NullPointer in some cases
+        // // Associated the collection to the persistence context
+        // if (isInitialized(proxyInformations) == true) {
+        // session.getPersistenceContext().addInitializedDetachedCollection(collectionPersister, collection);
+        // } else {
+        // session.getPersistenceContext().addUninitializedDetachedCollection(collectionPersister, collection);
+        // }
 
         return (Map<?, ?>) collection;
     }
@@ -604,12 +604,14 @@ public class HibernateUtil implements PersistenceUtil {
                 collection.dirty();
             }
 
+            // In Hibernate 5.4 causes NullPointer in some cases
             // Associated the collection to the persistence context
-            if (isInitialized(proxyInformations) == true) {
-                session.getPersistenceContext().addInitializedDetachedCollection(collectionPersister, collection);
-            } else {
-                session.getPersistenceContext().addUninitializedDetachedCollection(collectionPersister, collection);
-            }
+            // if (isInitialized(proxyInformations) == true) {
+            // session.getPersistenceContext().addInitializedDetachedCollection(collectionPersister, collection);
+            // }
+            // else {
+            // session.getPersistenceContext().addUninitializedDetachedCollection(collectionPersister, collection);
+            // }
 
             return (Collection<?>) collection;
         } catch (UnableToCreateEntityException ex) {
@@ -793,7 +795,7 @@ public class HibernateUtil implements PersistenceUtil {
 
         // Get associated metadata
         List<String> entityNames = getEntityNamesFor(clazz);
-        if (entityNames == null || entityNames.isEmpty()) {
+        if ((entityNames == null) || (entityNames.isEmpty() == true)) {
             // Not persistent : check implemented interfaces (they can be declared as persistent !!)
             Class<?>[] interfaces = clazz.getInterfaces();
             if (interfaces != null) {
@@ -813,13 +815,9 @@ public class HibernateUtil implements PersistenceUtil {
         // Persistent class
         markClassAsPersistent(clazz, true);
 
-        if (clazz.isAnnotationPresent(Embeddable.class)) {
-            return;
-        }
-
         // Look for component classes
         for (String entityName : entityNames) {
-            Type[] types = sessionFactory.getMetamodel().entityPersister(entityName).getPropertyTypes();
+            Type[] types = sessionFactory.getClassMetadata(entityName).getPropertyTypes();
             for (Type type : types) {
                 LOGGER.debug("Scanning type [{}] from [{}].", type.getName(), clazz);
                 computePersistentForType(type);
@@ -866,11 +864,11 @@ public class HibernateUtil implements PersistenceUtil {
             }
         }
 
-        LOGGER.trace("Scanning type " + type.getName());
+        LOGGER.debug("Scanning type [{}]", type.getName());
 
         if (type.isComponentType()) {
             // Add the Class to the persistent map
-            LOGGER.trace("Type " + type.getName() + " is component type");
+            LOGGER.debug("Type [{}] is component type", type.getName());
 
             markClassAsPersistent(type.getReturnedClass(), true);
 
@@ -880,15 +878,15 @@ public class HibernateUtil implements PersistenceUtil {
             }
         } else if (IUserType.class.isAssignableFrom(type.getReturnedClass())) {
             // Add the Class to the persistent map
-            LOGGER.trace("Type " + type.getName() + " is user type");
+            LOGGER.debug("Type [{}] is user type", type.getName());
 
             markClassAsPersistent(type.getReturnedClass(), true);
         } else if (type.isCollectionType()) {
             // Collection handling
-            LOGGER.trace("Type " + type.getName() + " is collection type");
+            LOGGER.debug("Type [{}] is collection type", type.getName());
             computePersistentForType(((CollectionType) type).getElementType(sessionFactory));
         } else if (type.isEntityType()) {
-            LOGGER.trace("Type " + type.getName() + " is entity type");
+            LOGGER.debug("Type [{}] is entity type", type.getName());
             computePersistenceForClass(type.getReturnedClass());
         }
     }
@@ -1374,32 +1372,13 @@ public class HibernateUtil implements PersistenceUtil {
      */
     private List<String> getEntityNamesFor(Class<?> clazz) {
         List<String> entityNames = new ArrayList<>();
-        Set<ManagedType<?>> allMetadata = sessionFactory.getMetamodel().getManagedTypes();
-        for (ManagedType<?> classMetadata : allMetadata) {
-            if (clazz.equals(classMetadata.getJavaType())) {
-                entityNames.add(classMetadata.getJavaType().getName());
+        for (EntityType<?> type : sessionFactory.getMetamodel().getEntities()) {
+            if (clazz.equals(type.getBindableJavaType())) {
+                entityNames.add(type.getBindableJavaType().getName());
             }
         }
 
         return entityNames;
-    }
-
-    /**
-     * Does the proxy info denotes a initialized entity ?
-     *
-     * @param proxyInfo
-     * @return
-     */
-    private boolean isInitialized(Map<String, Serializable> proxyInfo) {
-        if (proxyInfo != null) {
-            Serializable initialized = proxyInfo.get(ILightEntity.INITIALISED);
-            if (initialized != null) {
-                return ((Boolean) initialized).booleanValue();
-            }
-        }
-
-        // The property has no proxy info or it does not contains 'initialized' field
-        return true;
     }
 }
 
