@@ -32,7 +32,7 @@ public class GileadRPCHelper {
         // Set Proxy class loader (privileged code needed)
         //
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        if (!(contextClassLoader instanceof ProxyClassLoader)) {
+        if (contextClassLoader instanceof ProxyClassLoader == false) {
             LOGGER.info("Setting proxy class loader for thread " + Thread.currentThread());
 
             // initialize AdditionalCodeManager before changing class loader to prevent stack overflow

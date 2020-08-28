@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 - 2015 Oracle Corporation. All rights reserved.
+ * Copyright (c) 2011 - 2013 Oracle Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
@@ -9,13 +9,11 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
- *     Petros Splinakis - Java Persistence 2.2
  *     Linda DeMichiel - Java Persistence 2.1
  *
  ******************************************************************************/
 package javax.persistence;
 
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.TYPE;
@@ -79,7 +77,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *     public class Employee {
  *         &#064;Id long id;
  *
- *         &#064;Convert(converter=BooleanToIntegerConverter.class)
+ *         &#064;Convert(BooleanToIntegerConverter.class)
  *          boolean fullTime;
  *          ...
  *     }
@@ -110,7 +108,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  *     &#064;ElementCollection
  *     // applies to each element in the collection
- *     &#064;Convert(converter=NameConverter.class) 
+ *     &#064;Convert(NameConverter.class) 
  *     List&#060;String&#062; names;
  *
  *
@@ -118,7 +116,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *                 The converter is applied to the map value.
  *
  *     &#064;ElementCollection
- *     &#064;Convert(converter=EmployeeNameConverter.class)
+ *     &#064;Convert(EmployeeNameConverter.class)
  *     Map&#060;String, String&#062; responsibilities;
  *
  *
@@ -151,7 +149,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  *     &#064;Entity public class PropertyRecord {
  *          ...
- *         &#064;Convert(attributeName="key.region.city", 
+ *         &#064;Convert(name="key.region.city", 
  *                  converter=CityConverter.class)
  *         &#064;ElementCollection
  *         Map&#060;Address, PropertyInfo&#062; parcels;
@@ -183,7 +181,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  *  @since Java Persistence 2.1
  */
-@Repeatable(Converts.class)
 @Target({METHOD, FIELD, TYPE}) @Retention(RUNTIME)
 public @interface Convert {
 
