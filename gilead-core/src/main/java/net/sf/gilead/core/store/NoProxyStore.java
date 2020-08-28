@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Empty proxy store. The proxy informations is not stored, so this store can be used for cloning entities only (trying
  * to merge them throws an exception).
- *
+ * 
  * @author bruno.marchesson
  */
 public class NoProxyStore implements ProxyStore {

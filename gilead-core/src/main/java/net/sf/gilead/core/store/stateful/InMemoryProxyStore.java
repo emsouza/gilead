@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * In Memory Proxy Information Store. This class stores POJO in a simple hashmap
- *
+ * 
  * @author bruno.marchesson
  */
 public class InMemoryProxyStore extends AbstractStatefulProxyStore {

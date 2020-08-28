@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * Singleton for instrospection search
- *
+ * 
  * @author bruno.marchesson
  */
 public class IntrospectionHelper {

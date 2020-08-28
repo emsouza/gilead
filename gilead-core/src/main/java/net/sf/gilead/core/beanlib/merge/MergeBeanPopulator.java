@@ -13,14 +13,14 @@ import net.sf.gilead.core.store.ProxyStore;
 
 /**
  * Bean populator for merge operation
- *
+ * 
  * @author bruno.marchesson
  */
 public class MergeBeanPopulator {
 
     /**
      * Create a new populator for merge operation
-     *
+     * 
      * @param from the source class
      * @param to the target class
      * @param classMapper the associated class mapper

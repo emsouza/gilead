@@ -11,7 +11,7 @@ import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 /**
  * Timestamp transformer. Needed to keep nanoseconds part (by default, beanLib will convert it to simple Date if the
  * setter only declares an argument of type java.util.Date)
- *
+ * 
  * @author BMARCHESSON
  */
 public class TimestampCustomTransformer implements CustomBeanTransformerSpi {
@@ -20,7 +20,7 @@ public class TimestampCustomTransformer implements CustomBeanTransformerSpi {
 
     /**
      * Constructor
-     *
+     * 
      * @param beanTransformer
      */
     public TimestampCustomTransformer(final BeanTransformerSpi beanTransformer) {

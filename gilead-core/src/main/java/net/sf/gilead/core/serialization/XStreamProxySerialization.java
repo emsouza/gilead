@@ -35,7 +35,7 @@ public class XStreamProxySerialization implements IProxySerialization {
      */
     @Override
     public Object serialize(Serializable serializable) {
-        LOGGER.debug("Serialization of [{}].", serializable);
+        LOGGER.trace("Serialization of " + serializable);
         // Precondition checking
         if (serializable == null) {
             return null;
@@ -60,7 +60,7 @@ public class XStreamProxySerialization implements IProxySerialization {
         }
 
         String string = (String) object;
-        LOGGER.debug("Unserialization of [{}].", string);
+        LOGGER.trace("Unserialization of " + string);
 
         // String checking
         if (string.length() == 0) {

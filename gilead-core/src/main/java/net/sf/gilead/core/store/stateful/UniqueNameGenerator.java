@@ -10,7 +10,7 @@ import net.sf.gilead.exception.TransientObjectException;
 
 /**
  * Static class for unique name generation
- *
+ * 
  * @author BMARCHESSON
  */
 public class UniqueNameGenerator {
@@ -49,7 +49,7 @@ public class UniqueNameGenerator {
     /**
      * Gets a unique ID for the argument persistent bean. It simply returns the ID of persistent bean, or the ID of the
      * parent persistent bean for component types.
-     *
+     * 
      * @param persistenceUtil the persistence util
      * @param persistentBean the persistent bean
      * @return

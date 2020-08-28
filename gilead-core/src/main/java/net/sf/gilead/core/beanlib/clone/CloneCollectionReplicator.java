@@ -28,14 +28,14 @@ public class CloneCollectionReplicator extends Hibernate5CollectionReplicator {
     protected PersistenceUtil persistenceUtil;
 
     /**
-     * @return the persistenceUtil
+     * @return the _persistenceUtil
      */
     public PersistenceUtil getPersistenceUtil() {
         return persistenceUtil;
     }
 
     /**
-     * @param util the persistenceUtil to set
+     * @param util the _persistenceUtil to set
      */
     public void setPersistenceUtil(PersistenceUtil persistenceUtil) {
         this.persistenceUtil = persistenceUtil;

@@ -30,7 +30,7 @@ public class SerializableIdConverter implements Converter {
 
     /**
      * (non-Javadoc)
-     *
+     * 
      * @see com.thoughtworks.xstream.converters.ConverterMatcher#canConvert(java.lang.Class)
      */
     @Override
@@ -40,7 +40,7 @@ public class SerializableIdConverter implements Converter {
 
     /**
      * (non-Javadoc)
-     *
+     * 
      * @see com.thoughtworks.xstream.converters.Converter#marshal(java.lang.Object,
      *      com.thoughtworks.xstream.io.HierarchicalStreamWriter,
      *      com.thoughtworks.xstream.converters.MarshallingContext)
@@ -60,7 +60,7 @@ public class SerializableIdConverter implements Converter {
 
     /**
      * (non-Javadoc)
-     *
+     * 
      * @see com.thoughtworks.xstream.converters.Converter#unmarshal(com.thoughtworks.xstream.io.HierarchicalStreamReader,
      *      com.thoughtworks.xstream.converters.UnmarshallingContext)
      */

@@ -88,7 +88,6 @@ public class MergeMapReplicator extends Hibernate5MapReplicator {
      * @author bruno.marchesson
      */
     private static class Factory implements MapReplicatorSpi.Factory {
-        private Factory() {}
 
         @Override
         public Hibernate5MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {

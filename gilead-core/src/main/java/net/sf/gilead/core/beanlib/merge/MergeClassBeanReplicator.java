@@ -121,6 +121,7 @@ public class MergeClassBeanReplicator extends Hibernate5JavaBeanReplicator {
         }
 
         T result = super.createToInstance(from, toClass);
+
         // Dynamic proxy workaround : for inheritance purpose beanlib returns an instance of the proxy class since
         // it inherits from the source class...
         if ((classMapper != null) && (classMapper.getSourceClass(result.getClass()) != null)) {

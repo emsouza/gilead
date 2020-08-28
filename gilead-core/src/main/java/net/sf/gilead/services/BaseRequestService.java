@@ -45,6 +45,7 @@ public class BaseRequestService {
     @SuppressWarnings("unchecked")
     public List<Serializable> executeRequest(String query, List<Object> parameters) {
         // Precondition checking
+        //
         if (query == null) {
             throw new RuntimeException("Missing query !");
         }

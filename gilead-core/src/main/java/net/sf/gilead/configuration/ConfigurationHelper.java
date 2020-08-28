@@ -9,7 +9,7 @@ import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 
 /**
  * Configuration helper to simplify Gilead configuration.
- * 
+ *
  * @author bruno.marchesson
  */
 public class ConfigurationHelper {

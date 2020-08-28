@@ -76,7 +76,8 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
 
         try {
             // Precondition checking
-            if (CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) || CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName)) {
+            if ((CloneAndMergeConstants.PROXY_INFORMATIONS.equals(propertyName) == true)
+                    || (CloneAndMergeConstants.INITIALIZATION_MAP.equals(propertyName) == true)) {
                 return false;
             }
 
@@ -116,7 +117,7 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
                     // Store proxy info for the copy operation
                     BeanlibCache.setProxyInformations(proxyInformations);
                 }
-            } else if (isNullValue(cloneValue) && !isInitialized(proxyInformations)) {
+            } else if (isNullValue(cloneValue) && isInitialized(proxyInformations) == false) {
                 // Set an entity proxy
                 Object proxy = persistenceUtil.createEntityProxy(proxyInformations);
                 if (proxy != null) {
@@ -180,6 +181,9 @@ public class MergePropertyFilter implements DetailedPropertyFilter {
      * @return
      */
     private boolean isNullValue(Object value) {
-        return value == null;
+        if (value == null) {
+            return true;
+        }
+        return false;
     }
 }

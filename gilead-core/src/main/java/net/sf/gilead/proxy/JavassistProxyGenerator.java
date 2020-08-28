@@ -98,7 +98,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
      * @throws CannotCompileException
      */
     protected void generateAttribute(CtClass proxyClass, Attribute attribute) throws CannotCompileException {
-        CtField field = CtField.make(attribute.toJava5String(), proxyClass);
+        CtField field = CtField.make(attribute.toJava14String(), proxyClass);
         proxyClass.addField(field);
     }
 
@@ -112,7 +112,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
     private void generateMethod(CtClass proxyClass, Method method) throws CannotCompileException {
         // Source code
         StringBuffer sourceCode = new StringBuffer();
-        sourceCode.append(method.computeJava5Signature());
+        sourceCode.append(method.computeJava14Signature());
         sourceCode.append(method.getCode());
 
         // Add method body
@@ -130,7 +130,7 @@ public class JavassistProxyGenerator implements IServerProxyGenerator {
     private void generateConstructor(CtClass proxyClass, Constructor constructor) throws CannotCompileException {
         // Source code
         StringBuffer sourceCode = new StringBuffer();
-        sourceCode.append(constructor.computeJava5Signature(ClassUtils.getShortClassName(proxyClass.getName())));
+        sourceCode.append(constructor.computeJava14Signature(ClassUtils.getShortClassName(proxyClass.getName())));
         sourceCode.append(constructor.getCode());
 
         // Add method body

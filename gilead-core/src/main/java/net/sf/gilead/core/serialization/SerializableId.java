@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Id / Class structure for proxy information collection handling
- *
+ * 
  * @author bruno.marchesson
  */
 public class SerializableId implements Serializable {

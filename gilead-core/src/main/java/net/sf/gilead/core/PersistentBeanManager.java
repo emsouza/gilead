@@ -80,6 +80,7 @@ public class PersistentBeanManager {
      * Empty Constructor
      */
     private PersistentBeanManager() {
+        // Default parameters
         proxyStore = new StatelessProxyStore();
         lazyKiller = new LazyKiller();
         lazyKiller.setProxyStore(proxyStore);
@@ -264,16 +265,16 @@ public class PersistentBeanManager {
                     targetClass = hibernateClass;
                 }
 
-                if (assignable && !hibernateClass.isAssignableFrom(targetClass)) {
+                if ((assignable == true) && (hibernateClass.isAssignableFrom(targetClass) == false)) {
                     throw new NotAssignableException(hibernateClass, targetClass);
                 }
 
                 // Proxy checking
-                if (!persistenceUtil.isInitialized(pojo)) {
+                if (persistenceUtil.isInitialized(pojo) == false) {
                     // If the root pojo is not initialized, replace it by null
                     return null;
                 }
-            } else if (!holdPersistentObject(pojo)) {
+            } else if (holdPersistentObject(pojo) == false) {
 
                 // Do not clone not persistent classes, since they do not necessary implement Java Bean
                 // specification.
@@ -339,9 +340,9 @@ public class PersistentBeanManager {
         }
 
         // Precondition checking : is the pojo managed by Hibernate
-        if (persistenceUtil.isPersistentClass(hibernateClass)) {
+        if (persistenceUtil.isPersistentClass(hibernateClass) == true) {
             // Assignation checking
-            if (assignable && !hibernateClass.isAssignableFrom(cloneClass)) {
+            if ((assignable == true) && (hibernateClass.isAssignableFrom(cloneClass) == false)) {
                 throw new NotAssignableException(hibernateClass, cloneClass);
             }
         }
@@ -377,7 +378,7 @@ public class PersistentBeanManager {
             try {
 
                 LOGGER.debug("Create new object to merge cloned instance [{}].", hibernateClass.getName());
-                Constructor<?> constructor = hibernateClass.getDeclaredConstructor();
+                Constructor<?> constructor = hibernateClass.getDeclaredConstructor(new Class<?>[] {});
                 constructor.setAccessible(true);
                 hibernatePojo = constructor.newInstance();
 
@@ -466,7 +467,7 @@ public class PersistentBeanManager {
         if (persistenceUtil.isPersistentCollection(collectionClass) || collectionClass.isAnonymousClass() || collectionClass.isMemberClass()
                 || collectionClass.isLocalClass()) {
             // Create a basic collection
-            return (Collection<Object>) createBasicCollection(pojoCollection);
+            return createBasicCollection(pojoCollection);
         } else {
             // Create the same collection
             Collection<Object> result = null;
@@ -482,7 +483,7 @@ public class PersistentBeanManager {
                 } catch (NoSuchMethodException ex) {
                     // No empty or simple constructor : fallback on basic collection
                     LOGGER.warn("Unable to find basic constructor for [{}]. Falling back to basic collection.", collectionClass.getName());
-                    return (Collection<Object>) createBasicCollection(pojoCollection);
+                    return createBasicCollection(pojoCollection);
                 } catch (Exception ex) {
                     throw new RuntimeException("Cannot instantiate collection !", ex);
                 }
@@ -490,7 +491,7 @@ public class PersistentBeanManager {
                 throw new RuntimeException("Cannot instantiate collection !", ex);
             }
 
-            if (!collectionClass.getPackage().getName().startsWith("java")) {
+            if (collectionClass.getPackage().getName().startsWith("java") == false) {
                 // Extend collections (such as PagingList)
                 lazyKiller.populate(result, pojoCollection);
             }
@@ -501,18 +502,32 @@ public class PersistentBeanManager {
     /**
      * Creation of basic collection
      *
-     * @param collection
+     * @param pojoCollection
      * @return
      */
-    protected Collection<?> createBasicCollection(Collection<?> collection) {
-        if (collection instanceof List) {
-            return new ArrayList<>(collection.size());
-        } else if (collection instanceof SortedSet) {
-            return new TreeSet<>();
-        } else if (collection instanceof Set) {
-            return new HashSet<>(collection.size());
+    protected Collection<Object> createBasicCollection(Collection<?> pojoCollection) {
+        if (pojoCollection instanceof List) {
+            try {
+                return new ArrayList<>(pojoCollection.size());
+            } catch (Exception ex) {
+                // No access to size ? lazy initialization exception ?
+                LOGGER.trace("Error creating array list with size " + ex);
+                return new ArrayList<>();
+            }
+        } else if (pojoCollection instanceof Set) {
+            if (pojoCollection instanceof SortedSet) {
+                return new TreeSet<>();
+            } else {
+                try {
+                    return new HashSet<>(pojoCollection.size());
+                } catch (Exception ex) {
+                    // No access to size ? lazy initialization exception ?
+                    LOGGER.trace("Error creating hash set with size " + ex);
+                    return new HashSet<>();
+                }
+            }
         } else {
-            throw new CloneException(String.format("Unhandled collection type [%s].", collection.getClass().getName()));
+            throw new CloneException(String.format("Unhandled collection type [%s].", pojoCollection.getClass().getName()));
         }
     }
 
@@ -532,7 +547,7 @@ public class PersistentBeanManager {
         } else {
             // Create the same map
             try {
-                Constructor<?> constructor = mapClass.getConstructor();
+                Constructor<?> constructor = mapClass.getConstructor((Class[]) null);
                 return (Map<Object, Object>) constructor.newInstance();
             } catch (Exception ex) {
                 throw new RuntimeException("Cannot instantiate collection!", ex);
@@ -562,7 +577,7 @@ public class PersistentBeanManager {
     protected boolean holdPersistentObject(Object pojo, List<Object> alreadyChecked) {
         try {
             // Precondition checking
-            if (pojo == null || alreadyChecked.contains(pojo)) {
+            if ((pojo == null) || (alreadyChecked.contains(pojo))) {
                 return false;
             }
 
@@ -575,8 +590,8 @@ public class PersistentBeanManager {
                 }
             }
 
-            if (persistenceUtil.isEnhanced(pojoClass) || persistenceUtil.isPersistentClass(pojoClass)
-                    || persistenceUtil.isPersistentCollection(pojoClass)) {
+            if ((persistenceUtil.isEnhanced(pojoClass) == true) || (persistenceUtil.isPersistentClass(pojoClass) == true)
+                    || (persistenceUtil.isPersistentCollection(pojoClass) == true)) {
                 return true;
             }
 
@@ -612,7 +627,8 @@ public class PersistentBeanManager {
                 boolean isCollection = Collection.class.isAssignableFrom(propertyClass) || Map.class.isAssignableFrom(propertyClass);
                 boolean isObject = propertyClass.equals(Object.class);
 
-                if (ClassUtils.immutable(propertyClass) || (ClassUtils.isJavaPackage(propertyClass) && !isCollection && !isObject)) {
+                if ((ClassUtils.immutable(propertyClass) == true)
+                        || ((ClassUtils.isJavaPackage(propertyClass) == true) && (isCollection == false) && (isObject == false))) {
                     // Basic type : no check needed
                     continue;
                 }
@@ -637,11 +653,11 @@ public class PersistentBeanManager {
                 // Get real property class
                 propertyClass = propertyValue.getClass();
 
-                if (classMapper != null && classMapper.getSourceClass(propertyClass) != null) {
+                if ((classMapper != null) && (classMapper.getSourceClass(propertyClass) != null)) {
                     propertyClass = classMapper.getSourceClass(propertyClass);
                 }
 
-                if (persistenceUtil.isPersistentClass(propertyClass) || persistenceUtil.isPersistentCollection(propertyClass)) {
+                if ((persistenceUtil.isPersistentClass(propertyClass) == true) || (persistenceUtil.isPersistentCollection(propertyClass) == true)) {
                     return true;
                 }
 
@@ -650,7 +666,7 @@ public class PersistentBeanManager {
                     // Check collection values
                     Collection<?> propertyCollection = (Collection<?>) propertyValue;
                     for (Object value : propertyCollection) {
-                        if (holdPersistentObject(value, alreadyChecked)) {
+                        if (holdPersistentObject(value, alreadyChecked) == true) {
                             return true;
                         }
                     }
@@ -658,7 +674,8 @@ public class PersistentBeanManager {
                     // Check map entry and values
                     Map<?, ?> propertyMap = (Map<?, ?>) propertyValue;
                     for (Map.Entry<?, ?> value : propertyMap.entrySet()) {
-                        if (holdPersistentObject(value.getKey(), alreadyChecked) || holdPersistentObject(value.getValue(), alreadyChecked)) {
+                        if ((holdPersistentObject(value.getKey(), alreadyChecked) == true)
+                                || (holdPersistentObject(value.getValue(), alreadyChecked) == true)) {
                             return true;
                         }
                     }
@@ -666,13 +683,13 @@ public class PersistentBeanManager {
                     // Check array elements
                     Object[] propertyValues = (Object[]) propertyValue;
                     for (Object propertyValue2 : propertyValues) {
-                        if (holdPersistentObject(propertyValue2)) {
+                        if (holdPersistentObject(propertyValue2) == true) {
                             return true;
                         }
                     }
                 } else {
                     // Recursive search
-                    if (holdPersistentObject(propertyValue, alreadyChecked)) {
+                    if (holdPersistentObject(propertyValue, alreadyChecked) == true) {
                         return true;
                     }
                 }

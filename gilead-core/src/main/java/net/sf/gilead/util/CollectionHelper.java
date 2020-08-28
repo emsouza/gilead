@@ -5,7 +5,7 @@ import java.util.Collection;
 
 /**
  * Generic collection helper class
- *
+ * 
  * @author bruno.marchesson
  */
 public class CollectionHelper {

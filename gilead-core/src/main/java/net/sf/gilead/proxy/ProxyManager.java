@@ -21,49 +21,49 @@ public class ProxyManager {
     /**
      * Unique instance of the singleton
      */
-    private static ProxyManager instance = null;
+    private static ProxyManager _instance = null;
 
     /**
      * Proxy generator
      */
-    private IServerProxyGenerator proxyGenerator;
+    private IServerProxyGenerator _proxyGenerator;
 
     /**
      * Map of the generated proxy
      */
-    private Map<Class<?>, Class<?>> generatedProxyMap;
+    private Map<Class<?>, Class<?>> _generatedProxyMap;
 
     /**
      * @return the instance
      */
     public static synchronized ProxyManager getInstance() {
-        if (instance == null) {
-            instance = new ProxyManager();
+        if (_instance == null) {
+            _instance = new ProxyManager();
         }
-        return instance;
+        return _instance;
     }
 
     /**
      * @return the proxy Generator
      */
     public IServerProxyGenerator getProxyGenerator() {
-        return proxyGenerator;
+        return _proxyGenerator;
     }
 
     /**
      * @param generator the proxy Generator to set
      */
     public void setProxyGenerator(IServerProxyGenerator generator) {
-        proxyGenerator = generator;
+        _proxyGenerator = generator;
     }
 
     /**
      * Constructor
      */
     protected ProxyManager() {
-        generatedProxyMap = new HashMap<>();
+        _generatedProxyMap = new HashMap<>();
         // Default proxy generator
-        proxyGenerator = new JavassistProxyGenerator();
+        _proxyGenerator = new JavassistProxyGenerator();
     }
 
     /**
@@ -72,11 +72,11 @@ public class ProxyManager {
      * @return the associated proxy class if found, null otherwise
      */
     public synchronized Class<?> generateProxyClass(Class<?> clazz, AdditionalCode additionalCode) {
-        Class<?> proxyClass = generatedProxyMap.get(clazz);
+        Class<?> proxyClass = _generatedProxyMap.get(clazz);
         if (proxyClass == null) {
             // Generate proxy
-            proxyClass = proxyGenerator.generateProxyFor(clazz, additionalCode);
-            generatedProxyMap.put(clazz, proxyClass);
+            proxyClass = _proxyGenerator.generateProxyFor(clazz, additionalCode);
+            _generatedProxyMap.put(clazz, proxyClass);
         }
 
         return proxyClass;
@@ -86,7 +86,7 @@ public class ProxyManager {
      * @return the associated proxy class if found, null otherwise
      */
     public Class<?> getProxyClass(Class<?> clazz) {
-        return generatedProxyMap.get(clazz);
+        return _generatedProxyMap.get(clazz);
     }
 
     /**
@@ -94,7 +94,7 @@ public class ProxyManager {
      */
     public Class<?> getSourceClass(Class<?> proxyClass) {
         // Iterate over proxy map
-        for (Entry<Class<?>, Class<?>> entry : generatedProxyMap.entrySet()) {
+        for (Entry<Class<?>, Class<?>> entry : _generatedProxyMap.entrySet()) {
             if (proxyClass.equals(entry.getValue())) {
                 return entry.getKey();
             }
@@ -108,6 +108,6 @@ public class ProxyManager {
      * Clear generated proxy classes (for multiple tests run)
      */
     public void clear() {
-        generatedProxyMap.clear();
+        _generatedProxyMap.clear();
     }
 }

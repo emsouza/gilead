@@ -5,14 +5,14 @@ import java.util.Map;
 
 /**
  * Handler for proxy informations storage and recovery
- *
+ * 
  * @author bruno.marchesson
  */
 public interface ProxyStore {
 
     /**
      * Store the argument proxy informations.
-     *
+     * 
      * @param cloneBean the cloned, target bean
      * @param persistentBean the persistent, source bean
      * @param property the proxy property name
@@ -22,7 +22,7 @@ public interface ProxyStore {
 
     /**
      * Remove the proxy informations from the property of the argument object.
-     *
+     * 
      * @param pojo the root pojo
      * @param property the proxy property name
      */
@@ -30,7 +30,7 @@ public interface ProxyStore {
 
     /**
      * Get the proxy informations for the argument pojo and properties
-     *
+     * 
      * @param pojo the root pojo
      * @param property the proxy property name
      * @return the proxy informations if they exists, null otherwise

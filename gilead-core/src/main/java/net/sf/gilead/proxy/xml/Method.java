@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Method description
- *
+ * 
  * @author bruno.marchesson
  */
 public class Method {
@@ -145,7 +145,7 @@ public class Method {
 
     /**
      * Add the argument parameter
-     *
+     * 
      * @param parameter
      */
     public void addParameter(Parameter parameter) {
@@ -184,6 +184,37 @@ public class Method {
                 }
 
                 result.append(parameter.toJava5String());
+            }
+        }
+        result.append(")");
+
+        return result.toString();
+    }
+
+    /**
+     * Compute Java14 syntax signature
+     */
+    public String computeJava14Signature() {
+        StringBuffer result = new StringBuffer();
+
+        result.append(visibility);
+        result.append(" ");
+        result.append(returnType);
+        result.append(" ");
+        result.append(name);
+        result.append("(");
+
+        if ((parameters != null) && (parameters.isEmpty() == false)) {
+            // Add parameters
+            boolean firstParameter = true;
+            for (Parameter parameter : parameters) {
+                if (firstParameter == false) {
+                    result.append(", ");
+                } else {
+                    firstParameter = false;
+                }
+
+                result.append(parameter.toJava14String());
             }
         }
         result.append(")");

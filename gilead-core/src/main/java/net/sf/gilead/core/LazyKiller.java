@@ -146,7 +146,7 @@ public class LazyKiller {
             return null;
         }
 
-        LOGGER.trace("Detaching [{}].", hibernatePojo.toString());
+        LOGGER.debug("Detaching [{}].", hibernatePojo.toString());
 
         // Clone with beanLib
         return clone(hibernatePojo, cloneClass);

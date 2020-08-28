@@ -2,6 +2,7 @@ package net.sf.gilead.proxy;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.gilead.proxy.xml.AdditionalCode;
 import net.sf.gilead.proxy.xml.AdditionalCodeReader;
@@ -11,34 +12,34 @@ public class AdditionalCodeManager {
     /**
      * Unique instance of the singleton
      */
-    private static AdditionalCodeManager instance = null;
-
-    /**
-     * Map of additional code
-     */
-    private HashMap<String, AdditionalCode> additionalCodeMap;
+    private static AdditionalCodeManager _instance = null;
 
     /**
      * @return the instance of singleton
      */
     public static AdditionalCodeManager getInstance() {
-        if (instance == null) {
-            instance = new AdditionalCodeManager();
+        if (_instance == null) {
+            _instance = new AdditionalCodeManager();
         }
-        return instance;
+        return _instance;
     }
+
+    /**
+     * Map of additional code
+     */
+    private Map<String, AdditionalCode> _additionalCodeMap;
 
     /**
      * Constructor
      */
     protected AdditionalCodeManager() {
-        additionalCodeMap = new HashMap<>();
+        _additionalCodeMap = new HashMap<>();
 
         // additional code
         try {
             // Java 5
             AdditionalCode additionalCode = AdditionalCodeReader.readFromFile(ProxyManager.JAVA_5_LAZY_POJO);
-            additionalCodeMap.put(ProxyManager.JAVA_5_LAZY_POJO, additionalCode);
+            _additionalCodeMap.put(ProxyManager.JAVA_5_LAZY_POJO, additionalCode);
         } catch (IOException ex) {
             // Should not happen
             throw new RuntimeException("Error reading proxy file", ex);
@@ -50,7 +51,7 @@ public class AdditionalCodeManager {
      */
     public AdditionalCode getAdditionalCodeFor(String className) {
         // Search for suffix
-        for (AdditionalCode additionalCode : additionalCodeMap.values()) {
+        for (AdditionalCode additionalCode : _additionalCodeMap.values()) {
             if (className.endsWith(additionalCode.getSuffix())) {
                 return additionalCode;
             }
@@ -62,7 +63,7 @@ public class AdditionalCodeManager {
 
     /**
      * Compute the source class name from the proxy class name and the additional code
-     *
+     * 
      * @param proxyName
      * @param additionalCode
      * @return
@@ -73,11 +74,11 @@ public class AdditionalCodeManager {
 
     /**
      * Get additional code from the file name
-     *
+     * 
      * @param suffix
      * @return
      */
     public AdditionalCode getAdditionalCode(String fileName) {
-        return additionalCodeMap.get(fileName);
+        return _additionalCodeMap.get(fileName);
     }
 }
