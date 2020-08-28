@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 /**
  * Test case for Collection helper class
- *
+ * 
  * @author bruno.marchesson
  */
 public class CollectionHelperTest extends TestCase {

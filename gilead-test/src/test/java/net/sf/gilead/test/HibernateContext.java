@@ -19,7 +19,8 @@ public class HibernateContext {
         stateless,
         legacy,
         gwt,
-        java5
+        java5,
+        annotated
     }
 
     /**
@@ -46,6 +47,11 @@ public class HibernateContext {
      * The Java5 configuration file
      */
     private static final String JAVA5_CONFIGURATION_FILE = "java5/hibernate.cfg.xml";
+
+    /**
+     * The Java5 annotated (ServerOnly, ReadOnly) configuration file
+     */
+    private static final String ANNOTATED_CONFIGURATION_FILE = "annotated/hibernate.cfg.xml";
 
     /**
      * Current configuration
@@ -107,8 +113,10 @@ public class HibernateContext {
             return GWT_CONFIGURATION_FILE;
         } else if (_context == Context.legacy) {
             return LEGACY_CONFIGURATION_FILE;
-        } else {
+        } else if (_context == Context.java5) {
             return JAVA5_CONFIGURATION_FILE;
+        } else {
+            return ANNOTATED_CONFIGURATION_FILE;
         }
     }
 }

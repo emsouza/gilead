@@ -9,7 +9,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 
 /**
  * GroupDTO class. A group contains many users, and user belongs to many groups (for many to many association test)
- *
+ * 
  * @author bruno.marchesson
  */
 public class Group extends LightEntity implements IGroup {
@@ -17,11 +17,9 @@ public class Group extends LightEntity implements IGroup {
     private static final long serialVersionUID = -7851731827756230018L;
 
     private Integer id;
-
     private Integer version;
 
     private String name;
-
     private Set<IUser> members;
 
     @Override

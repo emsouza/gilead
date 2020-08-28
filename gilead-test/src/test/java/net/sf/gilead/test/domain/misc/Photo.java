@@ -12,7 +12,6 @@ public class Photo extends LightEntity {
     private static final long serialVersionUID = -1067096371173906324L;
 
     private Integer id;
-
     private Integer version;
 
     private String url;

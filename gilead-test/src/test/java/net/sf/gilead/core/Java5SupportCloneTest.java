@@ -5,7 +5,7 @@ import net.sf.gilead.test.domain.interfaces.IUser;
 
 /**
  * Clone test for Java5 support mode
- *
+ * 
  * @author bruno.marchesson
  */
 public class Java5SupportCloneTest extends CloneTest {

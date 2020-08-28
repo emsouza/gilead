@@ -17,11 +17,8 @@ public class Message implements Serializable, IMessage {
     private static final long serialVersionUID = 3421537443957416948L;
 
     private int id;
-
     private Integer version;
-
     private String message;
-
     private Date date;
 
     private User author;

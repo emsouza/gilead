@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -192,6 +193,7 @@ public abstract class CloneTest extends TestCase {
 
         // Create a new user and save it
         Session session = HibernateContext.getSessionFactory().getCurrentSession();
+        session.setFlushMode(FlushMode.MANUAL);
         Transaction tx = session.beginTransaction();
 
         IUser user = createNewUser();

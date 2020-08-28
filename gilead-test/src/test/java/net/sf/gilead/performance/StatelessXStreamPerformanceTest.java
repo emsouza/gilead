@@ -6,7 +6,7 @@ import net.sf.gilead.core.store.stateless.StatelessProxyStore;
 
 /**
  * Performance test for stateless mode
- *
+ * 
  * @author bruno.marchesson
  */
 public class StatelessXStreamPerformanceTest extends PerformanceTest {

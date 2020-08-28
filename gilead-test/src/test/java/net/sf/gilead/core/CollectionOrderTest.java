@@ -1,8 +1,8 @@
 package net.sf.gilead.core;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import junit.framework.TestCase;
 import net.sf.gilead.test.HibernateContext;
@@ -11,7 +11,7 @@ import net.sf.gilead.test.domain.misc.Photo;
 
 /**
  * Test case for checking collection order handling
- *
+ * 
  * @author bruno.marchesson
  */
 public class CollectionOrderTest extends TestCase {
@@ -182,7 +182,7 @@ public class CollectionOrderTest extends TestCase {
 
             // Fill query
             Query query = session.createQuery(hqlQuery.toString());
-            query.setParameter("name", pageName);
+            query.setString("name", pageName);
 
             // Execute query
             Page page = (Page) query.uniqueResult();

@@ -267,8 +267,7 @@ public class TestHelper {
         InMemoryProxyStore proxyStore = new InMemoryProxyStore();
         proxyStore.setPersistenceUtil(persistenceUtil);
 
-        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new
-                                                                                 // PersistentBeanManager();
+        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
         beanManager.setPersistenceUtil(persistenceUtil);
         beanManager.setProxyStore(proxyStore);
         beanManager.setClassMapper(null);
@@ -285,8 +284,7 @@ public class TestHelper {
         HibernateUtil persistenceUtil = new HibernateUtil();
         persistenceUtil.setSessionFactory(HibernateContext.getSessionFactory());
 
-        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new
-                                                                                 // PersistentBeanManager();
+        PersistentBeanManager beanManager = PersistentBeanManager.getInstance(); // new PersistentBeanManager();
         beanManager.setPersistenceUtil(persistenceUtil);
         beanManager.setProxyStore(new StatelessProxyStore());
 
@@ -297,6 +295,18 @@ public class TestHelper {
         beanManager.setClassMapper(classMapper);
 
         return beanManager;
+    }
+
+    /**
+     * Init bean manager for annotated Java5 mode
+     */
+    public static PersistentBeanManager initJava5AnnotatedBeanManager() {
+        HibernateContext.setContext(HibernateContext.Context.annotated);
+
+        // force init
+        PersistentBeanManager.getInstance().setPersistenceUtil(null);
+
+        return ConfigurationHelper.initStatelessBeanManager(new HibernateUtil(HibernateContext.getSessionFactory(), null));
     }
 
     /**

@@ -14,12 +14,14 @@ import net.sf.gilead.test.dao.IUserDAO;
 import net.sf.gilead.test.domain.interfaces.IMessage;
 import net.sf.gilead.test.domain.interfaces.IUser;
 import net.sf.gilead.test.domain.misc.Configuration;
+/* import net.sf.gilead.test.domain.misc.PageElement;
+ import net.sf.gilead.test.domain.misc.TextElement; */
 import net.sf.gilead.test.domain.stateless.Message;
 import net.sf.gilead.test.domain.stateless.User;
 
 /**
  * Hibernate Helper test case
- *
+ * 
  * @author bruno.marchesson
  */
 public class HibernateUtilTest extends TestCase {
@@ -68,6 +70,7 @@ public class HibernateUtilTest extends TestCase {
             HibernateUtil.getInstance().getId(configuration);
             fail("Expected an exception on not Hibernate object");
         } catch (NotPersistentObjectException ex) { /* expected behavior */}
+
     }
 
     /**
@@ -114,5 +117,6 @@ public class HibernateUtilTest extends TestCase {
         IMessage loadedMessage = (IMessage) HibernateUtil.getInstance().loadAssociation(message.getClass(), message.getId(), "author");
         assertNotNull(loadedMessage);
         assertTrue(HibernateUtil.getInstance().isInitialized(loadedMessage.getAuthor()));
+
     }
 }

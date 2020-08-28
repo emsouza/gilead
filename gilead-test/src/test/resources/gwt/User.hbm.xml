@@ -23,34 +23,26 @@
 			<column name="PASSWORD" length="45" />
 		</property>
 
-		<set name="messageList" inverse="true"
-			cascade="all, delete-orphan">
+		<set name="messageList" inverse="true" cascade="all, delete-orphan">
 			<key>
 				<column name="USER_ID" not-null="true" />
 			</key>
-			<one-to-many
-				class="net.sf.gilead.test.domain.gwt.Message" />
+			<one-to-many class="net.sf.gilead.test.domain.gwt.Message" />
 		</set>
 
-		<set name="groupList" table="user_group"
-			cascade="save-update, delete-orphan">
+		<set name="groupList" table="user_group" cascade="save-update, delete-orphan">
 			<key column="USER_ID" />
-			<many-to-many
-				class="net.sf.gilead.test.domain.gwt.Group" column="GROUP_ID" />
+			<many-to-many class="net.sf.gilead.test.domain.gwt.Group" column="GROUP_ID" />
 		</set>
 
 		<!-- Embedded address -->
-		<component name="address"
-			class="net.sf.gilead.test.domain.gwt.Address">
-			<property name="street" type="string" column="STREET"
-				not-null="true" />
-			<property name="city" type="string" column="CITY"
-				not-null="true" />
+		<component name="address" class="net.sf.gilead.test.domain.gwt.Address">
+			<property name="street" type="string" column="STREET" not-null="true" />
+			<property name="city" type="string" column="CITY" not-null="true" />
 		</component>
 
 		<!-- Subclass -->
-		<joined-subclass
-			name="net.sf.gilead.test.domain.gwt.Employee">
+		<joined-subclass name="net.sf.gilead.test.domain.gwt.Employee">
 			<key column="id" />
 			<property name="email" type="string">
 				<column name="EMAIL" length="45" />
