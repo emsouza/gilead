@@ -27,7 +27,7 @@
 		<version.junit>4.13.1</version.junit>
 		<version.net.sf.beanlib>7.2.0</version.net.sf.beanlib>
 		<version.org.apache.commons.lang3>3.9</version.org.apache.commons.lang3>
-		<version.org.hibernate>5.4.20.Final</version.org.hibernate>
+		<version.org.hibernate>5.4.24.Final</version.org.hibernate>
 		<version.org.javassist>3.23.2-GA</version.org.javassist>
 		<version.org.slf4j>1.7.30</version.org.slf4j>
 
